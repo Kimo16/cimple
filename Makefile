@@ -16,13 +16,13 @@ all : $(NAME)
 
 $(NAME) :  $(OBJS)
 	@printf "== LINKING : %s ==\n" $(NAME)
-	gcc -o $@ $(CFLAGS) $(INCLUDES) $^
+	$(CC) -o $@ $(CFLAGS) $(INCLUDES) $^
 	@printf "=== END LINKING ==\n"
 
 $(BUILD)%.o : $(SRC_FOLDER)%.c
 	@mkdir -p $(dir $@)
 	@printf "Compile : %s\n" $<
-	@gcc -c $(CFLAGS) $(INCLUDES) -o $@ $<
+	@$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 view : $(OBJ_VIEW) 
 model : $(OBJ_MOD)

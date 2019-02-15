@@ -3,28 +3,33 @@
 #  	 Makefile     #
 ###################
 
-NAME = cimp
-DIR = src
-ODIR = build
-SOURCES = $(DIR)/main.c
-BUILDS = $(wildcard build/*.o)
-INCLUDES = -I $(DIR) -I $(DIR)/controller -I $(DIR)/model -I $(DIR)/view
+NAME = cimple
+CC = gcc
+CFLAGS = -Wall
+INCLUDES = -I include
 
+include const.mk
 
-.PHONY: all $(NAME) clean
+.PHONY: all clean view model controller
 
-all :
-	make -C $(DIR)/model
-	make -C $(DIR)/view
-	make -C $(DIR)/controller
-	make $(NAME)
+all : $(NAME)
 
-$(NAME) : $(BUILDS) $(ODIR)/main.o
-	gcc -o $@ $^
+$(NAME) :  $(OBJS)
+	@printf "== LINKING : %s ==\n" $(NAME)
+	gcc -o $@ $(CFLAGS) $(INCLUDES) $^
+	@printf "=== END LINKING ==\n"
 
-$(ODIR)/main.o: $(DIR)/main.c
-	gcc -c $(INCLUDES) -o $@ $<
+$(BUILD)%.o : $(SRC_FOLDER)%.c
+	@mkdir -p $(dir $@)
+	@printf "Compile : %s\n" $<
+	@gcc -c $(CFLAGS) $(INCLUDES) -o $@ $<
+
+view : $(OBJ_VIEW) 
+model : $(OBJ_MOD)
+controller : $(OBJ_CONTR)
+
 
 clean :
-	rm -rf build/*.o
-	rm cimp
+	@printf "Clean build/ and cimp\n"
+	@rm -rf $(BUILD) $(NAME)
+

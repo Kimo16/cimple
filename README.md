@@ -1,2 +1,2 @@
-# ocel
-C project for university
+# Cimple image editor
+C project for university.

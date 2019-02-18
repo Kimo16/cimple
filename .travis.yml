@@ -1,5 +1,5 @@
 language: c
 sudo: requiered
-install: sudo apt install gcc valgrind
+install: sudo apt-get update && sudo apt-get install gcc valgrind
 os: linux
 script: sh .travis.sh

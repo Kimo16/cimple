@@ -28,6 +28,11 @@ view : $(OBJ_VIEW)
 model : $(OBJ_MOD)
 controller : $(OBJ_CONTR)
 
+check_valgrind: 
+	@valgrind --error-exitcode=1 			\
+		--leak-resolution=low 					\
+		--leak-check=full ./cimple
+
 
 clean :
 	@printf "Clean build/ and cimp\n"

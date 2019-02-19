@@ -1,5 +1,7 @@
 BUILD = build/
 
+SDL_CFLAGS=$(shell sdl2-config --cflags --libs)
+
 SRC_FOLDER = src/
 VIEW_FOLDER = src/view/
 MOD_FOLDER = src/model/

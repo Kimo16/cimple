@@ -121,9 +121,9 @@ Here are some brief explanations on the source files and what they will do.
     Main program.
 
 ### Crash resistance  :
-  * On every launch the program checks for temporary files in /tmp/cimpletmp/ directory. In case it finds any files it lists them and the user can choose which ones to load.
+  * On every launch the program checks for temporary files in /tmp/cimpletmp/ directory. In case it finds any files, it lists them and the user can choose which ones to load.
   * In case the program exits normally, all the files at /tmp/cimpletmp/ are deleted.
-  * In case the program crashes, the program will load images from the /tmp/cimpletmp directory.
+  * In case the program crashes, the program will load images from the /tmp/cimpletmp directory when it's opened again.
 
 ### Programs to use
 

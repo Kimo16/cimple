@@ -6,7 +6,6 @@
 NAME = cimple
 CC = gcc
 CFLAGS = -Wall
-LDFLAGS= -lreadline
 INCLUDES = -I include
 
 include const.mk
@@ -17,13 +16,13 @@ all : $(NAME)
 
 $(NAME) :  $(OBJS)
 	@printf "== LINKING : %s ==\n" $(NAME)
-	$(CC) -o $@ $(CFLAGS) $(INCLUDES) $(LDFLAGS) $^
+	$(CC) -o $@ $(CFLAGS) $(INCLUDES) $^
 	@printf "=== END LINKING ==\n"
 
 $(BUILD)%.o : $(SRC_FOLDER)%.c
 	@mkdir -p $(dir $@)
 	@printf "Compile : %s\n" $<
-	@$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $< 
+	@$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 view : $(OBJ_VIEW) 
 model : $(OBJ_MOD)

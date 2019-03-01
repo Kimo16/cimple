@@ -29,6 +29,24 @@ After launching Cimple, the user can open one or several images. He will be able
     * Apply a Black & White effect on a selected region
 
 
+### Commands signatures
+
+The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
+
+* ```load [-w windowId] imagepath``` : Command to load image in a new window. For load image in a specific window , we need to add -w flag and the window id . If the id is 0, it opens in the current image.
+* ```save [-w windowId] [-f format] imagepath``` : Command to save an image used in the current window. For save an image used in a specific window, we need to add -w option and the window id. In order to change image format , we need to use -f and write a valid image format.
+* ```symmetry <v | h> ``` : Command to apply a vertical or horizontal symmetry to current buffer image.
+* ```rotate n [-r]``` : Command to rotate image by n degrees. If -r is present, rotate in counter-clockwise. In case n isn't a mulitple of 90, raise an error.
+* ```truncate [origin_x origin_y end_x end_y]``` : Command to specify a new square inside the current buffer image. Launch select mode and focus on image screen if command launches without any arguments.
+* ```resize <workspace | image> width height``` : Command to resize an image or the workspace (paint-like method).
+* ```fill [-a] red green blue alpha``` : Command to fill an area in image with a rgba color. If the flag -a is passed, fills all the image, otherwise launches select mode in buffer image screen.
+* ```replace [-a] [-m margin] red green blue alpha red green blue alpha``` : Command to replace a color with another one.
+* ```list_buffer``` : List all opened buffers.
+* ```switch_buffer id``` : Switch to a buffer.
+* ```negative [-a]``` Put the selected area in negative. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+* ```greyscale [-a]``` Put the selected area in greyscale. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+* ```bnw [-a]``` Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+
 ## Extended Version (v2.0)
 
 For now, the extensions that we consider adding are :
@@ -120,12 +138,25 @@ Here are some brief explanations on the source files and what they will do.
 * **main.c :**
     Main program.
 
-### Crash resistance  :
-  * On every launch the program searches for save.tmp and if it's found, the program opens it.
-  * In case the program exits normally, save.tmp is deleted.
-  * In case the program crashes, save.tmp will be opened without data loss of current work.
+## Crash resistance  :
+  * On every launch the program checks for temporary files in /tmp/cimpletmp/ directory. In case it finds any files, it lists them and the user can choose which ones to load.
+  * In case the program exits normally, all the files at /tmp/cimpletmp/ are deleted.
+  * In case the program crashes, the program will load images from the /tmp/cimpletmp directory when it's opened again.
 
-### Programs to use
+## Programs to use
 
 * Flex
 * Uncrustify
+
+
+## Technical specs
+
+Command line structure for the parser :
+
+```c
+struct cmd {
+  char * name;
+  char ** args;
+  int size;
+};
+```

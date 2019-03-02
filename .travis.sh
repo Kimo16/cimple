@@ -11,5 +11,5 @@ fold_start valgrind 'Make check with valgrind'
 printf "\n== Compilation ==\n"
 make 
 printf "\n\n=== Valgrind Test ===\n"
-make check_valgrind
+make checkall
 fold_end valgrind

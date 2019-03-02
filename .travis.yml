@@ -1,5 +1,5 @@
 language: c
 sudo: requiered
-install: sudo apt-get update && sudo apt-get install gcc valgrind libegl1-mesa-dev libgles2-mesa-dev libsdl2-2.0-0  libsdl2-dev libsdl2-image-2.0-0 libsdl2-image-dev
+install: sudo apt-get update && sudo apt-get install gcc valgrind libegl1-mesa-dev libgles2-mesa-dev libsdl2-2.0-0  libsdl2-dev libsdl2-image-2.0-0 libsdl2-image-dev libcmocka-dev
 os: linux
 script: sh .travis.sh

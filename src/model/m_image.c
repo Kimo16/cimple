@@ -1,8 +1,7 @@
-
-typedef struct image{
+struct image{
 	char * name ;
 	char * save_path;
 	char * extension;
-	SDL_Surface * img;
+	SDL_Texture * img;
 }
 

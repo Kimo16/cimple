@@ -43,8 +43,8 @@ static void test_pixel(SDL_Texture *reference, SDL_Texture *subject, int margin)
 
 
 static void input_test(void **state) {
-  image *img_ref = load_image("io_test.bmp");
-  image *img_sub = load_image("io_test.jpg");
+  image *img_ref = load_image("io_test/io_test.bmp");
+  image *img_sub = load_image("io_test/io_test.jpg");
   SDL_Texture *reference = get_img_texture(img_ref);
   SDL_Texture *subject = get_img_texture(img_sub);
   test_h_and_w(reference,subject);

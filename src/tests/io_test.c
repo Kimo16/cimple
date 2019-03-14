@@ -14,7 +14,7 @@ static void test_h_and_w(SDL_Texture *reference, SDL_Texture *subject) {
 static void test_pixel(SDL_Texture *reference, SDL_Texture *subject, int margin) {
   SDL_PixelFormat *format; // Format type rgba
   Uint32 *pixels_ref = NULL, *pixels_sub = NULL;
-  int pitch_ref, pitch_sub; 
+  int i,j, pitch_ref, pitch_sub; 
   format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
   if(format == NULL) {
     fprintf(stderr, "Can't init format!\n");
@@ -23,8 +23,8 @@ static void test_pixel(SDL_Texture *reference, SDL_Texture *subject, int margin)
   // Lock textures for tests
   SDL_LockTexture(reference, NULL, (void *)&pixels_ref, &pitch_ref);
   SDL_LockTexture(subject,NULL, (void *)&pixels_sub, &pitch_sub);
-  for (int i = 0 ; i < HEIGHT ; i++) {
-    for (int j = 0 ; j < WIDTH ; j++) {
+  for (i = 0 ; i < HEIGHT ; i++) {
+    for (j = 0 ; j < WIDTH ; j++) {
       SDL_Color c_sub ={0}, c_ref = {0};
       SDL_GetRGBA(pixels_sub[i * WIDTH +j],format,
                   &c_sub.r, &c_sub.r, &c_sub.r, &c_sub.r);
@@ -57,5 +57,5 @@ int run_io_test() {
   const struct CMUnitTest tests[] = {
     cmocka_unit_test(input_test)
   };
-  return  cmocka_run_group_tests(tests,NULL,NULL);
+  return cmocka_run_group_tests(tests,NULL,NULL);
 }

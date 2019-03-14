@@ -23,8 +23,8 @@ static void compare_textures(SDL_Texture *test_texture, SDL_Texture *ref_texture
 	assert_int_equal(ref_w, test_w);
 	assert_int_equal(ref_h, test_h);
 	Uint32 *pixels_ref, pixels_test;
-	SDL_LockTexture(test_texture, NULL, (void **)&pixels_ref, NULL);
-	SDL_LockTexture(ref_texture, NULL, (void **)&pixels_test, NULL);
+	SDL_LockTexture(test_texture, NULL, (void **)&pixels_test, NULL);
+	SDL_LockTexture(ref_texture, NULL, (void **)&pixels_ref, NULL);
 	for(int i=0; i < ref_w; i++)
 		for(int j=0; j < ref_h; j++){
 			SDL_Color c_ref={0};
@@ -88,6 +88,39 @@ static void grey_filter_test(void **state){
 	free_image(ref_image);
 }
 
+static void color_zone_test(void **state){
+  //Loading the image to test
+	image *test_image=load_image("./img/test_image.png");
+	//Loading corresponding textures
+	SDL_Texture *test_texture=get_img_texture(test_image);
+  //Draw an orange rectangle
+  SDL_Color color;
+  color.r=255;
+  color.g=165;
+  color.b=0;
+  color.a=255;
+  color_zone(test_texture, color, 10, 10, 50, 50);
+  //Test the image
+	SDL_PixelFormat *pixel_format=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+	if(pixel_format == NULL){
+		perror("PixelFormat");
+		exit(1);
+	}
+	SDL_QueryTexture(test_texture, &pixel_format->format, NULL, NULL, NULL);
+	Uint32 *pixels_test;
+	SDL_LockTexture(test_texture, NULL, (void **)&pixels_test, NULL);
+	for(int i=10; i < 50; i++)
+		for(int j=10; j < 50; j++){
+			SDL_Color c_test={0};
+			SDL_GetRGBA(((Uint32 *)pixels_test)[i + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			assert_int_equal(c_test.r, color.r);
+			assert_int_equal(c_test.g, color.g);
+			assert_int_equal(c_test.b, color.b);
+			assert_int_equal(c_test.a, color.a);
+		}
+	SDL_UnlockTexture(test_texture);
+}
+
 /*
  * static void replace_color_test(void **state){
  *
@@ -118,7 +151,7 @@ int m_tests(SDL_Texture *texture){
 		unit_test(black_and_white_filter_test),
 		unit_test(grey_filter_test),
 		//unit_test(replace_color_test),
-		//unit_test(color_zone_test),
+		unit_test(color_zone_test),
 		//unit_test(rotate_test),
 		//unit_test(symmetry_test),
 		//unit_test(truncate_test),

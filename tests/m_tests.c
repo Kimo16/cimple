@@ -7,6 +7,8 @@
 #include "./../include/m_color.h"
 #include "./../include/in.h"
 #include "./../include/m_image.h"
+#include "./../include/m_transform.h"
+
 
 
 //    -lcmocka -I/usr/include/SDL2 -D_REENTRANT -L/usr/lib -pthread -lSDL2 -lSDL2_image
@@ -25,8 +27,8 @@ static void compare_textures(SDL_Texture *test_texture, SDL_Texture *ref_texture
 	Uint32 *pixels_ref, pixels_test;
 	SDL_LockTexture(test_texture, NULL, (void **)&pixels_test, NULL);
 	SDL_LockTexture(ref_texture, NULL, (void **)&pixels_ref, NULL);
-	for(int i=0; i < ref_w; i++)
-		for(int j=0; j < ref_h; j++){
+	for(int i=0; i < ref_h; i++)
+		for(int j=0; j < ref_w; j++){
 			SDL_Color c_ref={0};
 			SDL_Color c_test={0};
 			SDL_GetRGBA(((Uint32 *)pixels_ref)[i * ref_h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
@@ -89,18 +91,18 @@ static void grey_filter_test(void **state){
 }
 
 static void color_zone_test(void **state){
-  //Loading the image to test
+	//Loading the image to test
 	image *test_image=load_image("./img/test_image.png");
 	//Loading corresponding textures
 	SDL_Texture *test_texture=get_img_texture(test_image);
-  //Draw an orange rectangle
-  SDL_Color color;
-  color.r=255;
-  color.g=165;
-  color.b=0;
-  color.a=255;
-  color_zone(test_texture, color, 10, 10, 50, 50);
-  //Test the image
+	//Draw an orange rectangle
+	SDL_Color color;
+	color.r=255;
+	color.g=165;
+	color.b=0;
+	color.a=255;
+	color_zone(test_texture, color, 10, 10, 50, 50);
+	//Test the image
 	SDL_PixelFormat *pixel_format=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
 	if(pixel_format == NULL){
 		perror("PixelFormat");
@@ -119,14 +121,62 @@ static void color_zone_test(void **state){
 			assert_int_equal(c_test.a, color.a);
 		}
 	SDL_UnlockTexture(test_texture);
+  free_image(test_image);
+}
+
+static void symmetry_test(void **state){
+  //Loading the image to test
+  image *test_image=load_image("./img/test_image.png");
+  image *ref_image=load_image("./img/test_image.png");
+  //Loading corresponding textures
+  SDL_Texture *test_texture=get_img_texture(test_image);
+  SDL_Texture *ref_texture=get_img_texture(ref_image);
+  symmetry(test_texture, 1);
+  //Testing vertical symmetry
+  SDL_PixelFormat *pixel_format=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+	if(pixel_format == NULL){
+		perror("PixelFormat");
+		exit(1);
+	}
+  int w,h;
+	SDL_QueryTexture(test_texture, &pixel_format->format, NULL, &w, &h);
+	Uint32 *pixels_test, pixels_ref;
+	SDL_LockTexture(test_texture, NULL, (void **)&pixels_test, NULL);
+  SDL_LockTexture(ref_texture, NULL, (void **)&pixels_ref, NULL);
+	for(int i=0; i < h; i++)
+		for(int j=0; j < w; j++){
+			SDL_Color c_test={0};
+      SDL_Color c_ref={0};
+      SDL_GetRGBA(((Uint32 *)pixels_ref)[i*h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(((Uint32 *)pixels_test)[i*h + (w-j)], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			assert_int_equal(c_test.r, c_ref.r);
+			assert_int_equal(c_test.g, c_ref.g);
+			assert_int_equal(c_test.b, c_ref.b);
+			assert_int_equal(c_test.a, c_ref.a);
+		}
+  //Testing horizontal symmetry
+  test_texture = get_img_texture(test_image);
+  symmetry(test_texture, 0);
+  for(int i=0; i < h; i++)
+		for(int j=0; j < w; j++){
+			SDL_Color c_test={0};
+      SDL_Color c_ref={0};
+      SDL_GetRGBA(((Uint32 *)pixels_ref)[i*h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(((Uint32 *)pixels_test)[(h-i) + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			assert_int_equal(c_test.r, c_ref.r);
+			assert_int_equal(c_test.g, c_ref.g);
+			assert_int_equal(c_test.b, c_ref.b);
+			assert_int_equal(c_test.a, c_ref.a);
+		}
+  //Closing everything
+	SDL_UnlockTexture(test_texture);
+  SDL_UnlockTexture(ref_texture);
+  free_image(test_image);
 }
 
 /*
  * static void replace_color_test(void **state){
  *
- * }
- *
- * static void color_zone_test(void **state){
  * }
  *
  * static void rotate_test(void **state){
@@ -153,7 +203,7 @@ int m_tests(SDL_Texture *texture){
 		//unit_test(replace_color_test),
 		unit_test(color_zone_test),
 		//unit_test(rotate_test),
-		//unit_test(symmetry_test),
+		unit_test(symmetry_test),
 		//unit_test(truncate_test),
 		//unit_test(resize_image_test),
 		//unit_test(resize_workspace_test)

@@ -1,18 +1,100 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
 #include <cmocka.h>
-#include "m_color.h"
+#include "./../include/m_color.h"
+#include "./../include/in.h"
+#include "./../include/m_image.h"
 
-static SDL_Texture *current;
 
-static void negative_filter_test(void **state){
+//    -lcmocka -I/usr/include/SDL2 -D_REENTRANT -L/usr/lib -pthread -lSDL2 -lSDL2_image
+
+static void compare_textures(SDL_Texture * test_texture, SDL_Texture * ref_texture, int diff){
+  int ref_w, ref_h, test_w, test_h;
+  SDL_PixelFormat * pixel_format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+  if(pixel_format == NULL) {
+    perror("PixelFormat");
+    exit(1);
+  }
+  SDL_QueryTexture(test_texture, &pixel_format->format, NULL, &test_w, &test_h);
+  SDL_QueryTexture(ref_texture, &pixel_format->format, NULL, &ref_w, &ref_h);
+  assert_int_equal(ref_w, test_w);
+  assert_int_equal(ref_h, test_h);
+  Uint32 * pixels_ref, pixels_test;
+  SDL_LockTexture(test_texture, NULL, (void **)&pixels_ref, NULL);
+  SDL_LockTexture(ref_texture, NULL, (void **)&pixels_test, NULL);
+  for(int i=0; i<ref_w; i++){
+    for(int j=0; j<ref_h; j++){
+      SDL_Color c_ref ={0};
+      SDL_Color c_test ={0};
+      SDL_GetRGBA(((Uint32 *)pixels_ref)[i * ref_h +j],pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+      SDL_GetRGBA(((Uint32 *)pixels_test)[i * ref_h +j],pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+      assert_in_range(c_test.r, c_ref.r-diff, c_ref.r+diff);
+      assert_in_range(c_test.g, c_ref.g-diff, c_ref.g+diff);
+      assert_in_range(c_test.b, c_ref.b-diff, c_ref.b+diff);
+      assert_in_range(c_test.a, c_ref.a-diff, c_ref.a+diff);
+    }
+  }
+  SDL_UnlockTexture(ref_texture);
+  SDL_UnlockTexture(test_texture);
 }
 
+static void negative_filter_test(void **state){
+  //Loading of the reference image and the image to test
+  image * test_image=load_image("./img/test_image.png");
+  image * ref_image=load_image("./img/test_image_negative.png");
+  //Loading corresponding textures
+  SDL_Texture * test_texture = get_img_texture(test_image);
+  SDL_Texture * ref_texture = get_img_texture(ref_image);
+  //Applying the negative effect
+  negative_filter(test_texture);
+  //Launching test
+  compare_textures(test_texture, ref_texture, 15);
+  //Closing images
+  free_image(test_image);
+  free_image(ref_image);
+}
+
+
+
+
 static void black_and_white_filter_test(void **state){
+  //Loading of the reference image and the image to test
+  image * test_image=load_image("./img/test_image.png");
+  image * ref_image=load_image("./img/test_image_bnw.png");
+  //Loading corresponding textures
+  SDL_Texture * test_texture = get_img_texture(test_image);
+  SDL_Texture * ref_texture = get_img_texture(ref_image);
+  //Applying the black and white filter
+  negative_filter(test_texture);
+  //Launching test
+  compare_textures(test_texture, ref_texture, 0);
+  //Closing images
+  free_image(test_image);
+  free_image(ref_image);
 }
 
 static void grey_filter_test(void **state){
+  //Loading of the reference image and the image to test
+  image * test_image=load_image("./img/test_image.png");
+  image * ref_image=load_image("./img/test_image_grayscale.png");
+  //Loading corresponding textures
+  SDL_Texture * test_texture = get_img_texture(test_image);
+  SDL_Texture * ref_texture = get_img_texture(ref_image);
+  //Applying the grayscale effect
+  negative_filter(test_texture);
+  //Launching test
+  compare_textures(test_texture, ref_texture, 10);
+  //Closing images
+  free_image(test_image);
+  free_image(ref_image);
 }
 
+/*
 static void replace_color_test(void **state){
+
 }
 
 static void color_zone_test(void **state){
@@ -32,19 +114,20 @@ static void resize_image_test(void **state){
 
 static void resize_workspace_test(void **state){
 }
+*/
 
 int m_tests(SDL_Texture *texture){
-	CMUnitTest tests[]={
+	const struct CMUnitTest tests[]={
 		unit_test(negative_filter_test),
 		unit_test(black_and_white_filter_test),
 		unit_test(grey_filter_test),
-		unit_test(replace_color_test),
-		unit_test(color_zone_test),
-		unit_test(rotate_test),
-		unit_test(symmetry_test),
-		unit_test(truncate_test),
-		unit_test(resize_image_test),
-		unit_test(resize_workspace_test)
+		//unit_test(replace_color_test),
+		//unit_test(color_zone_test),
+		//unit_test(rotate_test),
+		//unit_test(symmetry_test),
+		//unit_test(truncate_test),
+		//unit_test(resize_image_test),
+		//unit_test(resize_workspace_test)
 	};
 	return cmocka_run_group_tests(tests, NULL, NULL);
 }

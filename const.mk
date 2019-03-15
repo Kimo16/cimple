@@ -22,7 +22,8 @@ SRC_MOD = in.c		  		\
 	  m_transform.c 		\
           parse.c
 SRC_CONTR = cmd_line.c
-SRC_TESTS = main_test.c
+SRC_TESTS = io_test.c			\
+	    main_test.c
 
 
 # SRC_FILES

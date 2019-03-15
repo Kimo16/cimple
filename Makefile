@@ -7,8 +7,8 @@ NAME = cimple
 CC = gcc
 CFLAGS = -Wall
 INCLUDES = -I include
-TESTFLAGS = -lcmocka
 SDL_CFLAGS=$(shell sdl2-config --cflags --libs) -lSDL2_image
+TESTFLAGS = -lcmocka $(SDL_CFLAGS)
 
 include const.mk
 

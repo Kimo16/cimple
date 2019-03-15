@@ -1,9 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <setjmp.h>
-#include <cmocka.h>
-
+#include "main_test.h"
 
 int main(){
-	return 0;
+  int rc = 0;
+  rc = run_io_test();
+  return rc;
 }

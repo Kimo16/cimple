@@ -1,8 +1,9 @@
-#ifnef M_IMAGE_H
+#ifndef M_IMAGE_H
 #define M_IMAGE_H
 
-#include <SDL2/SDL2.h>
-
+#include <SDL2/SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct image image;
 image *new_img(char *path);

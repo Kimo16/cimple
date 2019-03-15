@@ -114,64 +114,64 @@ static void color_zone_test(void **state){
 	for(int i=10; i < 50; i++)
 		for(int j=10; j < 50; j++){
 			SDL_Color c_test={0};
-			SDL_GetRGBA(((Uint32 *)pixels_test)[i*50+j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(((Uint32 *)pixels_test)[i * 50 + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, color.r);
 			assert_int_equal(c_test.g, color.g);
 			assert_int_equal(c_test.b, color.b);
 			assert_int_equal(c_test.a, color.a);
 		}
 	SDL_UnlockTexture(test_texture);
-  free_image(test_image);
+	free_image(test_image);
 }
 
 static void symmetry_test(void **state){
-  //Loading the image to test
-  image *test_image=load_image("./img/test_image.png");
-  image *ref_image=load_image("./img/test_image.png");
-  //Loading corresponding textures
-  SDL_Texture *test_texture=get_img_texture(test_image);
-  SDL_Texture *ref_texture=get_img_texture(ref_image);
-  symmetry(test_texture, 1);
-  //Testing vertical symmetry
-  SDL_PixelFormat *pixel_format=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+	//Loading the image to test
+	image *test_image=load_image("./img/test_image.png");
+	image *ref_image=load_image("./img/test_image.png");
+	//Loading corresponding textures
+	SDL_Texture *test_texture=get_img_texture(test_image);
+	SDL_Texture *ref_texture=get_img_texture(ref_image);
+	symmetry(test_texture, 1);
+	//Testing vertical symmetry
+	SDL_PixelFormat *pixel_format=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
 	if(pixel_format == NULL){
 		perror("PixelFormat");
 		exit(1);
 	}
-  int w,h;
+	int w, h;
 	SDL_QueryTexture(test_texture, &pixel_format->format, NULL, &w, &h);
 	Uint32 *pixels_test, *pixels_ref;
 	SDL_LockTexture(test_texture, NULL, (void **)&pixels_test, NULL);
-  SDL_LockTexture(ref_texture, NULL, (void **)&pixels_ref, NULL);
+	SDL_LockTexture(ref_texture, NULL, (void **)&pixels_ref, NULL);
 	for(int i=0; i < h; i++)
 		for(int j=0; j < w; j++){
 			SDL_Color c_test={0};
-      SDL_Color c_ref={0};
-      SDL_GetRGBA(pixels_ref[i*h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[i*h + (w-j)], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_Color c_ref={0};
+			SDL_GetRGBA(pixels_ref[i * h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_test[i * h + (w - j)], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);
 			assert_int_equal(c_test.a, c_ref.a);
 		}
-  //Testing horizontal symmetry
-  test_texture = get_img_texture(test_image);
-  symmetry(test_texture, 0);
-  for(int i=0; i < h; i++)
+	//Testing horizontal symmetry
+	test_texture=get_img_texture(test_image);
+	symmetry(test_texture, 0);
+	for(int i=0; i < h; i++)
 		for(int j=0; j < w; j++){
 			SDL_Color c_test={0};
-      SDL_Color c_ref={0};
-      SDL_GetRGBA(pixels_ref[i*h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[(h-i) + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_Color c_ref={0};
+			SDL_GetRGBA(pixels_ref[i * h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_test[(h - i) + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);
 			assert_int_equal(c_test.a, c_ref.a);
 		}
-  //Closing everything
+	//Closing everything
 	SDL_UnlockTexture(test_texture);
-  SDL_UnlockTexture(ref_texture);
-  free_image(test_image);
+	SDL_UnlockTexture(ref_texture);
+	free_image(test_image);
 }
 
 /*

@@ -15,3 +15,11 @@
     * Parsing Test (Karim)
     * Makefile update with Cmocka,add SDL_image and in/out tests (Etienne)
     * m_tests with Cmocka (Alex)
+
+## 08/02/2019 - Tests - Model :
+  * Done :
+    * Define Tests
+  * TODO :
+    * Parser - tests et implementation (Karim)
+    * finish in/out tests - in/out model (Etienne)
+    * m_tests (Alex)

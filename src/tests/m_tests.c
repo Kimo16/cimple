@@ -24,15 +24,15 @@ static void compare_textures(SDL_Texture *test_texture, SDL_Texture *ref_texture
 	SDL_QueryTexture(ref_texture, &pixel_format->format, NULL, &ref_w, &ref_h);
 	assert_int_equal(ref_w, test_w);
 	assert_int_equal(ref_h, test_h);
-	Uint32 *pixels_ref, pixels_test;
+	Uint32 *pixels_ref, *pixels_test;
 	SDL_LockTexture(test_texture, NULL, (void **)&pixels_test, NULL);
 	SDL_LockTexture(ref_texture, NULL, (void **)&pixels_ref, NULL);
 	for(int i=0; i < ref_h; i++)
 		for(int j=0; j < ref_w; j++){
 			SDL_Color c_ref={0};
 			SDL_Color c_test={0};
-			SDL_GetRGBA(((Uint32 *)pixels_ref)[i * ref_h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(((Uint32 *)pixels_test)[i * ref_h + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_ref[i * ref_h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_test[i * ref_h + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_in_range(c_test.r, c_ref.r - diff, c_ref.r + diff);
 			assert_in_range(c_test.g, c_ref.g - diff, c_ref.g + diff);
 			assert_in_range(c_test.b, c_ref.b - diff, c_ref.b + diff);
@@ -114,7 +114,7 @@ static void color_zone_test(void **state){
 	for(int i=10; i < 50; i++)
 		for(int j=10; j < 50; j++){
 			SDL_Color c_test={0};
-			SDL_GetRGBA(((Uint32 *)pixels_test)[i + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(((Uint32 *)pixels_test)[i*50+j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, color.r);
 			assert_int_equal(c_test.g, color.g);
 			assert_int_equal(c_test.b, color.b);
@@ -140,15 +140,15 @@ static void symmetry_test(void **state){
 	}
   int w,h;
 	SDL_QueryTexture(test_texture, &pixel_format->format, NULL, &w, &h);
-	Uint32 *pixels_test, pixels_ref;
+	Uint32 *pixels_test, *pixels_ref;
 	SDL_LockTexture(test_texture, NULL, (void **)&pixels_test, NULL);
   SDL_LockTexture(ref_texture, NULL, (void **)&pixels_ref, NULL);
 	for(int i=0; i < h; i++)
 		for(int j=0; j < w; j++){
 			SDL_Color c_test={0};
       SDL_Color c_ref={0};
-      SDL_GetRGBA(((Uint32 *)pixels_ref)[i*h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(((Uint32 *)pixels_test)[i*h + (w-j)], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+      SDL_GetRGBA(pixels_ref[i*h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_test[i*h + (w-j)], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);
@@ -161,8 +161,8 @@ static void symmetry_test(void **state){
 		for(int j=0; j < w; j++){
 			SDL_Color c_test={0};
       SDL_Color c_ref={0};
-      SDL_GetRGBA(((Uint32 *)pixels_ref)[i*h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(((Uint32 *)pixels_test)[(h-i) + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+      SDL_GetRGBA(pixels_ref[i*h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_test[(h-i) + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);

@@ -27,9 +27,9 @@ static void test_pixel(SDL_Texture *reference, SDL_Texture *subject, int margin)
     for (j = 0 ; j < WIDTH ; j++) {
       SDL_Color c_sub ={0}, c_ref = {0};
       SDL_GetRGBA(pixels_sub[i * WIDTH +j],format,
-                  &c_sub.r, &c_sub.r, &c_sub.r, &c_sub.r);
+                  &c_sub.r, &c_sub.g, &c_sub.b, &c_sub.a);
       SDL_GetRGBA(pixels_ref[i * WIDTH +j],format,
-                  &c_sub.r, &c_sub.r, &c_sub.r, &c_sub.r);
+                  &c_sub.r, &c_sub.g, &c_sub.b, &c_sub.a);
       assert_in_range(c_sub.r, c_ref.r-margin, c_ref.r+margin);
       assert_in_range(c_sub.g, c_ref.g-margin, c_ref.g+margin);
       assert_in_range(c_sub.b, c_ref.b-margin, c_ref.b+margin);

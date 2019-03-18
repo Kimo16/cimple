@@ -1,14 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <setjmp.h>
-#include <cmocka.h>
-#include "m_color.h"
-#include "in.h"
-#include "m_image.h"
-#include "m_transform.h"
-#include "m_frame.h"
+#include "m_tests.h"
 
 static void compare_textures(SDL_Texture *test_texture, SDL_Texture *ref_texture, int diff){
 	int ref_w, ref_h, test_w, test_h;
@@ -213,7 +203,7 @@ static void resize_workspace_test(void **state){
 	//Loading corresponding texture
 	SDL_Texture *test_texture=get_img_texture(test_image);
 	int          w_before, h_before, w_after, h_after;
-	int width=100, height=100;
+	int          width=100, height=100;
 	SDL_QueryTexture(test_texture, NULL, NULL, &w_before, &h_before);
 	//Resizing
 	resize_workspace(test_texture, width, height);
@@ -262,7 +252,7 @@ static void m_img_ext_test(void **state){
 	free_image(img);
 }
 
-int m_tests(SDL_Texture *texture){
+int run_m_tests(){
 	const struct CMUnitTest tests[]={
 		unit_test(negative_filter_test),
 		unit_test(black_and_white_filter_test),

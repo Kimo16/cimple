@@ -31,8 +31,8 @@ static void compare_textures(SDL_Texture *test_texture, SDL_Texture *ref_texture
 
 static void negative_filter_test(void **state){
 	//Loading of the reference image and the image to test
-	image *test_image=load_image("./../../tests/img/test_image.png");
-	image *ref_image=load_image("./../../tests/img/test_image_negative.png");
+	image *test_image=load_image("m_test/test_image.png");
+	image *ref_image=load_image("m_test/test_image_negative.png");
 	//Loading corresponding textures
 	SDL_Texture *test_texture=get_img_texture(test_image);
 	SDL_Texture *ref_texture=get_img_texture(ref_image);
@@ -47,8 +47,8 @@ static void negative_filter_test(void **state){
 
 static void black_and_white_filter_test(void **state){
 	//Loading of the reference image and the image to test
-	image *test_image=load_image("./../../tests/img/test_image.png");
-	image *ref_image=load_image("./../../tests/img/test_image_bnw.png");
+	image *test_image=load_image("m_test/test_image.png");
+	image *ref_image=load_image("m_test/test_image_bnw.png");
 	//Loading corresponding textures
 	SDL_Texture *test_texture=get_img_texture(test_image);
 	SDL_Texture *ref_texture=get_img_texture(ref_image);
@@ -63,8 +63,8 @@ static void black_and_white_filter_test(void **state){
 
 static void grey_filter_test(void **state){
 	//Loading of the reference image and the image to test
-	image *test_image=load_image("./../../tests/img/test_image.png");
-	image *ref_image=load_image("./../../tests/img/test_image_grayscale.png");
+	image *test_image=load_image("m_test/test_image.png");
+	image *ref_image=load_image("m_test/test_image_grayscale.png");
 	//Loading corresponding textures
 	SDL_Texture *test_texture=get_img_texture(test_image);
 	SDL_Texture *ref_texture=get_img_texture(ref_image);
@@ -79,7 +79,7 @@ static void grey_filter_test(void **state){
 
 static void color_zone_test(void **state){
 	//Loading the image to test
-	image *test_image=load_image("./../../tests/img/test_image.png");
+	image *test_image=load_image("m_test/test_image.png");
 	//Loading corresponding textures
 	SDL_Texture *test_texture=get_img_texture(test_image);
 	//Draw an orange rectangle
@@ -109,8 +109,8 @@ static void color_zone_test(void **state){
 
 static void symmetry_test(void **state){
 	//Loading the images for tests
-	image *test_image=load_image("./../../tests/img/test_image.png");
-	image *ref_image=load_image("./../../tests/img/test_image.png");
+	image *test_image=load_image("m_test/test_image.png");
+	image *ref_image=load_image("m_test/test_image.png");
 	//Loading corresponding textures
 	SDL_Texture *    test_texture=get_img_texture(test_image);
 	SDL_Texture *    ref_texture=get_img_texture(ref_image);
@@ -159,8 +159,8 @@ static void symmetry_test(void **state){
 
 static void rotate_test(void **state){
 	//Loading the images for tests
-	image *test_image=load_image("./../../tests/img/test_image.png");
-	image *ref_image=load_image("./../../tests/img/test_image.png");
+	image *test_image=load_image("m_test/test_image.png");
+	image *ref_image=load_image("m_test/test_image.png");
 	//Loading corresponding textures
 	SDL_Texture *    test_texture=get_img_texture(test_image);
 	SDL_Texture *    ref_texture=get_img_texture(ref_image);
@@ -199,7 +199,7 @@ static void rotate_test(void **state){
 
 static void resize_workspace_test(void **state){
 	//Loading the image to test
-	image *test_image=load_image("./../../tests/img/test_image.png");
+	image *test_image=load_image("m_test/test_image.png");
 	//Loading corresponding texture
 	SDL_Texture *test_texture=get_img_texture(test_image);
 	int          w_before, h_before, w_after, h_after;
@@ -217,14 +217,14 @@ static void resize_workspace_test(void **state){
 }
 
 static void new_img_test(void **state){
-	image *img=new_img("./../../tests/img/test_image.png");
+	image *img=new_img("m_test/test_image.png");
 	assert_non_null(img);
 }
 
 // m_*_test functions test the getters and setters for a struct image fields
 
 static void m_img_texture_test(void **state){
-	image *      img=new_img("./../../tests/img/test_image.png");
+	image *      img=new_img("m_test/test_image.png");
 	SDL_Texture *texture;
 	set_img_texture(img, texture);
 	assert_ptr_equal(texture, get_img_texture(img));
@@ -232,21 +232,21 @@ static void m_img_texture_test(void **state){
 }
 
 static void m_img_name_test(void **state){
-	image *img=new_img("./../../tests/img/test_image.png");
+	image *img=new_img("m_test/test_image.png");
 	set_img_name(img, "Image-sama");
 	assert_string_equal("Image-sama", get_img_name(img));
 	free_image(img);
 }
 
 static void m_img_path_test(void **state){
-	image *img=new_img("./../../tests/img/test_image.png");
-	set_img_path(img, "./../../tests/img/");
-	assert_string_equal("./../../tests/img/", get_img_path(img));
+	image *img=new_img("m_test/test_image.png");
+	set_img_path(img, "m_test/");
+	assert_string_equal("m_test/", get_img_path(img));
 	free_image(img);
 }
 
 static void m_img_ext_test(void **state){
-	image *img=new_img("./../../tests/img/test_image.png");
+	image *img=new_img("m_test/test_image.png");
 	set_img_ext(img, "png");
 	assert_string_equal("png", get_img_ext(img));
 	free_image(img);

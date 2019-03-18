@@ -10,9 +10,6 @@
 #include "m_transform.h"
 #include "m_frame.h"
 
-
-//    -lcmocka -I/usr/include/SDL2 -D_REENTRANT -L/usr/lib -pthread -lSDL2 -lSDL2_image
-
 static void compare_textures(SDL_Texture *test_texture, SDL_Texture *ref_texture, int diff){
 	int ref_w, ref_h, test_w, test_h;
 	SDL_PixelFormat *pixel_format=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
@@ -216,14 +213,15 @@ static void resize_workspace_test(void **state){
 	//Loading corresponding texture
 	SDL_Texture *test_texture=get_img_texture(test_image);
 	int          w_before, h_before, w_after, h_after;
+	int width=100, height=100;
 	SDL_QueryTexture(test_texture, NULL, NULL, &w_before, &h_before);
 	//Resizing
-	resize_workspace(test_texture, 100, 100);
+	resize_workspace(test_texture, width, height);
 	//Launching test
 	int w, h;
 	SDL_QueryTexture(test_texture, NULL, NULL, &w_after, &h_after);
-	assert_int_equal(w_after, w_before + 100);
-	assert_int_equal(h_after, h_before + 100);
+	assert_int_equal(w_after, w_before + width);
+	assert_int_equal(h_after, h_before + height);
 	//Closing image
 	free_image(test_image);
 }

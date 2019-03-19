@@ -38,6 +38,7 @@ static void test_pixel(SDL_Texture *reference, SDL_Texture *subject, int margin)
 	// Unlock textures after tests
 	SDL_UnlockTexture(reference);
 	SDL_UnlockTexture(subject);
+  SDL_FreeFormat(format);
 }
 
 static void input_test(void **state){

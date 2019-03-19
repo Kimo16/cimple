@@ -27,6 +27,7 @@ static void compare_textures(SDL_Texture *test_texture, SDL_Texture *ref_texture
 		}
 	SDL_UnlockTexture(ref_texture);
 	SDL_UnlockTexture(test_texture);
+	SDL_FreeFormat(pixel_format);
 }
 
 static void negative_filter_test(void **state){
@@ -105,6 +106,7 @@ static void color_zone_test(void **state){
 		}
 	SDL_UnlockTexture(test_texture);
 	free_image(test_image);
+	SDL_FreeFormat(pixel_format);
 }
 
 static void symmetry_test(void **state){
@@ -154,6 +156,7 @@ static void symmetry_test(void **state){
 	//Closing everything
 	SDL_UnlockTexture(test_texture);
 	SDL_UnlockTexture(ref_texture);
+	SDL_FreeFormat(pixel_format);
 	free_image(test_image);
 }
 
@@ -194,6 +197,7 @@ static void rotate_test(void **state){
 		}
 	SDL_UnlockTexture(test_texture);
 	SDL_UnlockTexture(ref_texture);
+	SDL_FreeFormat(pixel_format);
 	free_image(test_image);
 }
 
@@ -225,7 +229,7 @@ static void new_img_test(void **state){
 
 static void m_img_texture_test(void **state){
 	image *      img=new_img("m_test/test_image.png");
-	SDL_Texture *texture;
+	SDL_Texture *texture = SDL_CreateTexture(NULL,SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 100, 100);
 	set_img_texture(img, texture);
 	assert_ptr_equal(texture, get_img_texture(img));
 	free_image(img);

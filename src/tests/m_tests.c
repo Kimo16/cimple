@@ -98,7 +98,7 @@ static void color_zone_test(void **state){
 	for(int i=10; i < 50; i++)
 		for(int j=10; j < 50; j++){
 			SDL_Color c_test={0};
-			SDL_GetRGBA(((Uint32 *)pixels_test)[i * 50 + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA((pixels_test[i * 50 + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, color.r);
 			assert_int_equal(c_test.g, color.g);
 			assert_int_equal(c_test.b, color.b);
@@ -229,7 +229,7 @@ static void new_img_test(void **state){
 
 static void m_img_texture_test(void **state){
 	image *      img=new_img("m_test/test_image.png");
-	SDL_Texture *texture = SDL_CreateTexture(NULL,SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 100, 100);
+	SDL_Texture *texture=SDL_CreateTexture(NULL, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, 100, 100);
 	set_img_texture(img, texture);
 	assert_ptr_equal(texture, get_img_texture(img));
 	free_image(img);

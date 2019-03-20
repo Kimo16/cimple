@@ -10,11 +10,11 @@ image *new_img(char *path);
 char *get_img_name(image *img);
 char *get_img_path(image *img);
 char *get_img_ext(image *img);
-SDL_Texture *get_img_texture(image *img);
+SDL_Surface *get_img_surface(image *img);
 short set_img_name(image *img, char *name);
 short set_img_path(image *img, char *path);
 short set_img_ext(image *img, char *ext);
-short set_img_texture(image *img, SDL_Texture *texture);
+short set_img_surface(image *img, SDL_Surface *texture);
 short free_image(image *image);
 
 #endif

@@ -73,15 +73,15 @@ static short listb_err_tab[4]={EINVA, EINVA, 0, 0};
 
 
 static void test_parse_line(char **tab, char *str){
-	int    i=0;
-	cmd * command = parse_line(str);
+	int  i=0;
+	cmd *command=parse_line(str);
 	assert_non_null(command);
-	while(tab[i] != NULL ){
+	while(tab[i] != NULL){
 		assert_non_null(command->args[i]);              /*if args[i]=NULL , it's mean that command->args is shorter than tab*/
-		assert_string_equal(tab[i],command ->args[i]);
+		assert_string_equal(tab[i], command->args[i]);
 		i++;
 	}
-	assert_int_equal(i,command->size);            /*if this assertion isn't confirmed , it's meant that command->args is longer than tab*/
+	assert_int_equal(i, command->size);            /*if this assertion isn't confirmed , it's meant that command->args is longer than tab*/
 	free_cmd(command);
 }
 

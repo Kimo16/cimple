@@ -10,4 +10,5 @@ typedef struct cmd{
 
 cmd* parse_line(char * cmd_line);
 short check_arguments(char ** args_tab);
+void free_cmd(cmd * cmd_struct);
 #endif

@@ -3,5 +3,7 @@
 
 #include "io_test.h"
 #include "parser_test.h"
+#include "m_tests.h"
+
 
 #endif

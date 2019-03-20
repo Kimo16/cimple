@@ -3,7 +3,7 @@
 BUILD = build/
 TESTS = tests/
 
-## SRC 
+## SRC
 
 SRC_FOLDER = src/
 VIEW_FOLDER = src/view/
@@ -24,6 +24,7 @@ SRC_MOD = in.c		  		\
 SRC_CONTR = cmd_line.c
 SRC_TESTS = io_test.c			\
 			parser_test.c \
+			m_tests.c 	\
 	    main_test.c
 
 

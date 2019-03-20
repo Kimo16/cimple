@@ -9,5 +9,5 @@ typedef struct cmd{
 
 
 cmd* parse_line(char * cmd_line);
-short check_args(char ** args);
+short check_arguments(char ** args_tab);
 #endif

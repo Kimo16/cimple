@@ -23,6 +23,7 @@ SRC_MOD = in.c		  		\
           parse.c
 SRC_CONTR = cmd_line.c
 SRC_TESTS = io_test.c			\
+			parser_test.c \
 	    main_test.c
 
 

@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 
+short negative_filter(SDL_Surface* img);
 short black_and_white_filter(SDL_Surface* img);
 short grey_filter(SDL_Surface* img,int level);
 short replace_color(SDL_Surface* img,SDL_Color origin_color,SDL_Color target_color,int margin);

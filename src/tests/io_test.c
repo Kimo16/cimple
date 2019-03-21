@@ -32,6 +32,7 @@ static void test_pixel(SDL_Surface *reference, SDL_Surface *subject, int margin)
     }
   SDL_UnlockSurface(reference);
   SDL_UnlockSurface(subject);
+  SDL_FreeFormat(format);
 }
 
 static void input_test(void **state){

@@ -81,6 +81,7 @@ cimple
 │   │   ├── m_color.c
 │   │   ├── m_frame.c
 │   │   ├── m_transform.c
+│   │   ├── m_image.c
 │   │   ├── out.c
 │   │   └── parse.c
 │   └── view
@@ -127,6 +128,8 @@ Here are some brief explanations on the source files and what they will do.
   * **m_frame.c :**
     Contains all the window and frame changing functions.
   * **m_transform.c :**
+    Contains image management functions.
+  * **m_image.c :**
     Contains symmetry and rotation functions.
   * **parse.c :**
     Gets an input line from the controller and parses it returning command structure.
@@ -143,7 +146,8 @@ Here are some brief explanations on the source files and what they will do.
 
 ## Programs to use
 
-* Flex
+* Make
+* Git
 * Uncrustify
 
 

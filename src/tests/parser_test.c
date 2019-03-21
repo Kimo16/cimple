@@ -86,7 +86,7 @@ static void test_parse_line(char **tab, char *str){
 }
 
 static void test_parse_error(short err, char *str){
-	assert_int_equal(err, check_arguments(parse_line(str)->args));
+	assert_int_equal(err, check_arguments(parse_line(str)));
 }
 
 static void input_test(void **state){

@@ -34,7 +34,7 @@ The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
 * ```load [-w windowId] imagepath``` : Command to load image in a new window. For load image in a specific window , we need to add -w flag and the window id . If the id is 0, it opens in the current image.
 * ```save [-w windowId] [-f format] imagepath``` : Command to save an image used in the current window. For save an image used in a specific window, we need to add -w option and the window id. In order to change image format , we need to use -f and write a valid image format.
 * ```symmetry <v | h> ``` : Command to apply a vertical or horizontal symmetry to current buffer image.
-* ```rotate n [-r]``` : Command to rotate image by n degrees. If -r is present, rotate in counter-clockwise. In case n isn't a mulitple of 90, raise an error.
+* ```rotate [-r] n ``` : Command to rotate image by n degrees. If -r is present, rotate in counter-clockwise. In case n isn't a mulitple of 90, raise an error.
 * ```truncate [origin_x origin_y end_x end_y]``` : Command to specify a new square inside the current buffer image. Launch select mode and focus on image screen if command launches without any arguments.
 * ```resize <workspace | image> width height``` : Command to resize an image or the workspace (paint-like method).
 * ```fill [-a] red green blue alpha``` : Command to fill an area in image with a rgba color. If the flag -a is passed, fills all the image, otherwise launches select mode in buffer image screen.
@@ -158,3 +158,4 @@ struct cmd {
   int size;
 };
 ```
+	

@@ -20,7 +20,8 @@ SRC_MOD = in.c		  		\
 	  m_color.c 			\
 	  m_frame.c 			\
 	  m_transform.c 		\
-          parse.c
+		m_image.c \
+		parse.c    
 SRC_CONTR = cmd_line.c
 SRC_TESTS = io_test.c			\
 			m_tests.c 	\

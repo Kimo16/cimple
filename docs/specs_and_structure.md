@@ -128,9 +128,9 @@ Here are some brief explanations on the source files and what they will do.
   * **m_frame.c :**
     Contains all the window and frame changing functions.
   * **m_transform.c :**
-    Contains image management functions.
-  * **m_image.c :**
     Contains symmetry and rotation functions.
+  * **m_image.c :**
+     Contains image management functions.
   * **parse.c :**
     Gets an input line from the controller and parses it returning command structure.
 * controller :

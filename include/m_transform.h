@@ -3,8 +3,8 @@
 
 #include <SDL2/SDL.h>
 
-short symmetry(SDL_Texture* img,short vertical);
-short rotate(SDL_Texture* img, int angle);
+short symmetry(SDL_Surface* img,short vertical);
+short rotate(SDL_Surface* img, int angle);
 
 
 #endif

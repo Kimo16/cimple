@@ -14,7 +14,7 @@ static char *sym_argstab[][5]={
 	{"symmetry", "98", NULL},
 	{"symmetry", "hello", NULL},
 	{NULL}
-	};
+};
 static short sym_err_tab[7]={0, 0, EOPT, EOPT, EINVA, EINVA, 0};
 
 
@@ -105,6 +105,7 @@ static char *neg_argstab[][6]={
 	{"negative", "-a", NULL},
 	{"negative", "", NULL},
 	{"negative", "", NULL},
+	{"negative","","223"},
 	{NULL}
 };
 static short neg_err_tab[6]={EINVA, 0, 0, 0, EINVA, 0};
@@ -115,7 +116,7 @@ static char *bnw_argstab[][6]={
 	{"bnw", "-a", NULL},
 	{"bnw", "", NULL},
 	{"bnw", "", NULL},
-	{"bnw", "223", NULL},
+	{"bnw", "", "223", NULL},
 	{NULL}
 };
 static short bnw_err_tab[6]={EINVA, 0, 0, 0, EINVA, 0};

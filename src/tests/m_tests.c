@@ -94,11 +94,11 @@ static void color_zone_test(void **state){
 	}
 	SDL_QueryTexture(test_texture, &pixel_format->format, NULL, NULL, NULL);
 	Uint32 *pixels_test;
-	SDL_LockTexture(test_texture, NULL, (void **)&pixels_test, NULL);
+	SDL_LockTexture(test_texture, NULL, (void *)&pixels_test, NULL);
 	for(int i=10; i < 50; i++)
 		for(int j=10; j < 50; j++){
 			SDL_Color c_test={0};
-			SDL_GetRGBA((pixels_test[i * 50 + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_test[i * 50 + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, color.r);
 			assert_int_equal(c_test.g, color.g);
 			assert_int_equal(c_test.b, color.b);
@@ -212,7 +212,6 @@ static void resize_workspace_test(void **state){
 	//Resizing
 	resize_workspace(test_texture, width, height);
 	//Launching test
-	int w, h;
 	SDL_QueryTexture(test_texture, NULL, NULL, &w_after, &h_after);
 	assert_int_equal(w_after, w_before + width);
 	assert_int_equal(h_after, h_before + height);

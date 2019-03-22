@@ -16,8 +16,8 @@ static void compare_surface(SDL_Surface *test_surface, SDL_Surface *ref_surface,
 		for(int j=0; j < ref_surface->w; j++){
 			SDL_Color c_ref={0};
 			SDL_Color c_test={0};
-			SDL_GetRGBA(pixels_ref[i * ref_surface->h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[i * ref_surface->h + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_ref[i * ref_surface->w + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_test[i * ref_surface->w + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_in_range(c_test.r, c_ref.r - diff, c_ref.r + diff);
 			assert_in_range(c_test.g, c_ref.g - diff, c_ref.g + diff);
 			assert_in_range(c_test.b, c_ref.b - diff, c_ref.b + diff);
@@ -130,8 +130,8 @@ static void symmetry_test(void **state){
 		for(int j=0; j < test_surface->w; j++){
 			SDL_Color c_test={0};
 			SDL_Color c_ref={0};
-			SDL_GetRGBA(pixels_ref[i * test_surface->h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[i * test_surface->h + (test_surface->w - j)], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_ref[i * test_surface->w + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_test[i * test_surface->w + (test_surface->w - j)], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);
@@ -144,8 +144,8 @@ static void symmetry_test(void **state){
 		for(int j=0; j < test_surface->w; j++){
 			SDL_Color c_test={0};
 			SDL_Color c_ref={0};
-			SDL_GetRGBA(pixels_ref[i * test_surface->h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[(test_surface->h - i) + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_ref[i * test_surface->w + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_test[(test_surface->h - i)*test_surface->w + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);
@@ -182,8 +182,8 @@ static void rotate_test(void **state){
 		for(int j=0; j < ref_surface->w; j++){
 			SDL_Color c_test={0};
 			SDL_Color c_ref={0};
-			SDL_GetRGBA(pixels_ref[i * ref_surface->h + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[j * ref_surface->h + ref_surface->w - i], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_ref[i * ref_surface->w + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_test[j * ref_surface->w + ref_surface->w - i], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);

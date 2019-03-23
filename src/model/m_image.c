@@ -8,19 +8,38 @@ struct image {
 };
 
 /**
- * Gets the image extension from the path
+ * Fills the struct image elements according to path
  *
- * @param path string containing the path to the image
+ * @param init_path string containing the full path to the image (i.e. /toto/tata/image.png)
+ * @param path pointer to write the path to (i.e. /toto/tata)
+ * @param name pointer to write the image name
+ * @param ext pointer to write the image extension
  * @return extension of the image
  */
 
-static char *get_extension_from_path(char *path){
-	char *ext=strrchr(path, '.') + 1;
-	if(ext == NULL){
-		perror("ext");
-		exit(1);
+static short break_full_path(char *init_path, char **path, char **name, char **ext){
+	char *parsed_name=memrchr(init_path, '/', strlen(init_path) - 1) + 1;
+	if(parsed_name == NULL){
+		fprintf(stderr, "Name not set\n");
+		return -1;
 	}
-	return ext;
+	*name=parsed_name;
+	char *parsed_ext=memrchr(parsed_name, '.', strlen(parsed_name));
+	if(parsed_ext == NULL){
+		fprintf(stderr, "Extension not set\n");
+		return -1;
+	}
+	*parsed_ext='\0';
+	*ext=parsed_ext + 1;
+	char *parsed_path=malloc(parsed_name - init_path + 1);
+	memcpy(parsed_path, init_path, parsed_name - init_path + 1);
+	if(parsed_path == NULL){
+		fprintf(stderr, "Path not set\n");
+		return -1;
+	}
+	parsed_path[parsed_name - init_path]='\0';
+	*path=parsed_path;
+	return 0;
 }
 
 /**
@@ -31,18 +50,18 @@ static char *get_extension_from_path(char *path){
  */
 
 image *new_img(char *path){
-	// if no parameter is passed
-	if(path == NULL)
-		printf("Please add an argument.\n");
-	// checking if it's a valid path by trying to open the file
-	FILE *file=fopen(path, "r");
-	if(file == NULL)
-		printf("Please enter a valid path.\n");
+	// checking if it's a valid path
+	if(path == NULL || !access(path, R_OK | W_OK)){
+		fprintf(stderr, "Path not valid\n");
+		return NULL;
+	}
 	// allocate memory
 	image *new=malloc(sizeof(struct image));
-	new->name=NULL;
-	new->save_path=path;
-	new->extension=get_extension_from_path(path);
+	if(!break_full_path(path, &new->save_path, &new->name, &new->extension)){
+		fprintf(stderr, "Image not initialized\n");
+		free(new);
+		return NULL;
+	}
 	new->img=NULL;
 	return new;
 }
@@ -108,6 +127,20 @@ SDL_Surface *get_img_surface(image *img){
 }
 
 /**
+ * Return full path of the image
+ *
+ * @param img the image to work with
+ * @return string with the full path (i.e. /toto/tata/imagr.png)
+ */
+
+char *get_full_image_path(image *image){
+	int   size_fullpath=strlen(image->extension) + strlen(image->save_path) + strlen(image->name) + 2;
+	char *fullpath=malloc(size_fullpath);
+	snprintf(fullpath, size_fullpath, "%s%s.%s", image->save_path, image->name, image->extension);
+	return fullpath;
+}
+
+/**
  * Sets a new image name
  *
  * @param img the image to work with
@@ -166,9 +199,11 @@ short set_img_surface(image *img, SDL_Surface *surface){
  */
 
 void free_image(image *image){
-	SDL_FreeSurface(image->img);
-	free(image->extension);
-	free(image->save_path);
-	free(image->name);
-	free(image);
+	if(image != NULL){
+		if(image->img != NULL) SDL_FreeSurface(image->img);
+		if(image->extension != NULL) free(image->extension);
+		if(image->save_path != NULL) free(image->save_path);
+		if(image->name != NULL) free(image->name);
+		free(image);
+	}
 }

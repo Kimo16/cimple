@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include "parse.h"
 #include "parse_token.h"
 #include "err_flags.h"
 
@@ -29,7 +30,7 @@ struct cmd_info {
 	char *option [LEN_REPLACE];
 };
 
-static struct cmd_info name_tab[LEN_NAME]={
+static struct cmd_info info_tab[LEN_NAME]={
 	{.name="bnw", .len=LEN_BNW, .args_type={0, 1}, .option={"", "-a"}},                                                   //ok
 	{.name="greyscale", .len=LEN_GREYS, .args_type={0, 1}, .option={"", "-a"}},                                           //ok
 	{.name="fill", .len=LEN_FILL, .args_type={0, 1, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "-a", "", "", "", ""}}, //ok
@@ -44,47 +45,46 @@ static struct cmd_info name_tab[LEN_NAME]={
 	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "", "", "", ""}} //ok
 };
 
-cmd * alloc_cmd(){
-	cmd * command = malloc(sizeof(command)+sizeof(char *)+sizeof(char *));
+cmd *alloc_cmd(){
+	cmd *command=malloc(sizeof(command) + sizeof(char *) + sizeof(char *));
 	if(command == NULL) return NULL;
-	
-	command -> name = NULL;
-	command -> args = NULL;
-	command -> size = 0;
-	
+
+	command->name=NULL;
+	command->args=NULL;
+	command->size=0;
+
 	return command;
 }
 
-void free_cmd(cmd * command){
-	free(command -> name);
-	for (int i = 0 ; i<(command -> size) -1 ; i++){
-		if(command -> args[i] != NULL && strlen(command -> args[i]) != 0)free(command -> args[i]);
-	}
+void free_cmd(cmd *command){
+	free(command->name);
+	for(int i=0; i < (command->size) - 1; i++)
+		if(command->args[i] != NULL && strlen(command->args[i]) != 0) free(command->args[i]);
 	free(command->args);
 	free(command);
 }
 
-short realloc_cmd_args(cmd * command){
-	command -> size += 1;
-	char ** tab = realloc(command -> args , (command -> size) * sizeof(char *));
+short realloc_cmd_args(cmd *command){
+	command->size+=1;
+	char **tab=realloc(command->args, (command->size) * sizeof(char *));
 	if(tab == NULL){
 		perror("INVALID REALLOC() -> function : realloc_cmd_tab");
 		return 1;
 	}
-	command -> args = tab;
-	command -> args[command -> size -1 ] = NULL;
+	command->args=tab;
+	command->args[command->size - 1]=NULL;
 	return 0;
 }
 
-char * string_cpy(char * s){
-	char * str = malloc(sizeof(char)*(strlen(s)+1));
-	str = memcpy(str,s,strlen(s)+1);
-	str[strlen(s)] = '\0';
+char *string_cpy(char *s){
+	char *str=malloc(sizeof(char) * (strlen(s) + 1));
+	str=memcpy(str, s, strlen(s) + 1);
+	str[strlen(s)]='\0';
 	return str;
 }
 
 short msg_error(short type, int flags, char *cmd_name, char *str){
-	if(flags == EINVAL) fprintf(stderr, "Error command [%s]: invalid arguments '%s'\n", cmd_name, str);
+	if(flags == EINVA) fprintf(stderr, "Error command [%s]: invalid arguments '%s'\n", cmd_name, str);
 	if(flags == EMSG) fprintf(stderr, "Error command [%s]: missing arguments\n", cmd_name);
 	if(flags == ENUMV){
 		if(type == PIXEL) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter numerics values between 0 and 255\n", cmd_name, str);
@@ -96,37 +96,64 @@ short msg_error(short type, int flags, char *cmd_name, char *str){
 	return flags;
 }
 
+short is_natural(char *str){
 
+	int i;
+	int n=sscanf(str, "%u", &i);
+	return n == 1 ? 0 : ENUMV;
+}
 
-short is_natural(char * str){
-	if(str == NULL || strlen(str)== 0 )return 1;
+short is_option(char *str){
+	if(str == NULL || strlen(str) != 2 || str[0] != '-') return EOPT;
+	return isalpha(str[1]) ?  0 : EOPT;
+}
+
+short is_pixel(char *str){
+	int i;
+	int n=sscanf(str, "%u", &i);
+	return n == 1 && i <= 255 && i >= 0 ? 0 : ENUMV;  // replace with flags error
+}
+
+short is_view(char *str){
+	return strcmp(str, "worspace") == 0 || strcmp(str, "image") == 0 ? 0 : EINVA; // replace with flags error
+}
+
+short is_symtype(char *str){
+	return strcmp(str, "v") == 0 || strcmp(str, "h") == 0 ? 0 : EINVA;   // replace with flags error
+}
+
+short is_extension(char *str){
+	return strcmp(str, "png") == 0 ||
+		   strcmp(str, "jpeg") == 0 ||
+		   strcmp(str, "gif") == 0 ||
+		   strcmp(str, "bmp") == 0 ? 0 : EFFORM;  // replace with flags error
+}
+
+short is_pourcent(char *str){
+	int i;
+	int n=sscanf("a", "%u", &i);
+	return n == 1 && i <= 100 && i >= 0 ? 0 : ENUMV;
+}
+
+short check_token (short flags , char * cmd_name , char * arg ){
+	if( strlen(arg) == 0 ) return msg_error(0,EMSG,cmd_name , NULL);
+	if(flags == NUMBER && is_natural(arg) ) return msg_error(NUMBER,ENUMV,cmd_name, arg);
+	//if(flags == FILE && is_image_file(command -> args[i])) return msg_error(FILE,EFFORM,command -> name , command -> args[i]);
+	if(flags == PIXEL && is_pixel(arg))     return msg_error(PIXEL,ENUMV,cmd_name , arg);
+	if(flags == POURC && is_pourcent(arg))  return msg_error(POURC,ENUMV,cmd_name, arg);
+	if(flags == EXT && is_extension( arg))  return msg_error(EXT,EFFORM,cmd_name , arg);
+	if(flags == VIEW && is_view( arg))      return msg_error(EINVA,0,cmd_name, arg);
+	if(flags == SYMTYPE && is_symtype(arg)) return msg_error(EINVA,0,cmd_name , arg);
+	return 0 ;
+}
+
+short check_opt_args(short num_args,short index,int * i, char * cmd_name, char* arg){
+	int n ;
+	while((*i) < (*i) + num_args){
+		if((n=check_token(info_tab[index].args_type[*i] ,cmd_name, arg)) != 0) return n;
+		*(i)+=1;
+	}
 	return 0;
-}
-short is_option(char * str){
-	if(str == NULL || strlen(str)!=2 || str[0] != '-')return 1;
-	return isalpha(str[1]) ?  0 : 1; 
-}
-short is_pixel(char * str){
-	int i ;
-	int n = sscanf("a","%u",&i);
-	return n == 1 && i <= 255 && i >= 0 ? 0 : 1 ; // replace with flags error
-}
-short is_view(char * str){
-	return strcmp(str,"worspace")== 0 || strcmp(str,"image") == 0 ? 0 : 1 ; // replace with flags error
-}
-short is_symtype(char * str){
-	return strcmp(str,"v")== 0 || strcmp(str,"h") == 0 ? 0 : 1 ;   // replace with flags error
-}
-short is_extension(char * str){
-	return strcmp(str,"png") == 0 
-		|| strcmp(str,"jpeg") == 0 
-		|| strcmp(str,"gif") == 0
-		|| strcmp(str,"bmp") == 0 ? 0 : 1;  // replace with flags error
-}
-short is_pourcent(char * str){
-	int i ;
-	int n = sscanf("a","%u",&i);
-	return n == 1 && i <= 100 && i >= 0 ? 0 : 1 ;
 }
 
 

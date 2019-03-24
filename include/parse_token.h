@@ -8,5 +8,8 @@
 #define POURC           16
 #define SYMTYPE         17
 #define VIEW            18
+#define ANGLE           19
+#define STRING          20
+
 
 #endif

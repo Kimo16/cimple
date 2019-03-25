@@ -1,7 +1,7 @@
  #include "in.h"
 
 /**
- * Permet de charger une image spécifiée par 
+ * Allow to load an image referenced by 
  * [path]
  */
 image *load_image(char *path) {
@@ -38,7 +38,6 @@ image *load_image(char *path) {
 short check_tmp() {
   char * tmp_dir =  "/tmp/cimpletmp/";
   DIR *dir = opendir(tmp_dir);
-  int ret = 0;
   if (dir == NULL) {
     fprintf(stderr, "No file saved");
     return 0;
@@ -52,5 +51,5 @@ short check_tmp() {
     printf("%s%s",tmp_dir,current->d_name);
   }
   closedir(dir);
-  return ret;
+  return 1;
 }

@@ -15,7 +15,7 @@ static char *sym_argstab[][5]={
 	{"symmetry", "hello", NULL},
 	{NULL}
 };
-static short sym_err_tab[7]={0, 0, EOPT, EOPT, EINVA, EINVA, 0};
+static short sym_err_tab[7]={0, 0, EINVA, EINVA, EINVA, EINVA, 0};  // checked
 
 
 static char *rotate_tab[8]={"rotate -r 90", "rotate 90", "rotate 100", "rotate -r 10", "rotate 0", "rotate -90", "rotate -r -10", NULL};
@@ -29,7 +29,7 @@ static char *rot_argstab[][5]={
 	{"rotate", "-r", "-10", NULL},
 	{NULL}
 };
-static short rot_err_tab[8]={0, 0, ENUMV, ENUMV, 0, ENUMV, ENUMV, 0};
+static short rot_err_tab[8]={0, 0, ENUMV, ENUMV, 0, ENUMV, ENUMV, 0};  // checked
 
 
 static char *truncate_tab[5]={"truncate", "truncate 123 0 123 0", "truncate aze 100 zez 10", "truncate 100 230", NULL};
@@ -40,13 +40,13 @@ static char *trunc_argstab[][10]={
 	{"truncate", "100", "230", "", "", NULL},
 	{NULL}
 };
-static short trunc_err_tab[5]={EINVA, 0, ENUMV, EINVA, 0};
+static short trunc_err_tab[5]={EMSG, 0, ENUMV, EMSG, 0};
 
 
 
 static char *resize_tab[7]={"resize 100 100", "resize workspace", "resize workspace 100", "resize workspace 100 100", "resize image", "resize image 100 100", NULL};
 static char *res_argstab[][6]={
-	{"resize", "", "100", "100", NULL},
+	{"resize","100", "100","", NULL},
 	{"resize", "workspace", "", "", NULL},
 	{"resize", "workspace", "100", "", NULL},
 	{"resize", "workspace", "100", "100", NULL},
@@ -54,7 +54,7 @@ static char *res_argstab[][6]={
 	{"resize", "image", "100", "100", NULL},
 	{NULL}
 };
-static short res_err_tab[7]={EINVA, EMSG, EMSG, 0, EINVA, 0, 0};
+static short res_err_tab[7]={EINVA, EMSG, EMSG, 0, EMSG, 0, 0};
 
 static char *fill_tab[7]={"fill 100 190 100 0", "fill -a 100 100 100", "fill -a 257 200 200 200", "fill 200 200 200", "fill its a joke", "fill -a 100 190 100 0", NULL};
 static char *fill_argstab[][10]={
@@ -71,7 +71,7 @@ static short fill_err_tab[7]={0, EMSG, ENUMV, EMSG, ENUMV, 0, 0};
 static char *replace_tab[5]={"replace -a 100 200 123 12 123 239 12 9", "replace -m 20 -a 200",
 							 "replace -m 199 -a 200 250 30 200 22 11 9 10", "replace -m 19 -a -200 250 30 200 22 11 9 10", NULL};
 static char *rep_argstab[][15]={
-	{"replace", "-a", "100", "200", "123", "12", "123", "239", "12", "9", NULL},
+	{"replace","","","-a", "100", "200", "123", "12", "123", "239", "12", "9", NULL},
 	{"replace", "-m", "20", "-a", "200", "", "", "", "", "", "", "", NULL},
 	{"replace", "-m", "199", "-a", "200", "250", "30", "200", "22", "11", "9", "10", NULL},
 	{"replace", "-m", "19", "-a", "-200", "250", "30", "200", "22", "11", "9", "10", NULL},
@@ -105,7 +105,7 @@ static char *neg_argstab[][6]={
 	{"negative", "-a", NULL},
 	{"negative", "", NULL},
 	{"negative", "", NULL},
-	{"negative","","223"},
+	{"negative", "", "223"},
 	{NULL}
 };
 static short neg_err_tab[6]={EINVA, 0, 0, 0, EINVA, 0};
@@ -140,7 +140,7 @@ static char *switch_argstab[][5]={
 	{"switch_buffer", "3", NULL},
 	{NULL}
 };
-static short switch_err_tab[5]={EINVA, ENUMV, EMSG, 0, 0};
+static short switch_err_tab[5]={ENUMV, ENUMV, EMSG, 0, 0};
 
 static char *list_buffer[4]={"list_buffer -a ", "list_buffer 10", "  list_buffer ", NULL};
 static char *listb_argstab[][5]={

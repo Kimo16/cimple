@@ -69,7 +69,8 @@ char *string_cpy(char *s){
 
 short find_index(char *str){
 	if(str == NULL) return -1;
-	for(int i=0; i < LEN_NAME; i++)
+	int i;
+	for(i=0; i < LEN_NAME; i++)
 
 		if(strcmp(str, info_tab[i].name) == 0) return i;
 	return -1;
@@ -88,7 +89,8 @@ cmd *alloc_cmd(){
 
 void free_cmd(cmd *command){
 	free(command->name);
-	for(int i=0; i < (command->size) - 1; i++)
+	int i ;
+	for(i=0; i < (command->size) - 1; i++)
 		if(command->args[i] != NULL && strlen(command->args[i]) != 0) free(command->args[i]);
 	free(command->args);
 	free(command);
@@ -104,7 +106,8 @@ short realloc_cmd_args(cmd *command){
 }
 
 void set_cmd_args(cmd *command){
-	for(int i=0; i < command->size - 1; i++)
+	int i ;
+	for(i=0; i < command->size - 1; i++)
 		command->args[i]="";
 	command->args [command->size - 1]=NULL;
 }
@@ -183,11 +186,11 @@ short check_token(short flags, char *cmd_name, char *arg){
 
 short check_arguments(cmd *command){
 	if(command == NULL) return 0;
-
+	int i ;
 	short n, index, flags;
 	index=find_index(command->name);
 
-	for(int i=1; i < info_tab[index].len - 1; i++){
+	for(i=1; i < info_tab[index].len - 1; i++){
 		flags=info_tab[index].args_type[i];
 
 		if(is_option_flags(flags) && strlen(command->args[i]) == 0){

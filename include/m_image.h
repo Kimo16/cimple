@@ -19,6 +19,7 @@ short set_img_name(image *img, char *name);
 short set_img_path(image *img, char *path);
 short set_img_ext(image *img, char *ext);
 short set_img_surface(image *img, SDL_Surface *texture);
+image * copy_image(image * ref);
 void free_image(image *image);
 
 #endif

@@ -32,19 +32,19 @@ struct cmd_info {
 };
 
 static struct cmd_info info_tab[LEN_NAME]={
-	{.name="bnw", .len=LEN_BNW, .args_type={0, 1}, .option={"", "-a"}},                                                   //ok //ok
-	{.name="greyscale", .len=LEN_GREYS, .args_type={0, 1}, .option={"", "-a"}},                                           //ok //ok
-	{.name="fill", .len=LEN_FILL, .args_type={0, 1, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-a", "", "", "", ""}}, //ok //ok
-	{.name="list_buffer", .len=LEN_LIST_BUFFER, .args_type={0}, .option={""}},                                            //ok //ok
-	{.name="load", .len=LEN_LOAD, .args_type={0, 2, NUMBER, STRING}, .option={"", "-w", "", ""}},                              //ok however check no (load)
-	{.name="negative", .len=LEN_NEG, .args_type={0, 1}, .option={"", "-a"}},                                              //ok //ok 
+	{.name="bnw", .len=LEN_BNW, .args_type={0, 1}, .option={"", "-a"}},                                               
+	{.name="greyscale", .len=LEN_GREYS, .args_type={0, 1}, .option={"", "-a"}},                                       
+	{.name="fill", .len=LEN_FILL, .args_type={0, 1, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-a", "", "", "", ""}}, 
+	{.name="list_buffer", .len=LEN_LIST_BUFFER, .args_type={0}, .option={""}},                                        
+	{.name="load", .len=LEN_LOAD, .args_type={0, 2, NUMBER, STRING}, .option={"", "-w", "", ""}},                    
+	{.name="negative", .len=LEN_NEG, .args_type={0, 1}, .option={"", "-a"}},                                          
 	{.name="replace", .len=LEN_REPLACE, .args_type={0, 1, 2, POURC, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-a", "-m", "", "", "", "", "", "", "", "", ""}},
-	{.name="resize", .len=LEN_RESIZE, .args_type={0, VIEW, NUMBER, NUMBER}, .option={"", "", "", ""}},                    //ok //ok
-	{.name="rotate", .len=LEN_ROTATE, .args_type={0, 1, ANGLE}, .option={"", "-r", ""}},                                 // ok //ok
-	{.name="save", .len=LEN_SAVE, .args_type={0, 2, EXT, STRING}, .option={"", "-f", "", ""}},                                 //ok //ok
-	{.name="switch_buffer",.len=LEN_SWITCH,.args_type={0,NUMBER},.option={"",""}},
-	{.name="symmetry", .len=LEN_SYM, .args_type={0, SYMTYPE}, .option={"", ""}},                                          //ok // ok 
-	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "", "", "", ""}} //ok //ok
+	{.name="resize", .len=LEN_RESIZE, .args_type={0, VIEW, NUMBER, NUMBER}, .option={"", "", "", ""}},                
+	{.name="rotate", .len=LEN_ROTATE, .args_type={0, 1, ANGLE}, .option={"", "-r", ""}},                              
+	{.name="save", .len=LEN_SAVE, .args_type={0, 2, EXT, STRING}, .option={"", "-f", "", ""}},                        
+	{.name="switch_buffer", .len=LEN_SWITCH, .args_type={0, NUMBER}, .option={"", ""}},
+	{.name="symmetry", .len=LEN_SYM, .args_type={0, SYMTYPE}, .option={"", ""}},                                     
+	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "", "", "", ""}} 
 };
 
 short msg_error(short type, int flags, char *cmd_name, char *str){
@@ -67,12 +67,11 @@ char *string_cpy(char *s){
 	return str;
 }
 
-short find_index (char *str){
+short find_index(char *str){
 	if(str == NULL) return -1;
-	for (int i = 0 ; i < LEN_NAME ; i++){
+	for(int i=0; i < LEN_NAME; i++)
 
-		if(strcmp(str,info_tab[i].name) == 0)return i;
-	}
+		if(strcmp(str, info_tab[i].name) == 0) return i;
 	return -1;
 }
 
@@ -104,24 +103,22 @@ short realloc_cmd_args(cmd *command){
 	return 0;
 }
 
-void set_cmd_args(cmd * command ){
-	for(int i = 0 ; i < command -> size -1 ; i++){
-		command -> args[i] ="";
-	}
-	command -> args [command -> size -1 ] = NULL;
+void set_cmd_args(cmd *command){
+	for(int i=0; i < command->size - 1; i++)
+		command->args[i]="";
+	command->args [command->size - 1]=NULL;
 }
 
-short init_cmd(cmd * command , char * str){
-	short index ;
-	if ((index = find_index(str)) == -1 ) return index;
-	command -> name = string_cpy( str);
-	command -> size = info_tab[index].len;
-	command -> args = malloc(command -> size *(sizeof(char *)));
+short init_cmd(cmd *command, char *str){
+	short index;
+	if((index=find_index(str)) == -1) return index;
+	command->name=string_cpy(str);
+	command->size=info_tab[index].len;
+	command->args=malloc(command->size * (sizeof(char *)));
 	set_cmd_args(command);
-	command -> args[0] = string_cpy(str) ; 
-	return index; 
+	command->args[0]=string_cpy(str);
+	return index;
 }
-
 
 short is_natural(char *str){
 	int i;
@@ -141,28 +138,28 @@ short is_option_flags(short index){
 short is_angle(char *str){
 	int i;
 	int n=sscanf(str, "%u", &i);
-	return (n == 1 && i %90 == 0) ? 0 : ENUMV;  
+	return (n == 1 && i % 90 == 0) ? 0 : ENUMV;
 }
 
 short is_pixel(char *str){
 	int i;
 	int n=sscanf(str, "%u", &i);
-	return n == 1 && i <= 255 && i >= 0 ? 0 : ENUMV;  // replace with flags error
+	return n == 1 && i <= 255 && i >= 0 ? 0 : ENUMV;  
 }
 
 short is_view(char *str){
-	return strcmp(str, "worspace") == 0 || strcmp(str, "image") == 0 ? 0 : EINVA; // replace with flags error
+	return strcmp(str, "worspace") == 0 || strcmp(str, "image") == 0 ? 0 : EINVA; 
 }
 
 short is_symtype(char *str){
-	return strcmp(str, "v") == 0 || strcmp(str, "h") == 0 ? 0 : EINVA;   // replace with flags error
+	return strcmp(str, "v") == 0 || strcmp(str, "h") == 0 ? 0 : EINVA;  
 }
 
 short is_extension(char *str){
 	return strcmp(str, "png") == 0 ||
 		   strcmp(str, "jpeg") == 0 ||
 		   strcmp(str, "gif") == 0 ||
-		   strcmp(str, "bmp") == 0 ? 0 : EFFORM;  // replace with flags error
+		   strcmp(str, "bmp") == 0 ? 0 : EFFORM;  
 }
 
 short is_pourcent(char *str){
@@ -171,7 +168,6 @@ short is_pourcent(char *str){
 	return n == 1 && i <= 100 && i >= 0 ? 0 : ENUMV;
 }
 
-
 short check_token(short flags, char *cmd_name, char *arg){
 	if(strlen(arg) == 0) return msg_error(0, EMSG, cmd_name, NULL);
 	if(flags == STRING && strlen(arg) == 0) return msg_error(0, EMSG, cmd_name, NULL);
@@ -179,80 +175,74 @@ short check_token(short flags, char *cmd_name, char *arg){
 	if(flags == PIXEL && is_pixel(arg)) return msg_error(PIXEL, ENUMV, cmd_name, arg);
 	if(flags == POURC && is_pourcent(arg)) return msg_error(POURC, ENUMV, cmd_name, arg);
 	if(flags == EXT && is_extension(arg)) return msg_error(EXT, EFFORM, cmd_name, arg);
-	if(flags == VIEW && is_view(arg) ) return msg_error(VIEW,EINVA, cmd_name, arg);
-	if(flags == SYMTYPE && is_symtype(arg)) return msg_error(SYMTYPE,EINVA, cmd_name, arg);
+	if(flags == VIEW && is_view(arg)) return msg_error(VIEW, EINVA, cmd_name, arg);
+	if(flags == SYMTYPE && is_symtype(arg)) return msg_error(SYMTYPE, EINVA, cmd_name, arg);
 	if(flags == ANGLE && is_angle(arg)) return msg_error(ANGLE, ENUMV, cmd_name, arg);
 	return 0;
 }
 
-
-short check_arguments(cmd * command ){
+short check_arguments(cmd *command){
 	if(command == NULL) return 0;
-	
-	short n , index, flags ;
-	index = find_index(command -> name ) ; 
 
-	for(int i = 1 ; i < info_tab[index].len -1 ; i++ ){
-		
-		flags = info_tab[index].args_type[i];
-		
-		if(is_option_flags(flags) && strlen(command->args[i]) == 0 ){
-			i+= flags - 1;
+	short n, index, flags;
+	index=find_index(command->name);
+
+	for(int i=1; i < info_tab[index].len - 1; i++){
+		flags=info_tab[index].args_type[i];
+
+		if(is_option_flags(flags) && strlen(command->args[i]) == 0){
+			i+=flags - 1;
 			continue;
 		}
-		if(is_option_flags( flags ) && strcmp( command -> args[i] , info_tab[index].option[i] ) != 0){
-			return msg_error(0, EOPT, command->name , command -> args[i]);
-		}
-		if((n = check_token( info_tab[index].args_type[i],command -> name , command -> args[i])) != 0) return n;
-	
+		if(is_option_flags(flags) && strcmp(command->args[i], info_tab[index].option[i]) != 0)
+			return msg_error(0, EOPT, command->name, command->args[i]);
+		if((n=check_token(info_tab[index].args_type[i], command->name, command->args[i])) != 0) return n;
 	}
-	if ( command -> size > info_tab[index].len ){
-		fprintf(stderr,"Error command [%s] : too much arguments \n", command -> name );
-		return EINVA;    
+	if(command->size > info_tab[index].len){
+		fprintf(stderr, "Error command [%s] : too much arguments \n", command->name);
+		return EINVA;
 	}
 	return 0;
 }
 
-short build_args(cmd * command,char *s , short index ){
-	if (s ==NULL) return 0;
-	int i = 1 ;
-	char * str = string_cpy(s);
-	char * space = " ";
-	char * token ="";
+short build_args(cmd *command, char *s, short index){
+	if(s == NULL) return 0;
+	int   i=1;
+	char *str=string_cpy(s);
+	char *space=" ";
+	char *token="";
 	while(token != NULL){
-		
-		if(i != 1 ) token = strtok(NULL,space);
-		else token = strtok(str,space);
+		if(i != 1) token=strtok(NULL, space);
+		else token=strtok(str, space);
 
 		if(token != NULL){
-			if( is_option_flags(info_tab[index].args_type[i]) ==1 && is_option(token) )
-				i += info_tab[index].args_type[i];
-			if(i >= (command -> size) -1 ) 
-				realloc_cmd_args( command );
-			command -> args[i++] = token;
+			if(is_option_flags(info_tab[index].args_type[i]) == 1 && is_option(token))
+				i+=info_tab[index].args_type[i];
+			if(i >= (command->size) - 1)
+				realloc_cmd_args(command);
+			command->args[i++]=string_cpy(token);
 		}
 	}
+	if(token != NULL) free(token);
+	if(str != NULL) free(str);
 	return 0;
 }
 
-cmd * parse_line( char * line){  
-	cmd * command = NULL;
+cmd *parse_line(char *line){
+	cmd * command=NULL;
 	short index;
-	command = alloc_cmd(); 
-	char * s = string_cpy(line);        
-	char * space = " ";               
-	char * token = strtok(s,space);     
-	char * s1 = strtok(NULL,"");        
-	if((index  = init_cmd(command,token) ) == -1  ){
-		msg_error(0,EUNKN,token,NULL);  
+	command=alloc_cmd();
+	char *s=string_cpy(line);
+	char *space=" ";
+	char *token=strtok(s, space);
+	char *s1=strtok(NULL, "");
+	if((index=init_cmd(command, token)) == -1){
+		msg_error(0, EUNKN, token, NULL);
 		return NULL;
 	}
-	if(index > -1 ) build_args( command , s1 , index );
-	
+	if(index > -1) build_args(command, s1, index);
 
-	//free(s);
-	//free(token);            
-	return command ;
+	if(s != NULL) free(s);
+	if(token != NULL) free(token);
+	return command;
 }
-
-

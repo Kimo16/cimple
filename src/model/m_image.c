@@ -78,7 +78,7 @@ image *new_img(char *path){
  */
 
 char *get_img_name(image *img){
-	if(img->name == NULL){
+	if(img == NULL || img->name == NULL){
 		fprintf(stderr, "get_img_name failed\n");
 		return NULL;
 	}
@@ -93,7 +93,7 @@ char *get_img_name(image *img){
  */
 
 char *get_img_path(image *img){
-	if(img->save_path == NULL){
+	if(img == NULL || img->save_path == NULL){
 		fprintf(stderr, "get_img_path failed\n");
 		return NULL;
 	}
@@ -108,7 +108,7 @@ char *get_img_path(image *img){
  */
 
 char *get_img_ext(image *img){
-	if(img->extension == NULL){
+	if(img==NULL || img->extension == NULL){
 		fprintf(stderr, "get_img_ext failed\n");
 		return NULL;
 	}
@@ -123,7 +123,7 @@ char *get_img_ext(image *img){
  */
 
 SDL_Surface *get_img_surface(image *img){
-	if(img->img == NULL){
+	if(img==NULL || img->img == NULL){
 		fprintf(stderr, "get_img_surface failed\n");
 		return NULL;
 	}
@@ -138,6 +138,10 @@ SDL_Surface *get_img_surface(image *img){
  */
 
 char *get_full_image_path(image *image){
+	if(image==NULL){
+		fprintf(stderr, "Get_path malloc failed\n");
+		return NULL;
+	}
 	int   size_fullpath=strlen(image->extension) + strlen(image->save_path) + strlen(image->name) + 2;
 	char *fullpath=malloc(size_fullpath);
 	if(fullpath == NULL){
@@ -234,6 +238,10 @@ image *copy_image(image *ref){
 		return NULL;
 	}
 	image *      copy=new_img(path);
+	if(copy == NULL){
+		fprintf(stderr, "Copy failed\n");
+		return NULL;
+	}
 	SDL_Surface *copy_surface=SDL_ConvertSurface(ref->img, ref->img->format, 0);
 	if(copy_surface == NULL){
 		fprintf(stderr, "Copy failed\n");

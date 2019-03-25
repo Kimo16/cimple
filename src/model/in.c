@@ -38,9 +38,10 @@ image *load_image(char *path) {
 short check_tmp() {
   char * tmp_dir =  "/tmp/cimpletmp/";
   DIR *dir = opendir(tmp_dir);
+  int ret = 0;
   if (dir == NULL) {
     fprintf(stderr, "No file saved");
-    return 0;
+    return ret;
   }
   struct dirent *current;
   while((current = readdir(dir)) != NULL) {
@@ -48,8 +49,9 @@ short check_tmp() {
        memcmp(current->d_name, "../", 3) == 0) {
       continue;
     }
+    ret += 1;
     printf("%s%s",tmp_dir,current->d_name);
   }
   closedir(dir);
-  return 1;
+  return ret;
 }

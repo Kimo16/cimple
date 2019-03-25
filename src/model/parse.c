@@ -32,19 +32,19 @@ struct cmd_info {
 };
 
 static struct cmd_info info_tab[LEN_NAME]={
-	{.name="bnw", .len=LEN_BNW, .args_type={0, 1}, .option={"", "-a"}},                                               
-	{.name="greyscale", .len=LEN_GREYS, .args_type={0, 1}, .option={"", "-a"}},                                       
-	{.name="fill", .len=LEN_FILL, .args_type={0, 1, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-a", "", "", "", ""}}, 
-	{.name="list_buffer", .len=LEN_LIST_BUFFER, .args_type={0}, .option={""}},                                        
-	{.name="load", .len=LEN_LOAD, .args_type={0, 2, NUMBER, STRING}, .option={"", "-w", "", ""}},                    
-	{.name="negative", .len=LEN_NEG, .args_type={0, 1}, .option={"", "-a"}},                                          
-	{.name="replace", .len=LEN_REPLACE, .args_type={0, 1, 2, POURC, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-a", "-m", "", "", "", "", "", "", "", "", ""}},
-	{.name="resize", .len=LEN_RESIZE, .args_type={0, VIEW, NUMBER, NUMBER}, .option={"", "", "", ""}},                
-	{.name="rotate", .len=LEN_ROTATE, .args_type={0, 1, ANGLE}, .option={"", "-r", ""}},                              
-	{.name="save", .len=LEN_SAVE, .args_type={0, 2, EXT, STRING}, .option={"", "-f", "", ""}},                        
+	{.name="bnw", .len=LEN_BNW, .args_type={0, 1}, .option={"", "-a"}},
+	{.name="greyscale", .len=LEN_GREYS, .args_type={0, 1}, .option={"", "-a"}},
+	{.name="fill", .len=LEN_FILL, .args_type={0, 1, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-a", "", "", "", ""}},
+	{.name="list_buffer", .len=LEN_LIST_BUFFER, .args_type={0}, .option={""}},
+	{.name="load", .len=LEN_LOAD, .args_type={0, 2, NUMBER, FILE}, .option={"", "-w", "", ""}},
+	{.name="negative", .len=LEN_NEG, .args_type={0, 1}, .option={"", "-a"}},
+	{.name="replace", .len=LEN_REPLACE, .args_type={0, 2, 1, POURC, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-m", "", "-a", "", "", "", "", "", "", "", ""}},
+	{.name="resize", .len=LEN_RESIZE, .args_type={0, VIEW, NUMBER, NUMBER}, .option={"", "", "", ""}},
+	{.name="rotate", .len=LEN_ROTATE, .args_type={0, 1, ANGLE}, .option={"", "-r", ""}},
+	{.name="save", .len=LEN_SAVE, .args_type={0, 2, EXT, FILE}, .option={"", "-f", "", ""}},
 	{.name="switch_buffer", .len=LEN_SWITCH, .args_type={0, NUMBER}, .option={"", ""}},
-	{.name="symmetry", .len=LEN_SYM, .args_type={0, SYMTYPE}, .option={"", ""}},                                     
-	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "", "", "", ""}} 
+	{.name="symmetry", .len=LEN_SYM, .args_type={0, SYMTYPE}, .option={"", ""}},
+	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "", "", "", ""}}
 };
 
 short msg_error(short type, int flags, char *cmd_name, char *str){
@@ -55,7 +55,10 @@ short msg_error(short type, int flags, char *cmd_name, char *str){
 		if(type == NUMBER) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter numerics values \n", cmd_name, str);
 		if(type == POURC) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a numeric values between 0 and 100\n", cmd_name, str);
 	}
-	if(flags == EFFORM) fprintf(stderr, "Error command [%s]: invalids arguments '%s', please enter a valid image extension\n", cmd_name, str);
+	if(flags == EFFORM){
+		if(type == EXT)fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid image extension\n", cmd_name, str);
+		if(type == FILE)fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid file format\n", cmd_name, str);
+	}
 	if(flags == EOPT) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a valid command option\n", cmd_name, str);
 	return flags;
 }
@@ -89,7 +92,7 @@ cmd *alloc_cmd(){
 
 void free_cmd(cmd *command){
 	free(command->name);
-	int i ;
+	int i;
 	for(i=0; i < (command->size) - 1; i++)
 		if(command->args[i] != NULL && strlen(command->args[i]) != 0) free(command->args[i]);
 	free(command->args);
@@ -106,7 +109,7 @@ short realloc_cmd_args(cmd *command){
 }
 
 void set_cmd_args(cmd *command){
-	int i ;
+	int i;
 	for(i=0; i < command->size - 1; i++)
 		command->args[i]="";
 	command->args [command->size - 1]=NULL;
@@ -147,22 +150,22 @@ short is_angle(char *str){
 short is_pixel(char *str){
 	int i;
 	int n=sscanf(str, "%u", &i);
-	return n == 1 && i <= 255 && i >= 0 ? 0 : ENUMV;  
+	return n == 1 && i <= 255 && i >= 0 ? 0 : ENUMV;
 }
 
 short is_view(char *str){
-	return strcmp(str, "worspace") == 0 || strcmp(str, "image") == 0 ? 0 : EINVA; 
+	return strcmp(str, "worspace") == 0 || strcmp(str, "image") == 0 ? 0 : EINVA;
 }
 
 short is_symtype(char *str){
-	return strcmp(str, "v") == 0 || strcmp(str, "h") == 0 ? 0 : EINVA;  
+	return strcmp(str, "v") == 0 || strcmp(str, "h") == 0 ? 0 : EINVA;
 }
 
 short is_extension(char *str){
 	return strcmp(str, "png") == 0 ||
 		   strcmp(str, "jpeg") == 0 ||
 		   strcmp(str, "gif") == 0 ||
-		   strcmp(str, "bmp") == 0 ? 0 : EFFORM;  
+		   strcmp(str, "bmp") == 0 ? 0 : EFFORM;
 }
 
 short is_pourcent(char *str){
@@ -171,9 +174,30 @@ short is_pourcent(char *str){
 	return n == 1 && i <= 100 && i >= 0 ? 0 : ENUMV;
 }
 
+short is_file(char *str){
+	if(str == NULL)return EFFORM;
+	short i = 0 , mark ; 
+	while(str[i] != '\0'){
+		if(str[i] == '.'){
+			if( i != 0 && str[i-1] != '/' ) mark += 1;
+			if(mark > 1 ) return EFFORM;
+		}
+		i+=1;
+	}
+	return mark == 1 ? 0 : EFFORM;
+}
+
+short check_option(short index , short i , char *arg ){
+	while (i < info_tab[index].len -1 ){
+		if(strcmp(arg,info_tab[index].option[i++]) == 0 )return 0;
+	}
+	return 1 ;
+}
+
 short check_token(short flags, char *cmd_name, char *arg){
 	if(strlen(arg) == 0) return msg_error(0, EMSG, cmd_name, NULL);
 	if(flags == STRING && strlen(arg) == 0) return msg_error(0, EMSG, cmd_name, NULL);
+	if(flags == FILE && is_file(arg)) return msg_error(FILE, EFFORM, cmd_name, arg);
 	if(flags == NUMBER && is_natural(arg)) return msg_error(NUMBER, ENUMV, cmd_name, arg);
 	if(flags == PIXEL && is_pixel(arg)) return msg_error(PIXEL, ENUMV, cmd_name, arg);
 	if(flags == POURC && is_pourcent(arg)) return msg_error(POURC, ENUMV, cmd_name, arg);
@@ -186,7 +210,7 @@ short check_token(short flags, char *cmd_name, char *arg){
 
 short check_arguments(cmd *command){
 	if(command == NULL) return 0;
-	int i ;
+	int   i;
 	short n, index, flags;
 	index=find_index(command->name);
 
@@ -219,8 +243,11 @@ short build_args(cmd *command, char *s, short index){
 		else token=strtok(str, space);
 
 		if(token != NULL){
-			if(is_option_flags(info_tab[index].args_type[i]) == 1 && is_option(token))
-				i+=info_tab[index].args_type[i];
+			while( is_option_flags(info_tab[index].args_type[i]) ==1){
+				if(is_option(token) ) i += info_tab[index].args_type[i];
+				else if(is_option(token) == 0 && check_option(index,i+1,token) == 0 )  i += info_tab[index].args_type[i];
+				else break;
+			}
 			if(i >= (command->size) - 1)
 				realloc_cmd_args(command);
 			command->args[i++]=string_cpy(token);

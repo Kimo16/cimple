@@ -5,6 +5,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "parse.h"
 #include "parse_token.h"
 #include "err_flags.h"
@@ -38,28 +40,34 @@ static struct cmd_info info_tab[LEN_NAME]={
 	{.name="list_buffer", .len=LEN_LIST_BUFFER, .args_type={0}, .option={""}},
 	{.name="load", .len=LEN_LOAD, .args_type={0, 2, NUMBER, FILE}, .option={"", "-w", "", ""}},
 	{.name="negative", .len=LEN_NEG, .args_type={0, 1}, .option={"", "-a"}},
-	{.name="replace", .len=LEN_REPLACE, .args_type={0, 2, 1, POURC, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-m", "", "-a", "", "", "", "", "", "", "", ""}},
+	{.name="replace", .len=LEN_REPLACE, .args_type={0, 2, POURC, 1, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-m", "", "-a", "", "", "", "", "", "", "", ""}},
 	{.name="resize", .len=LEN_RESIZE, .args_type={0, VIEW, NUMBER, NUMBER}, .option={"", "", "", ""}},
 	{.name="rotate", .len=LEN_ROTATE, .args_type={0, 1, ANGLE}, .option={"", "-r", ""}},
-	{.name="save", .len=LEN_SAVE, .args_type={0, 2, EXT, FILE}, .option={"", "-f", "", ""}},
+	{.name="save", .len=LEN_SAVE, .args_type={0, 2, EXT, STRING}, .option={"", "-f", "", ""}},
 	{.name="switch_buffer", .len=LEN_SWITCH, .args_type={0, NUMBER}, .option={"", ""}},
 	{.name="symmetry", .len=LEN_SYM, .args_type={0, SYMTYPE}, .option={"", ""}},
 	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "", "", "", ""}}
 };
 
 short msg_error(short type, int flags, char *cmd_name, char *str){
-	if(flags == EINVA) fprintf(stderr, "Error command [%s]: invalid arguments '%s'\n", cmd_name, str);
+	if(flags == EINVA){
+		if(type == SYMTYPE ) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter 'v' for vertical or 'h for horizontal\n", cmd_name, str);
+		else if(type == VIEW) fprintf(stderr, "Error command [%s] , invalid argument '%s' please enter 'workspace' or 'image' for resize one of them\n",cmd_name,str );
+		else fprintf(stderr, "Error command [%s]: invalid argument '%s'\n",cmd_name,str);
+	}
 	if(flags == EMSG) fprintf(stderr, "Error command [%s]: missing arguments\n", cmd_name);
 	if(flags == ENUMV){
-		if(type == PIXEL) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter numerics values between 0 and 255\n", cmd_name, str);
-		if(type == NUMBER) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter numerics values \n", cmd_name, str);
-		if(type == POURC) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a numeric values between 0 and 100\n", cmd_name, str);
+		if(type == PIXEL) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter numeric value between 0 and 255\n", cmd_name, str);
+		if(type == NUMBER) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter positive numeric value \n", cmd_name, str);
+		if(type == POURC) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a numeric value between 0 and 100\n", cmd_name, str);
+		if(type == ANGLE) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter a multiple of 90\n",cmd_name,str);
 	}
 	if(flags == EFFORM){
-		if(type == EXT)fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid image extension\n", cmd_name, str);
-		if(type == FILE)fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid file format\n", cmd_name, str);
+		if(type == EXT) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid image extension\n", cmd_name, str);
+		if(type == FILE) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid file format\n", cmd_name, str);
 	}
 	if(flags == EOPT) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a valid command option\n", cmd_name, str);
+	if(flags == EUNKN) fprintf(stderr, "Error command [%s] : command not found\n",cmd_name);
 	return flags;
 }
 
@@ -74,7 +82,6 @@ short find_index(char *str){
 	if(str == NULL) return -1;
 	int i;
 	for(i=0; i < LEN_NAME; i++)
-
 		if(strcmp(str, info_tab[i].name) == 0) return i;
 	return -1;
 }
@@ -129,7 +136,7 @@ short init_cmd(cmd *command, char *str){
 short is_natural(char *str){
 	int i;
 	int n=sscanf(str, "%u", &i);
-	return n == 1 ? 0 : ENUMV;
+	return (n == 1 && i >= 0 )? 0 : ENUMV;
 }
 
 short is_option(char *str){
@@ -138,23 +145,23 @@ short is_option(char *str){
 }
 
 short is_option_flags(short index){
-	return index > 0 && index < 11 ? 0 : 1;
+	return (index > 0 && index < 11) ? 1 : 0;
 }
 
 short is_angle(char *str){
 	int i;
 	int n=sscanf(str, "%u", &i);
-	return (n == 1 && i % 90 == 0) ? 0 : ENUMV;
+	return (n == 1 && i % 90 == 0 && i >= 0) ? 0 : ENUMV;
 }
 
 short is_pixel(char *str){
 	int i;
 	int n=sscanf(str, "%u", &i);
-	return n == 1 && i <= 255 && i >= 0 ? 0 : ENUMV;
+	return (n == 1 && i <= 255 && i >= 0) ? 0 : ENUMV;
 }
 
 short is_view(char *str){
-	return strcmp(str, "worspace") == 0 || strcmp(str, "image") == 0 ? 0 : EINVA;
+	return strcmp(str, "workspace") == 0 || strcmp(str, "image") == 0 ? 0 : EINVA;
 }
 
 short is_symtype(char *str){
@@ -170,28 +177,26 @@ short is_extension(char *str){
 
 short is_pourcent(char *str){
 	int i;
-	int n=sscanf("a", "%u", &i);
-	return n == 1 && i <= 100 && i >= 0 ? 0 : ENUMV;
+	int n=sscanf(str, "%u", &i);
+	return (n == 1 && i <= 100 && i >= 0) ? 0 : ENUMV;
 }
 
 short is_file(char *str){
-	if(str == NULL)return EFFORM;
-	short i = 0 , mark ; 
+	short i=0, mark = 0;
 	while(str[i] != '\0'){
-		if(str[i] == '.'){
-			if( i != 0 && str[i-1] != '/' ) mark += 1;
-			if(mark > 1 ) return EFFORM;
+		if(str[i] == '.' && str[i + 1] != '\0'){
+			if(i != 0 && str[i - 1] != '.' && str[i - 1] != '/' && str[i + 1] != '/' && str[i + 2] != '/') mark+=1;
+			if(mark > 1) return EFFORM;
 		}
 		i+=1;
 	}
 	return mark == 1 ? 0 : EFFORM;
 }
 
-short check_option(short index , short i , char *arg ){
-	while (i < info_tab[index].len -1 ){
-		if(strcmp(arg,info_tab[index].option[i++]) == 0 )return 0;
-	}
-	return 1 ;
+short check_option(short index, short i, char *arg){
+	while(i < info_tab[index].len - 1)
+		if(strcmp(arg, info_tab[index].option[i++]) == 0) return 0;
+	return 1;
 }
 
 short check_token(short flags, char *cmd_name, char *arg){
@@ -233,7 +238,7 @@ short check_arguments(cmd *command){
 }
 
 short build_args(cmd *command, char *s, short index){
-	if(s == NULL) return 0;
+	if(s == NULL || command == NULL ) return 0;
 	int   i=1;
 	char *str=string_cpy(s);
 	char *space=" ";
@@ -243,9 +248,9 @@ short build_args(cmd *command, char *s, short index){
 		else token=strtok(str, space);
 
 		if(token != NULL){
-			while( is_option_flags(info_tab[index].args_type[i]) ==1){
-				if(is_option(token) ) i += info_tab[index].args_type[i];
-				else if(is_option(token) == 0 && check_option(index,i+1,token) == 0 )  i += info_tab[index].args_type[i];
+			while(is_option_flags(info_tab[index].args_type[i]) == 1){
+				if(is_option(token)) i+=info_tab[index].args_type[i];
+				else if(is_option(token) == 0 && check_option(index, i + 1, token) == 0) i+=info_tab[index].args_type[i];
 				else break;
 			}
 			if(i >= (command->size) - 1)
@@ -271,8 +276,9 @@ cmd *parse_line(char *line){
 		return NULL;
 	}
 	if(index > -1) build_args(command, s1, index);
-
-	if(s != NULL) free(s);
 	if(token != NULL) free(token);
 	return command;
 }
+
+
+

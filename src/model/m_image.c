@@ -1,6 +1,269 @@
+#include "m_image.h"
+
 struct image {
 	char *       name;
 	char *       save_path;
 	char *       extension;
 	SDL_Surface *img;
+};
+
+/**
+ * Fills the struct image elements according to path
+ *
+ * @param init_path string containing the full path to the image (i.e. /toto/tata/image.png)
+ * @param path pointer to write the path to (i.e. /toto/tata)
+ * @param name pointer to write the image name
+ * @param ext pointer to write the image extension
+ * @return extension of the image
+ */
+
+static short break_full_path(char *init_path, char **path, char **name, char **ext){
+	char *parsed_name=memrchr(init_path, '/', strlen(init_path) - 1) + 1;
+	if(parsed_name == NULL){
+		fprintf(stderr, "Name not set\n");
+		return 0;
+	}
+	*name=parsed_name;
+	char *parsed_ext=memrchr(parsed_name, '.', strlen(parsed_name));
+	if(parsed_ext == NULL){
+		fprintf(stderr, "Extension not set\n");
+		return 0;
+	}
+	*parsed_ext='\0';
+	*ext=parsed_ext + 1;
+	char *parsed_path=malloc(parsed_name - init_path + 1);
+	memcpy(parsed_path, init_path, parsed_name - init_path + 1);
+	if(parsed_path == NULL){
+		fprintf(stderr, "Path not set\n");
+		return 0;
+	}
+	parsed_path[parsed_name - init_path]='\0';
+	*path=parsed_path;
+	return 1;
+}
+
+/**
+ * Creates a brand new image
+ *
+ * @param path string containing the path to the image
+ * @return new image
+ */
+
+image *new_img(char *path){
+	// checking if it's a valid path
+	if(path == NULL || !access(path, R_OK | W_OK)){
+		fprintf(stderr, "Path not valid\n");
+		return NULL;
+	}
+	// allocate memory
+	image *new=malloc(sizeof(struct image));
+	if(new == NULL){
+		fprintf(stderr, "Image not initialized\n");
+		return NULL;
+	}
+	if(!break_full_path(path, &new->save_path, &new->name, &new->extension)){
+		fprintf(stderr, "Image not initialized\n");
+		free(new);
+		return NULL;
+	}
+	new->img=NULL;
+	return new;
+}
+
+/**
+ * Gets the image name
+ *
+ * @param img the image to work with
+ * @return image name
+ */
+
+char *get_img_name(image *img){
+	if(img == NULL || img->name == NULL){
+		fprintf(stderr, "get_img_name failed\n");
+		return NULL;
+	}
+	return img->name;
+}
+
+/**
+ * Gets the image path
+ *
+ * @param img the image to work with
+ * @return image path
+ */
+
+char *get_img_path(image *img){
+	if(img == NULL || img->save_path == NULL){
+		fprintf(stderr, "get_img_path failed\n");
+		return NULL;
+	}
+	return img->save_path;
+}
+
+/**
+ * Gets the image extension
+ *
+ * @param img the image to work with
+ * @return image extension
+ */
+
+char *get_img_ext(image *img){
+	if(img==NULL || img->extension == NULL){
+		fprintf(stderr, "get_img_ext failed\n");
+		return NULL;
+	}
+	return img->extension;
+}
+
+/**
+ * Gets the surface of the image
+ *
+ * @param img the image to work with
+ * @return SDL_Surface element of the structure
+ */
+
+SDL_Surface *get_img_surface(image *img){
+	if(img==NULL || img->img == NULL){
+		fprintf(stderr, "get_img_surface failed\n");
+		return NULL;
+	}
+	return img->img;
+}
+
+/**
+ * Return full path of the image
+ *
+ * @param img the image to work with
+ * @return string with the full path (i.e. /toto/tata/imagr.png)
+ */
+
+char *get_full_image_path(image *image){
+	if(image==NULL){
+		fprintf(stderr, "Get_path malloc failed\n");
+		return NULL;
+	}
+	int   size_fullpath=strlen(image->extension) + strlen(image->save_path) + strlen(image->name) + 2;
+	char *fullpath=malloc(size_fullpath);
+	if(fullpath == NULL){
+		fprintf(stderr, "Get_path malloc failed\n");
+		return NULL;
+	}
+	snprintf(fullpath, size_fullpath, "%s%s.%s", image->save_path, image->name, image->extension);
+	return fullpath;
+}
+
+/**
+ * Sets a new image name
+ *
+ * @param img the image to work with
+ * @param name new name
+ * @return <0 if failed, >=0 if succeed
+ */
+
+short set_img_name(image *img, char *name){
+	if(img == NULL || name == NULL){
+		fprintf(stderr, "Setter failed\n");
+		return 0;
+	}
+	img->name=name;
+	if(img->name == NULL) return 0;
+	return 1;
+}
+
+/**
+ * Sets the image path
+ *
+ * @param img the image to work with
+ * @param name new path
+ * @return <0 if failed, >=0 if succeed
+ */
+
+short set_img_path(image *img, char *path){
+	if(img == NULL || path == NULL){
+		fprintf(stderr, "Setter failed\n");
+		return 0;
+	}
+	img->save_path=path;
+	if(img->save_path == NULL) return 0;
+	return 1;
+}
+
+/**
+ * Sets a new extension for the image
+ *
+ * @param img the image to work with
+ * @param name new extension
+ * @return <0 if failed, >=0 if succeed
+ */
+
+short set_img_ext(image *img, char *ext){
+	if(img == NULL || ext == NULL){
+		fprintf(stderr, "Setter failed\n");
+		return 0;
+	}
+	img->extension=ext;
+	if(img->extension == NULL) return 0;
+	return 1;
+}
+
+/**
+ * Sets a new surface for the image
+ *
+ * @param img the image to work with
+ * @param name new SDL_Surface
+ * @return <0 if failed, >=0 if succeed
+ */
+
+short set_img_surface(image *img, SDL_Surface *surface){
+	if(img == NULL || surface == NULL){
+		fprintf(stderr, "Setter failed\n");
+		return 0;
+	}
+	img->img=surface;
+	if(img->img == NULL) return 0;
+	return 1;
+}
+
+/**
+ * Returns a copy of an image
+ *
+ * @param img the image to work with
+ * @return pointer to the new image
+ */
+
+image *copy_image(image *ref){
+	char *path=get_full_image_path(ref);
+	if(path == NULL){
+		fprintf(stderr, "Copy failed\n");
+		return NULL;
+	}
+	image *      copy=new_img(path);
+	if(copy == NULL){
+		fprintf(stderr, "Copy failed\n");
+		return NULL;
+	}
+	SDL_Surface *copy_surface=SDL_ConvertSurface(ref->img, ref->img->format, 0);
+	if(copy_surface == NULL){
+		fprintf(stderr, "Copy failed\n");
+		free_image(copy);
+		return NULL;
+	}
+	copy->img=copy_surface;
+	return copy;
+}
+
+/**
+ * Frees the image structure
+ *
+ * @param img the image free
+ */
+
+void free_image(image *image){
+	if(image != NULL){
+		if(image->img != NULL) SDL_FreeSurface(image->img);
+		if(image->extension != NULL) free(image->extension);
+		if(image->save_path != NULL) free(image->save_path);
+		if(image->name != NULL) free(image->name);
+		free(image);
+	}
 }

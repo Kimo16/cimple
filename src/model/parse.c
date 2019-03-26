@@ -25,45 +25,46 @@ static struct cmd_info info_tab[LEN_NAME]={
 };
 
 short msg_error(short type, int flags, char *cmd_name, char *str){
-
 	switch(flags){
-		
-		case EINVA: 
-				if(type == SYMTYPE ) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter 'v' for vertical or 'h for horizontal\n", cmd_name, str);
-				else if(type == VIEW) fprintf(stderr, "Error command [%s] , invalid argument '%s' please enter 'workspace' or 'image' for resize one of them\n",cmd_name,str );
-				else fprintf(stderr, "Error command [%s]: invalid argument '%s'\n",cmd_name,str);
-				break;
-		
-		case EMSG: 
-				fprintf(stderr, "Error command [%s]: missing arguments\n", cmd_name);
-				break;
+	case EINVA:
+		if(type == SYMTYPE) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter 'v' for vertical or 'h for horizontal\n", cmd_name, str);
+		else if(type == VIEW) fprintf(stderr, "Error command [%s] , invalid argument '%s' please enter 'workspace' or 'image' for resize one of them\n", cmd_name, str);
+		else fprintf(stderr, "Error command [%s]: invalid argument '%s'\n", cmd_name, str);
+		break;
 
-		case ENUMV:
-				if(type == PIXEL) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter numeric value between 0 and 255\n", cmd_name, str);
-				if(type == NUMBER) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter positive numeric value \n", cmd_name, str);
-				if(type == POURC) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a numeric value between 0 and 100\n", cmd_name, str);
-		        if(type == ANGLE) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter a multiple of 90\n",cmd_name,str);
-				break;
+	case EMSG:
+		fprintf(stderr, "Error command [%s]: missing arguments\n", cmd_name);
+		break;
 
-		case EFFORM:
-				if(type == EXT) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid image extension\n", cmd_name, str);
-				if(type == FILE) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid file format\n", cmd_name, str);
-				break;
-		
-		case EOPT:
-				fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a valid command option\n", cmd_name, str);
-				break;
-		
-		case EUNKN:
-				fprintf(stderr, "Error command [%s] : command not found\n",cmd_name);
-				break;
+	case ENUMV:
+		if(type == PIXEL) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter numeric value between 0 and 255\n", cmd_name, str);
+		if(type == NUMBER) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter positive numeric value \n", cmd_name, str);
+		if(type == POURC) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a numeric value between 0 and 100\n", cmd_name, str);
+		if(type == ANGLE) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter a multiple of 90\n", cmd_name, str);
+		break;
+
+	case EFFORM:
+		if(type == EXT) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid image extension\n", cmd_name, str);
+		if(type == FILE) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid file format\n", cmd_name, str);
+		break;
+
+	case EOPT:
+		fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a valid command option\n", cmd_name, str);
+		break;
+
+	case EUNKN:
+		fprintf(stderr, "Error command [%s] : command not found\n", cmd_name);
+		break;
 	}
 	return flags;
 }
 
 char *string_cpy(char *s){
 	char *str=malloc(sizeof(char) * (strlen(s) + 1));
-	str=memcpy(str, s, strlen(s) + 1);
+	if((str=memcpy(str, s, strlen(s) + 1)) == NULL){
+		fprintf(stderr, "Error : memory copy failed\n");
+		return NULL;
+	}
 	str[strlen(s)]='\0';
 	return str;
 }
@@ -77,7 +78,7 @@ short find_index(char *str){
 }
 
 cmd *alloc_cmd(){
-	cmd *command=malloc(sizeof(command) + sizeof(char *) + sizeof(char *));
+	cmd *command=malloc(sizeof(cmd) + sizeof(char *) + sizeof(char *));
 	if(command == NULL) return NULL;
 
 	command->name=NULL;
@@ -88,11 +89,12 @@ cmd *alloc_cmd(){
 }
 
 void free_cmd(cmd *command){
-	free(command->name);
+	if(command == NULL) return;
+	if(command->name!= NULL)free(command->name);
 	int i;
 	for(i=0; i < (command->size) - 1; i++)
 		if(command->args[i] != NULL && strlen(command->args[i]) != 0) free(command->args[i]);
-	free(command->args);
+	if(command -> args != NULL) free(command->args);
 	free(command);
 }
 
@@ -115,18 +117,22 @@ void set_cmd_args(cmd *command){
 short init_cmd(cmd *command, char *str){
 	short index;
 	if((index=find_index(str)) == -1) return index;
-	command->name=string_cpy(str);
+	if((command->name=string_cpy(str))==NULL)return -2;
 	command->size=info_tab[index].len;
 	command->args=malloc(command->size * (sizeof(char *)));
+	if(command -> args == NULL){
+		fprintf(stderr, "Error : memory allocation failed\n");
+		return -2;
+	}
 	set_cmd_args(command);
-	command->args[0]=string_cpy(str);
+	if((command->args[0]=string_cpy(str))==NULL)return -2;
 	return index;
 }
 
 short is_natural(char *str){
 	int i;
 	int n=sscanf(str, "%u", &i);
-	return (n == 1 && i >= 0 )? 0 : ENUMV;
+	return (n == 1 && i >= 0) ? 0 : ENUMV;
 }
 
 short is_option(char *str){
@@ -160,9 +166,9 @@ short is_symtype(char *str){
 
 short is_extension(char *str){
 	return (strcmp(str, "png") == 0 ||
-		    strcmp(str, "jpeg") == 0 ||
-		    strcmp(str, "gif") == 0 ||
-		    strcmp(str, "bmp") == 0 ) ? 0 : EFFORM;
+			strcmp(str, "jpeg") == 0 ||
+			strcmp(str, "gif") == 0 ||
+			strcmp(str, "bmp") == 0) ? 0 : EFFORM;
 }
 
 short is_pourcent(char *str){
@@ -172,7 +178,7 @@ short is_pourcent(char *str){
 }
 
 short is_file(char *str){
-	short i=0, mark = 0;
+	short i=0, mark=0;
 	while(str[i] != '\0'){
 		if(str[i] == '.' && str[i + 1] != '\0'){
 			if(i != 0 && str[i - 1] != '.' && str[i - 1] != '/' && str[i + 1] != '/' && str[i + 2] != '/') mark+=1;
@@ -228,9 +234,10 @@ short check_arguments(cmd *command){
 }
 
 short build_args(cmd *command, char *s, short index){
-	if(s == NULL || command == NULL ) return 0;
+	if(s == NULL || command == NULL) return 0;
 	int   i=1;
 	char *str=string_cpy(s);
+	if(str == NULL ) return 1;
 	char *space=" ";
 	char *token="";
 	while(token != NULL){
@@ -245,7 +252,7 @@ short build_args(cmd *command, char *s, short index){
 			}
 			if(i >= (command->size) - 1)
 				realloc_cmd_args(command);
-			command->args[i++]=string_cpy(token);
+			if((command->args[i++]=string_cpy(token)) == NULL) return 1;
 		}
 	}
 	if(token != NULL) free(token);
@@ -255,20 +262,28 @@ short build_args(cmd *command, char *s, short index){
 
 cmd *parse_line(char *line){
 	cmd * command=NULL;
-	short index;
+	short index , i = 0 ;
 	command=alloc_cmd();
-	char *s=string_cpy(line);
+	char *s=NULL;
+	if((s=string_cpy(line))==NULL){
+		free_cmd(command);
+		return NULL;
+	}
 	char *space=" ";
 	char *token=strtok(s, space);
 	char *s1=strtok(NULL, "");
-	if((index=init_cmd(command, token)) == -1){
-		msg_error(0, EUNKN, token, NULL);
+	if((index=init_cmd(command, token)) < 0){
+		if(index == -1)msg_error(0, EUNKN, token, NULL);
+		free_cmd(command);
+		if(token != NULL) free(token);
 		return NULL;
 	}
-	if(index > -1) build_args(command, s1, index);
+	if(index > -1) i = build_args(command, s1, index);
+	if(i == 1){
+		free_cmd(command);
+		if(token != NULL) free(token);
+		return NULL;
+	}
 	if(token != NULL) free(token);
 	return command;
 }
-
-
-

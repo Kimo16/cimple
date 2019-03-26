@@ -1,5 +1,30 @@
 #ifndef PARSE_H
 #define PARSE_H
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <ctype.h>
+#include <errno.h>
+#include "parse_token.h"
+#include "err_flags.h"
+
+
+#define LEN_NAME        13
+#define LEN_BNW         3
+#define LEN_FILL        7
+#define LEN_LOAD        5
+#define LEN_LIST_BUFFER 2
+#define LEN_RESIZE      5
+#define LEN_ROTATE      4
+#define LEN_TRUNCATE    6
+#define LEN_SAVE        5
+#define LEN_SWITCH      3
+#define LEN_GREYS       3
+#define LEN_NEG         3
+#define LEN_REPLACE     13
+#define LEN_SYM         3
 
 typedef struct cmd{
 	char * name;

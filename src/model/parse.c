@@ -1,30 +1,5 @@
-#define _GNU_SOURCE
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <ctype.h>
-#include <errno.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include "parse.h"
-#include "parse_token.h"
-#include "err_flags.h"
 
-#define LEN_NAME        13
-#define LEN_BNW         3
-#define LEN_FILL        7
-#define LEN_LOAD        5
-#define LEN_LIST_BUFFER 2
-#define LEN_RESIZE      5
-#define LEN_ROTATE      4
-#define LEN_TRUNCATE    6
-#define LEN_SAVE        5
-#define LEN_SWITCH      3
-#define LEN_GREYS       3
-#define LEN_NEG         3
-#define LEN_REPLACE     13
-#define LEN_SYM         3
 
 struct cmd_info {
 	char *name;
@@ -50,24 +25,39 @@ static struct cmd_info info_tab[LEN_NAME]={
 };
 
 short msg_error(short type, int flags, char *cmd_name, char *str){
-	if(flags == EINVA){
-		if(type == SYMTYPE ) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter 'v' for vertical or 'h for horizontal\n", cmd_name, str);
-		else if(type == VIEW) fprintf(stderr, "Error command [%s] , invalid argument '%s' please enter 'workspace' or 'image' for resize one of them\n",cmd_name,str );
-		else fprintf(stderr, "Error command [%s]: invalid argument '%s'\n",cmd_name,str);
+
+	switch(flags){
+		
+		case EINVA: 
+				if(type == SYMTYPE ) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter 'v' for vertical or 'h for horizontal\n", cmd_name, str);
+				else if(type == VIEW) fprintf(stderr, "Error command [%s] , invalid argument '%s' please enter 'workspace' or 'image' for resize one of them\n",cmd_name,str );
+				else fprintf(stderr, "Error command [%s]: invalid argument '%s'\n",cmd_name,str);
+				break;
+		
+		case EMSG: 
+				fprintf(stderr, "Error command [%s]: missing arguments\n", cmd_name);
+				break;
+
+		case ENUMV:
+				if(type == PIXEL) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter numeric value between 0 and 255\n", cmd_name, str);
+				if(type == NUMBER) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter positive numeric value \n", cmd_name, str);
+				if(type == POURC) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a numeric value between 0 and 100\n", cmd_name, str);
+		        if(type == ANGLE) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter a multiple of 90\n",cmd_name,str);
+				break;
+
+		case EFFORM:
+				if(type == EXT) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid image extension\n", cmd_name, str);
+				if(type == FILE) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid file format\n", cmd_name, str);
+				break;
+		
+		case EOPT:
+				fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a valid command option\n", cmd_name, str);
+				break;
+		
+		case EUNKN:
+				fprintf(stderr, "Error command [%s] : command not found\n",cmd_name);
+				break;
 	}
-	if(flags == EMSG) fprintf(stderr, "Error command [%s]: missing arguments\n", cmd_name);
-	if(flags == ENUMV){
-		if(type == PIXEL) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter numeric value between 0 and 255\n", cmd_name, str);
-		if(type == NUMBER) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter positive numeric value \n", cmd_name, str);
-		if(type == POURC) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a numeric value between 0 and 100\n", cmd_name, str);
-		if(type == ANGLE) fprintf(stderr, "Error command [%s]: invalid argument '%s', please enter a multiple of 90\n",cmd_name,str);
-	}
-	if(flags == EFFORM){
-		if(type == EXT) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid image extension\n", cmd_name, str);
-		if(type == FILE) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid file format\n", cmd_name, str);
-	}
-	if(flags == EOPT) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a valid command option\n", cmd_name, str);
-	if(flags == EUNKN) fprintf(stderr, "Error command [%s] : command not found\n",cmd_name);
 	return flags;
 }
 
@@ -161,18 +151,18 @@ short is_pixel(char *str){
 }
 
 short is_view(char *str){
-	return strcmp(str, "workspace") == 0 || strcmp(str, "image") == 0 ? 0 : EINVA;
+	return (strcmp(str, "workspace") == 0 || strcmp(str, "image") == 0) ? 0 : EINVA;
 }
 
 short is_symtype(char *str){
-	return strcmp(str, "v") == 0 || strcmp(str, "h") == 0 ? 0 : EINVA;
+	return (strcmp(str, "v") == 0 || strcmp(str, "h") == 0) ? 0 : EINVA;
 }
 
 short is_extension(char *str){
-	return strcmp(str, "png") == 0 ||
-		   strcmp(str, "jpeg") == 0 ||
-		   strcmp(str, "gif") == 0 ||
-		   strcmp(str, "bmp") == 0 ? 0 : EFFORM;
+	return (strcmp(str, "png") == 0 ||
+		    strcmp(str, "jpeg") == 0 ||
+		    strcmp(str, "gif") == 0 ||
+		    strcmp(str, "bmp") == 0 ) ? 0 : EFFORM;
 }
 
 short is_pourcent(char *str){

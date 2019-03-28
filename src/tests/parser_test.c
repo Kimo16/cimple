@@ -94,7 +94,7 @@ static char *load_tab[5]={"load ./noexist.png", "load -w 2 image.png", "load ", 
 static char *load_argstab[][5]={
 	{"load", "", "", "./noexist.png", NULL},
 	{"load", "-w", "2", "image.png", NULL},
-	{"load", "", "", "900", NULL},
+	{"load", "", "", "", NULL},
 	{"load", "", "", "image.zzz", NULL},
 	{NULL}
 };

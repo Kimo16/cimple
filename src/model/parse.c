@@ -14,7 +14,7 @@ static struct cmd_info info_tab[LEN_INFO]={
 	{.name="list_buffer", .len=LEN_LIST_BUFFER, .args_type={0}, .option={""}},
 	{.name="load", .len=LEN_LOAD, .args_type={0, 2, NUMBER, STRING}, .option={"", "-w", "", ""}},
 	{.name="negative", .len=LEN_NEG, .args_type={0, 1}, .option={"", "-a"}},
-	{.name="quit",.len=LEN_QUIT,.args_type={0},.option={""}},
+	{.name="quit", .len=LEN_QUIT, .args_type={0}, .option={""}},
 	{.name="replace", .len=LEN_REPLACE, .args_type={0, 2, POURC, 1, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-m", "", "-a", "", "", "", "", "", "", "", ""}},
 	{.name="resize", .len=LEN_RESIZE, .args_type={0, VIEW, NUMBER, NUMBER}, .option={"", "", "", ""}},
 	{.name="rotate", .len=LEN_ROTATE, .args_type={0, 1, ANGLE}, .option={"", "-r", ""}},
@@ -69,7 +69,7 @@ short msg_error(short type, int flags, char *cmd_name, char *str){
 }
 
 /**
- * Copy the pointer contents in a another 
+ * Copy the pointer contents in a another
  *
  * @param s string to copy
  * @return str new pointer containing the copy of s contents
@@ -78,7 +78,7 @@ short msg_error(short type, int flags, char *cmd_name, char *str){
 char *string_cpy(char *s){
 	if(s == NULL) return NULL;
 	char *str=malloc(sizeof(char) * (strlen(s) + 1));
-	if((str = memcpy(str, s, strlen(s)+1)) == NULL){
+	if((str=memcpy(str, s, strlen(s) + 1)) == NULL){
 		fprintf(stderr, "Error : memory copy failed\n");
 		return NULL;
 	}
@@ -86,21 +86,21 @@ char *string_cpy(char *s){
 	return str;
 }
 
-void multiple_free(int n , ...){
-	va_list valist ;
-	int i;
-	va_start(valist,n);
-	for(i = 0 ; i < n; i++){
-		char *s = va_arg(valist,char *);
-		if(s != NULL ) free(s);
+void multiple_free(int n, ...){
+	va_list valist;
+	int     i;
+	va_start(valist, n);
+	for(i=0; i < n; i++){
+		char *s=va_arg(valist, char *);
+		if(s != NULL) free(s);
 	}
 	va_end(valist);
 }
 
 /**
- * Search the command index in info_tab 
+ * Search the command index in info_tab
  *
- * @param str pointer to the command name 
+ * @param str pointer to the command name
  * @return return the command index info_tab if str is finded on it , -1 if the search isn't successful
  */
 
@@ -113,7 +113,7 @@ short find_index(char *str){
 }
 
 /**
- * Allocate the memory needed for the struct cmd 
+ * Allocate the memory needed for the struct cmd
  * @return cmd pointer
  */
 
@@ -144,7 +144,7 @@ void free_cmd(cmd *command){
 }
 
 /**
- * Initialise the command -> args tab with empty string 
+ * Initialise the command -> args tab with empty string
  *
  * @param pointer to the command structure
  * @void
@@ -160,18 +160,18 @@ void set_cmd_args(cmd *command){
 /**
  * Initialise the command structure
  *
- * @param command pointer to the command structure 
- * @param str pointer to the command name 
- * @return the command index in info_tab if it's not fail , 
- *	else return -2 if memory allocation failed -1 if the index is not found 
+ * @param command pointer to the command structure
+ * @param str pointer to the command name
+ * @return the command index in info_tab if it's not fail ,
+ *	else return -2 if memory allocation failed -1 if the index is not found
  */
 
 short init_cmd(cmd *command, char *str){
 	short index;
 	if((index=find_index(str)) == -1) return index;
 	if((command->name=string_cpy(str)) == NULL) return -2;
-	command->size = info_tab[index].len;
-	command->args = malloc(command->size * (sizeof(char *)));
+	command->size=info_tab[index].len;
+	command->args=malloc(command->size * (sizeof(char *)));
 	if(command->args == NULL){
 		fprintf(stderr, "Error : memory allocation failed\n");
 		return -2;
@@ -229,14 +229,13 @@ short is_pourcent(char *str){
 	return (n == 1 && i <= 100 && i >= 0) ? 0 : ENUMV;
 }
 
-
 /**
  * Check if an option is the one excepted or exist in the command specification
  *
  * @param index short represent the command index in info_tab
- * @param i short represent the current position in info_tab.option 
- * @param arg pointer to the current argument in the command line 
- * @return 0 if the option exist in the command specification , 
+ * @param i short represent the current position in info_tab.option
+ * @param arg pointer to the current argument in the command line
+ * @return 0 if the option exist in the command specification ,
  *		  else 1 if any option matched with arg
  */
 short check_option(short index, short i, char *arg){
@@ -245,13 +244,12 @@ short check_option(short index, short i, char *arg){
 	return 1;
 }
 
-
 /**
- * Check if a command argument is a right token 
+ * Check if a command argument is a right token
  *
- * @param flag represent the correct token value 
- * @param cmd_name pointer to the command name 
- * @return print an error and return an ERRFLAGS if the command args is wrong  
+ * @param flag represent the correct token value
+ * @param cmd_name pointer to the command name
+ * @return print an error and return an ERRFLAGS if the command args is wrong
  *		   else return 0 (no wrong value)
  */
 
@@ -268,12 +266,11 @@ short check_token(short flags, char *cmd_name, char *arg){
 	return 0;
 }
 
-
 /**
- * Check each command arguments 
+ * Check each command arguments
  *
- * @param command pointer to the command structure 
- * @return short : 0 if all command arguments are ok , else return the first ERRFLAGS associated to 
+ * @param command pointer to the command structure
+ * @return short : 0 if all command arguments are ok , else return the first ERRFLAGS associated to
  *				   to the iterated command argument
  */
 
@@ -301,14 +298,13 @@ short check_arguments(cmd *command){
 	return 0;
 }
 
-
 /**
- * Build command -> args 
+ * Build command -> args
  *
- * @param command pointer to the command structure 
+ * @param command pointer to the command structure
  * @param s pointer to the string founded after the command name (the arguments)
- * @param index short representing the command index in info_tab 
- * @return  0 if the construction doesn't fail , 
+ * @param index short representing the command index in info_tab
+ * @return  0 if the construction doesn't fail ,
  *		   else EINVA if the command line contains too much arguments , 1 if s copy failed
  */
 
@@ -319,20 +315,18 @@ short build_args(cmd *command, char *s, short index){
 	if(str == NULL) return 1;
 	char *space=" ";
 	char *token="";
-	while(token != NULL){                   							 /*while an argument exist*/
-		
-		if(i != 1) token=strtok(NULL, space);                         
+	while(token != NULL){                                                /*while an argument exist*/
+		if(i != 1) token=strtok(NULL, space);
 		else token=strtok(str, space);
 
 		if(token != NULL){
-			
-			while(is_option_flags(info_tab[index].args_type[i]) == 1){    /*while the correct token type correspond to an option*/ 
-				if(is_option(token)) i+=info_tab[index].args_type[i];     /*the current argument isn't an option -> jump */
-				else if(is_option(token) == 0 && check_option(index, i + 1, token) == 0) i+=info_tab[index].args_type[i]; /*the current argument is an option but not the one execepted*/
+			while(is_option_flags(info_tab[index].args_type[i]) == 1){                                                     /*while the correct token type correspond to an option*/
+				if(is_option(token)) i+=info_tab[index].args_type[i];                                                      /*the current argument isn't an option -> jump */
+				else if(is_option(token) == 0 && check_option(index, i + 1, token) == 0) i+=info_tab[index].args_type[i];  /*the current argument is an option but not the one execepted*/
 				else break;
 			}
-			
-			if(i >= (command->size) - 1){                                 
+
+			if(i >= (command->size) - 1){
 				if(str != NULL) free(str);
 				fprintf(stderr, "Error command [%s] : too much arguments \n", command->name);
 				return EINVA;
@@ -345,21 +339,20 @@ short build_args(cmd *command, char *s, short index){
 	return 0;
 }
 
-
 /**
- * Build the command structure associated to the command line 
+ * Build the command structure associated to the command line
  *
- * @param pointer to the command line 
+ * @param pointer to the command line
  * @return pointer to command structure if it's not fail , else NULL
- *	
+ *
  */
 
 cmd *parse_line(char *line){
 	cmd * command=NULL;
-	short index, i = 0;
+	short index, i=0;
 	command=alloc_cmd();
 	char *s=NULL;
-	
+
 	if((s=string_cpy(line)) == NULL){
 		free_cmd(command);
 		return NULL;
@@ -368,47 +361,28 @@ cmd *parse_line(char *line){
 	char *space=" ";
 	char *token=string_cpy(strtok(s, space));
 	char *s1=string_cpy(strtok(NULL, ""));
-	
-	if( (index = init_cmd(command, token) ) < 0){         	   	/*command initialisation failed*/
-		if(index == -1 && token != NULL ) msg_error(0, EUNKN, token, NULL);
+
+	if((index=init_cmd(command, token)) < 0){                   /*command initialisation failed*/
+		if(index == -1 && token != NULL) msg_error(0, EUNKN, token, NULL);
 		free_cmd(command);
-		multiple_free(3,s1,s,token);
+		multiple_free(3, s1, s, token);
 		return NULL;
 	}
 
-	if((i = build_args(command, s1, index)) >= 1){            	/*command-> args construction failed*/
-		if( i == EINVAL) check_arguments(NULL);              	/*case where command line containts to much arguments*/
+	if((i=build_args(command, s1, index)) >= 1){                /*command-> args construction failed*/
+		if(i == EINVAL) check_arguments(NULL);                  /*case where command line containts to much arguments*/
 		free_cmd(command);
-		multiple_free(3,s1,s,token);	
+		multiple_free(3, s1, s, token);
 		return NULL;
 	}
 
-	if((i = check_arguments(command)) > 0 ){
+	if((i=check_arguments(command)) > 0){
 		free_cmd(command);
-		multiple_free(3,s1,s,token);
+		multiple_free(3, s1, s, token);
 		return NULL;
 	}
-	multiple_free(3,s1,s,token);
+	multiple_free(3, s1, s, token);
 	return command;
 }
 
-int main(){
 
-	char* s =(char  *)NULL;
-	while(1){
-		s = readline("<Cimple>$ ");
-
-		if(s != NULL && strlen(s) != 0){
-			if(strcmp(s,"quit")==0){
-				free(s);
-				break;
-			}
-			cmd * command = parse_line(s);
-			if(command != NULL){
-				free_cmd(command);
-			}
-			
-		}
-		free(s);
-	}
-}

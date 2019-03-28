@@ -2,14 +2,13 @@
 #define PARSE_TOKEN_H
 
 #define NUMBER          11
-#define FILE            12
-#define PIXEL			14
-#define EXT             15
-#define POURC           16
-#define SYMTYPE         17
-#define VIEW            18
-#define ANGLE           19
-#define STRING          20
+#define PIXEL			12
+#define EXT             13
+#define POURC           14
+#define SYMTYPE         15
+#define VIEW            16
+#define ANGLE           17
+#define STRING          18
 
 
 #endif

@@ -3,6 +3,7 @@
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <unistd.h>
 #include <string.h>
 #include <ctype.h>
@@ -10,12 +11,13 @@
 #include "parse_token.h"
 #include "err_flags.h"
 
-
-#define LEN_NAME        13
+#define LEN_MAX         13
+#define LEN_INFO        14
 #define LEN_BNW         3
 #define LEN_FILL        7
 #define LEN_LOAD        5
 #define LEN_LIST_BUFFER 2
+#define LEN_QUIT        2
 #define LEN_RESIZE      5
 #define LEN_ROTATE      4
 #define LEN_TRUNCATE    6

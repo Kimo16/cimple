@@ -154,15 +154,16 @@ static short listb_err_tab[4]={EINVA, EINVA, 0, 0};
 
 
 
-static void test_parse_line(char **tab, char *str,int len){
+static void test_parse_line(char **tab, char *str, int len){
 	int  i;
 	cmd *command=parse_line(str);
-	if( tab == NULL) assert_null(command);  
+	if(tab == NULL) assert_null(command);
 	else {
-		assert_non_null(command -> args);  
-		for(i = 0 ; i < len ; i++)
-			if(tab[i]==NULL) assert_null(command -> args[i]);
-			assert_string_equal(tab[i], command->args[i]);
+		assert_non_null(command->args);
+		for(i=0; i < len; i++){
+			if(tab[i] == NULL) assert_null(command->args[i]);
+			else assert_string_equal(tab[i], command->args[i]);
+		}
 	}
 	free_cmd(command);
 }
@@ -174,37 +175,37 @@ static void test_parse_error(short err, char *str){
 static void input_test(void **state){
 	int i=0;
 	while(symmetry_tab[i] != NULL){
-		test_parse_line(sym_argstab[i], symmetry_tab[i],LEN_SYM);
+		test_parse_line(sym_argstab[i], symmetry_tab[i], LEN_SYM);
 		test_parse_error(sym_err_tab[i], symmetry_tab[i]);
 		i++;
 	}
 	i=0;
 	while(rotate_tab[i] != NULL){
-		test_parse_line(rot_argstab[i], rotate_tab[i] , LEN_ROTATE);
+		test_parse_line(rot_argstab[i], rotate_tab[i], LEN_ROTATE);
 		test_parse_error(rot_err_tab[i], rotate_tab[i]);
 		i++;
 	}
 	i=0;
 	while(truncate_tab[i] != NULL){
-		test_parse_line(trunc_argstab[i], truncate_tab[i],LEN_TRUNCATE);
+		test_parse_line(trunc_argstab[i], truncate_tab[i], LEN_TRUNCATE);
 		test_parse_error(trunc_err_tab[i], truncate_tab[i]);
 		i++;
 	}
 	i=0;
 	while(resize_tab[i] != NULL){
-		test_parse_line(res_argstab[i], resize_tab[i],LEN_RESIZE);
+		test_parse_line(res_argstab[i], resize_tab[i], LEN_RESIZE);
 		test_parse_error(res_err_tab[i], resize_tab[i]);
 		i++;
 	}
 	i=0;
 	while(fill_tab[i] != NULL){
-		test_parse_line(fill_argstab[i], fill_tab[i],LEN_FILL);
+		test_parse_line(fill_argstab[i], fill_tab[i], LEN_FILL);
 		test_parse_error(fill_err_tab[i], fill_tab[i]);
 		i++;
 	}
 	i=0;
 	while(replace_tab[i] != NULL){
-		test_parse_line(rep_argstab[i], replace_tab[i],LEN_REPLACE);
+		test_parse_line(rep_argstab[i], replace_tab[i], LEN_REPLACE);
 		test_parse_error(rep_err_tab[i], replace_tab[i]);
 		i++;
 	}
@@ -216,37 +217,37 @@ static void input_test(void **state){
 	}
 	i=0;
 	while(save_tab[i] != NULL){
-		test_parse_line(save_argstab[i], save_tab[i],LEN_SAVE);
+		test_parse_line(save_argstab[i], save_tab[i], LEN_SAVE);
 		test_parse_error(save_err_tab[i], save_tab[i]);
 		i++;
 	}
 	i=0;
 	while(load_tab[i] != NULL){
-		test_parse_line(load_argstab[i], load_tab[i],LEN_LOAD);
+		test_parse_line(load_argstab[i], load_tab[i], LEN_LOAD);
 		test_parse_error(load_err_tab[i], load_tab[i]);
 		i++;
 	}
 	i=0;
 	while(greyscale_tab[i] != NULL){
-		test_parse_line(grey_argstab[i], greyscale_tab[i],LEN_GREYS);
+		test_parse_line(grey_argstab[i], greyscale_tab[i], LEN_GREYS);
 		test_parse_error(grey_err_tab[i], greyscale_tab[i]);
 		i++;
 	}
 	i=0;
 	while(bnw_tab[i] != NULL){
-		test_parse_line(bnw_argstab[i], bnw_tab[i],LEN_BNW);
+		test_parse_line(bnw_argstab[i], bnw_tab[i], LEN_BNW);
 		test_parse_error(bnw_err_tab[i], bnw_tab[i]);
 		i++;
 	}
 	i=0;
 	while(switch_tab[i] != NULL){
-		test_parse_line(switch_argstab[i], switch_tab[i],LEN_SWITCH);
+		test_parse_line(switch_argstab[i], switch_tab[i], LEN_SWITCH);
 		test_parse_error(switch_err_tab[i], switch_tab[i]);
 		i++;
 	}
 	i=0;
 	while(list_buffer[i] != NULL){
-		test_parse_line(listb_argstab[i], list_buffer[i],LEN_LIST_BUFFER);
+		test_parse_line(listb_argstab[i], list_buffer[i], LEN_LIST_BUFFER);
 		test_parse_error(listb_err_tab[i], list_buffer[i]);
 		i++;
 	}

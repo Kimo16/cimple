@@ -1,5 +1,18 @@
 #include "m_transform.h"
 
+/**
+ * Colors the (x,y) pixel with the specific color
+ *
+ * @param surface target surface
+ * @param r red
+ * @param g green
+ * @param b blue
+ * @param a alpha
+ * @param x coord
+ * @param y coord
+ * @return 1 if success, 0 if failed
+ */
+
 short setPixel(SDL_Surface *surface, Uint8 r, Uint8 g, Uint8 b, Uint8 a, size_t x, size_t y){
 	if(surface == NULL){
 		fprintf(stderr, "setpixel error");
@@ -14,6 +27,14 @@ short setPixel(SDL_Surface *surface, Uint8 r, Uint8 g, Uint8 b, Uint8 a, size_t 
 	pixels[y * surface->w + x]=couleur;
 	return 1;
 }
+
+/**
+ * Applies vertical or horizontal symmetry on a surface
+ *
+ * @param img target surface, gets replaced by a new one
+ * @param vertical 1 for vertical symmetry, 0 for horizontal symmetry
+ * @return 1 if success, 0 if failed
+ */
 
 short symmetry(SDL_Surface *img, short vertical){
 	if(img == NULL){
@@ -66,6 +87,14 @@ short symmetry(SDL_Surface *img, short vertical){
 	SDL_FreeSurface(tmp);
 	return 1;
 }
+
+/**
+ * Rotates the image
+ *
+ * @param img target surface, gets replaced by a new one
+ * @param angle a positive miltiple of 90,the angle to rotate the surface
+ * @return 1 if success, 0 if failed
+ */
 
 short rotate(SDL_Surface *img, int angle){
 	return 1;

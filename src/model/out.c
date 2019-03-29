@@ -231,7 +231,16 @@ short save_image(image* img) {
   } else if(memcmp("jpeg", get_img_ext(img), 4) == 0) {
       save_jpeg(img);
      return 1;
+  } else if(memcmp("JPEG", get_img_ext(img), 4) == 0) {
+      save_jpeg(img);
+     return 1;
+  } else if(memcmp("JPG", get_img_ext(img), 4) == 0) {
+      save_jpeg(img);
+     return 1;
   } else if(memcmp("png", get_img_ext(img), 3) == 0) {
+      save_png(img);
+      return 1;
+  } else if(memcmp("PNG", get_img_ext(img), 3) == 0) {
       save_png(img);
       return 1;
   } else if(memcmp("bmp", get_img_ext(img),3) == 0) {
@@ -248,7 +257,10 @@ short save_image(image* img) {
  * @param img the image to save
  */
 short save_secure(image* img) {
-  if(save_image_as(img, "", "bmp") == NULL)
+  char *path = "/tmp/cimpletmp/";
+  char *save_name = malloc(strlen(path) + strlen(get_img_name(img)) +1);
+  sprintf("%s%s", path, get_img_name(img));
+  if(save_image_as(img, save_name, "bmp") == NULL)
     return 0;
   return 1;
 }

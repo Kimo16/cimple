@@ -4,16 +4,13 @@
  * Colors the (x,y) pixel with the specific color
  *
  * @param surface target surface
- * @param r red
- * @param g green
- * @param b blue
- * @param a alpha
+ * @param color color
  * @param x coord
  * @param y coord
  * @return 1 if success, 0 if failed
  */
 
-short setPixel(SDL_Surface *surface, Uint8 r, Uint8 g, Uint8 b, Uint8 a, size_t x, size_t y){
+static short setPixel(SDL_Surface *surface, SDL_Color color, size_t x, size_t y){
 	if(surface == NULL){
 		fprintf(stderr, "setpixel error");
 		return 0;
@@ -23,8 +20,8 @@ short setPixel(SDL_Surface *surface, Uint8 r, Uint8 g, Uint8 b, Uint8 a, size_t 
 		fprintf(stderr, "setpixel error");
 		return 0;
 	}
-	Uint32 couleur=SDL_MapRGBA(surface->format, r, g, b, a);
-	pixels[y * surface->w + x]=couleur;
+	Uint32 new_color=SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a);
+	pixels[y * surface->w + x]=new_color;
 	return 1;
 }
 
@@ -62,7 +59,7 @@ short symmetry(SDL_Surface *img, short vertical){
 			for(int j=0; j < width; j++){
 				SDL_Color c_ref={0};
 				SDL_GetRGBA(pixels_ref[i * width + j], new_surface->format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-				int rc=setPixel(new_surface, c_ref.r, c_ref.g, c_ref.b, c_ref.a, i, width - j);
+				int rc=setPixel(new_surface, c_ref, i, width - j);
 				if(rc == 0){
 					fprintf(stderr, "pixel not set");
 					return 0;
@@ -74,7 +71,7 @@ short symmetry(SDL_Surface *img, short vertical){
 			for(int j=0; j < width; j++){
 				SDL_Color c_ref={0};
 				SDL_GetRGBA(pixels_ref[i * width + j], new_surface->format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-				int rc=setPixel(new_surface, c_ref.r, c_ref.g, c_ref.b, c_ref.a, height - i, j);
+				int rc=setPixel(new_surface, c_ref, height - i, j);
 				if(rc == 0){
 					fprintf(stderr, "pixel not set");
 					return 0;

@@ -22,13 +22,13 @@ all : $(NAME)
 
 $(NAME) :  $(OBJS)
 	@printf "\n== LINKING : %s ==\n" $(NAME)
-	$(CC) $(STD_CFLAGS) $(INCLUDES) $(STD_CLIBS) -o $@ $^
+	$(CC) $(STD_CFLAGS) $(INCLUDES) -o $@ $^ $(STD_CLIBS) 
 	@printf "=== END LINKING ==\n"
 
 $(BUILD)%.o : $(SRC_FOLDER)%.c
 	@mkdir -p $(dir $@)
 	@printf "Compile : %s\n" $<
-	@$(CC) $(STD_CFLAGS) $(INCLUDES) $(STD_CLIBS) -c -o $@ $<
+	@$(CC) $(STD_CFLAGS) $(INCLUDES) -c -o $@ $< $(STD_CLIBS) 
 
 .PHONY: view model controller
 view : $(OBJ_VIEW) 
@@ -42,11 +42,11 @@ controller : $(OBJ_CONTR)
 $(BUILD)%.o : $(TESTS_FOLDER)%.c
 	@mkdir -p $(dir $@)
 	@printf "Compile TEST : %s\n" $<
-	@$(CC) $(INCLUDES) $(TEST_CFLAGS) $(TEST_CLIBS) -c -o $@ $< 
+	@$(CC) $(INCLUDES) $(TEST_CFLAGS) -c -o $@ $< $(TEST_CLIBS) 
 
 $(TESTS)testing: $(OBJ_TESTS) $(TESTS_DEPS)
 	@printf "\n== LINKING TESTS ==\n"
-	$(CC) $(INCLUDES) $(TEST_CFLAGS) $(TEST_CLIBS) -o $@ $^
+	$(CC) $(INCLUDES) $(TEST_CFLAGS) -o $@ $^ $(TEST_CLIBS) 
 	@printf "=== END LINKING ==\n"
 
 

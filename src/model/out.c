@@ -234,7 +234,7 @@ short save_image(image* img) {
   } else if(memcmp("JPEG", get_img_ext(img), 4) == 0) {
       save_jpeg(img);
      return 1;
-  } else if(memcmp("JPG", get_img_ext(img), 4) == 0) {
+  } else if(memcmp("JPG", get_img_ext(img), 3) == 0) {
       save_jpeg(img);
      return 1;
   } else if(memcmp("png", get_img_ext(img), 3) == 0) {

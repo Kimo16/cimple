@@ -1,7 +1,7 @@
 #include "m_transform.h"
 
 /**
- * 
+ *
  * Colors the (x,y) pixel with the specific color
  *
  * @param surface target surface
@@ -95,23 +95,22 @@ short symmetry(SDL_Surface *img, short vertical){
  */
 
 short rotate(SDL_Surface *img, int angle){
-	if(img==NULL){
-    fprintf(stderr, "Null image in rotate");
-    return 0;
-  }
-  if(angle%90!=0 || angle < 0){
-    fprintf(stderr, "Invalid angle in rotate");
-    return 0;
-  }
+	if(img == NULL){
+		fprintf(stderr, "Null image in rotate");
+		return 0;
+	}
+	if(angle % 90 != 0 || angle < 0){
+		fprintf(stderr, "Invalid angle in rotate");
+		return 0;
+	}
 	SDL_Surface *new_surface;
-	if(angle%90!=0){
+	if(angle % 90 != 0){
 		fprintf(stderr, "Angle is not mod 90");
 		return 0;
 	}
-	if((angle/90)%4==0){
+	if((angle / 90) % 4 == 0)
 		return 1;
-	}
-	if((angle/90)%4==1){
+	if((angle / 90) % 4 == 1){
 		new_surface=SDL_CreateRGBSurfaceWithFormat(0, img->h, img->w, 32, img->format->format);
 		if(new_surface == NULL){
 			SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
@@ -132,7 +131,7 @@ short rotate(SDL_Surface *img, int angle){
 				}
 			}
 	}
-	if((angle/90)%4==2){
+	if((angle / 90) % 4 == 2){
 		new_surface=SDL_CreateRGBSurfaceWithFormat(0, img->w, img->h, 32, img->format->format);
 		if(new_surface == NULL){
 			SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
@@ -154,7 +153,7 @@ short rotate(SDL_Surface *img, int angle){
 				}
 			}
 	}
-	if((angle/90)%4==3){
+	if((angle / 90) % 4 == 3){
 		new_surface=SDL_CreateRGBSurfaceWithFormat(0, img->h, img->w, 32, img->format->format);
 		if(new_surface == NULL){
 			SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
@@ -168,7 +167,7 @@ short rotate(SDL_Surface *img, int angle){
 			for(int j=0; j < img->w; j++){
 				SDL_Color c_ref={0};
 				SDL_GetRGBA(pixels_ref[i * img->w + j], new_surface->format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-				int rc=setPixel(new_surface, c_ref, height-j, i);
+				int rc=setPixel(new_surface, c_ref, height - j, i);
 				if(rc == 0){
 					fprintf(stderr, "pixel not set");
 					return 0;

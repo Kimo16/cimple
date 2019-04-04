@@ -108,7 +108,7 @@ char *get_img_path(image *img){
  */
 
 char *get_img_ext(image *img){
-	if(img==NULL || img->extension == NULL){
+	if(img == NULL || img->extension == NULL){
 		fprintf(stderr, "get_img_ext failed\n");
 		return NULL;
 	}
@@ -123,7 +123,7 @@ char *get_img_ext(image *img){
  */
 
 SDL_Surface *get_img_surface(image *img){
-	if(img==NULL || img->img == NULL){
+	if(img == NULL || img->img == NULL){
 		fprintf(stderr, "get_img_surface failed\n");
 		return NULL;
 	}
@@ -138,7 +138,7 @@ SDL_Surface *get_img_surface(image *img){
  */
 
 char *get_full_image_path(image *image){
-	if(image==NULL){
+	if(image == NULL){
 		fprintf(stderr, "Get_path malloc failed\n");
 		return NULL;
 	}
@@ -237,7 +237,7 @@ image *copy_image(image *ref){
 		fprintf(stderr, "Copy failed\n");
 		return NULL;
 	}
-	image *      copy=new_img(path);
+	image *copy=new_img(path);
 	if(copy == NULL){
 		fprintf(stderr, "Copy failed\n");
 		return NULL;

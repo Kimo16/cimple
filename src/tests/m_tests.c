@@ -145,7 +145,7 @@ static void symmetry_test(void **state){
 			SDL_Color c_test={0};
 			SDL_Color c_ref={0};
 			SDL_GetRGBA(pixels_ref[i * test_surface->w + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[(test_surface->h - i)*test_surface->w + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_test[(test_surface->h - i) * test_surface->w + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);

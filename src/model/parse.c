@@ -384,5 +384,3 @@ cmd *parse_line(char *line){
 	multiple_free(3, s1, s, token);
 	return command;
 }
-
-

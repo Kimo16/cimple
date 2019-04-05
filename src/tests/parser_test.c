@@ -105,7 +105,7 @@ static char *neg_argstab[][6]={
 	{"negative", "-a", NULL},
 	{"negative", "", NULL},
 	{"negative", "", NULL},
-	{"negative","","223"},
+	{"negative", "", "223"},
 	{NULL}
 };
 static short neg_err_tab[6]={EINVA, 0, 0, 0, EINVA, 0};

@@ -120,7 +120,7 @@ short rotate(SDL_Surface *img, int angle){
 	Uint32 *pixels_ref=img->pixels;
 	// when image is turned once clockwise
 	if((angle / 90) % 4 == 1){
-		int     width=new_surface->w;
+		int width=new_surface->w;
 		for(int i=0; i < img->h; i++)
 			for(int j=0; j < img->w; j++){
 				SDL_Color c_ref={0};
@@ -137,8 +137,8 @@ short rotate(SDL_Surface *img, int angle){
 	}
 	// when image is turned twice clockwise
 	if((angle / 90) % 4 == 2){
-		int     height=new_surface->h;
-		int     width=new_surface->w;
+		int height=new_surface->h;
+		int width=new_surface->w;
 		for(int i=0; i < img->h; i++)
 			for(int j=0; j < img->w; j++){
 				SDL_Color c_ref={0};
@@ -155,7 +155,7 @@ short rotate(SDL_Surface *img, int angle){
 	}
 	// when image is turned three times clockwise
 	if((angle / 90) % 4 == 3){
-		int     height=new_surface->h;
+		int height=new_surface->h;
 		for(int i=0; i < img->h; i++)
 			for(int j=0; j < img->w; j++){
 				SDL_Color c_ref={0};

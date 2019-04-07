@@ -32,4 +32,24 @@
     * (Alex) M_tests 
     * (Etienne) In / out in model
 
+## 22/03/2019 - Tests - Model :
+  * Done :
+    * io 
+    * M_tests
+    * Parser_test
+  * TODO :
+    * (Karim) Finish parser
+    * (Alex) M_image 
+    * (Etienne) Out model
+
+## 29/03/2019 - Tests - Model :
+  * Done :
+    * M_image
+    * Parser 
+    * Out
+  * TODO :
+    * (Karim) M_color
+    * (Alex) M_transform / m_frame
+    * (Etienne) View readline
+    * Check model and tests
 

@@ -7,7 +7,7 @@ NAME = cimple
 CC = gcc
 INCLUDES = -I include
 STD_CFLAGS = -Wall $(shell pkg-config sdl2 SDL2_image libjpeg libpng --cflags)
-STD_CLIBS = $(shell pkg-config sdl2 SDL2_image libjpeg libpng --libs)
+STD_CLIBS = -lm $(shell pkg-config sdl2 SDL2_image libjpeg libpng --libs)
 TEST_CFLAGS = $(shell pkg-config cmocka --cflags) $(STD_CFLAGS)
 TEST_CLIBS = $(shell pkg-config cmocka --libs) $(STD_CLIBS)
 

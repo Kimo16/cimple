@@ -2,7 +2,7 @@
 #define M_COLOR_H
 
 #include <SDL2/SDL.h>
-
+#include "m_image.h"
 short negative_filter(image * img);
 short black_and_white_filter(image * img);
 short grey_filter(image * img);

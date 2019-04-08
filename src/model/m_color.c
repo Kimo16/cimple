@@ -16,7 +16,7 @@ short negative_filter(image *img){
 		return 0;
 	}
 	SDL_Surface *surface=get_img_surface(img);
-	SDL_Surface *neg_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->h, surface->w, 32, surface->format->format);
+	SDL_Surface *neg_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if(neg_surface == NULL){
 		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
 		return 0;
@@ -38,7 +38,6 @@ short negative_filter(image *img){
 
 	SDL_UnlockSurface(neg_surface);
 	SDL_UnlockSurface(surface);
-	SDL_Surface *tmp=surface;
 	set_img_surface(img, neg_surface);
 
 	return 1;
@@ -57,7 +56,7 @@ short black_and_white_filter(image *img){
 		return 0;
 	}
 	SDL_Surface *surface=get_img_surface(img);
-	SDL_Surface *bnw_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->h, surface->w, 32, surface->format->format);
+	SDL_Surface *bnw_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if(bnw_surface == NULL){
 		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
 		return 0;
@@ -103,7 +102,7 @@ short grey_filter(image *img){
 	}
 
 	SDL_Surface *surface=get_img_surface(img);
-	SDL_Surface *gray_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->h, surface->w, 32, surface->format->format);
+	SDL_Surface *gray_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if(gray_surface == NULL){
 		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
 		return 0;
@@ -169,7 +168,7 @@ short replace_color(image *img, SDL_Color origin_color, SDL_Color target_color, 
 		return 0;
 	}
 	SDL_Surface *surface=get_img_surface(img);
-	SDL_Surface *repl_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->h, surface->w, 32, surface->format->format);
+	SDL_Surface *repl_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if(repl_surface == NULL){
 		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
 		return 0;
@@ -218,7 +217,7 @@ short color_zone(image *img, SDL_Color color, int x1, int x2, int y1, int y2){
 		return 0;
 	}
 	SDL_Surface *surface=get_img_surface(img);
-	SDL_Surface *zone_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->h, surface->w, 32, surface->format->format);
+	SDL_Surface *zone_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if(zone_surface == NULL){
 		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
 		return 0;

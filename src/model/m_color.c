@@ -40,7 +40,7 @@ short negative_filter(image *img){
 	SDL_UnlockSurface(surface);
 	SDL_Surface *tmp=surface;
 	set_img_surface(img, neg_surface);
-	SDL_FreeSurface(tmp);
+
 	return 1;
 }
 
@@ -85,7 +85,7 @@ short black_and_white_filter(image *img){
 	SDL_UnlockSurface(bnw_surface);
 	SDL_UnlockSurface(surface);
 	set_img_surface(img, bnw_surface);
-	SDL_FreeSurface(surface);
+
 	return 1;
 }
 
@@ -127,7 +127,7 @@ short grey_filter(image *img){
 	SDL_UnlockSurface(gray_surface);
 	SDL_UnlockSurface(surface);
 	set_img_surface(img, gray_surface);
-	SDL_FreeSurface(surface);
+
 	return 1;
 }
 
@@ -196,7 +196,7 @@ short replace_color(image *img, SDL_Color origin_color, SDL_Color target_color, 
 	SDL_UnlockSurface(repl_surface);
 	SDL_UnlockSurface(surface);
 	set_img_surface(img, repl_surface);
-	SDL_FreeSurface(surface);
+
 	return 1;
 }
 
@@ -238,6 +238,6 @@ short color_zone(image *img, SDL_Color color, int x1, int x2, int y1, int y2){
 	SDL_UnlockSurface(zone_surface);
 	/*SDL_UnlockSurface(surface);*/
 	set_img_surface(img, zone_surface);
-	SDL_FreeSurface(surface);
+
 	return 1;
 }

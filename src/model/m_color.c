@@ -7,10 +7,11 @@
  * Change all surface pixels with negative filter
  *
  * @param image * img , pointer to an image structure representing an image
+ * @param SDL_Rect , represent the area coordinates on the target surface
  * @return 0 if changes failed , 1 if all changes done.
  */
 
-short negative_filter(image *img){
+short negative_filter(image *img,SDL_Rect rect ){
 	if(img == NULL){
 		fprintf(stderr, "Error negative_filter(SDL_Surface * img) : Null argument \n");
 		return 0;
@@ -28,8 +29,8 @@ short negative_filter(image *img){
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=neg_surface->pixels;
 
-	for(int i=0; i < neg_surface->h; i++)
-		for(int j=0; j < neg_surface->w; j++){
+	for(int i=rect.y ; i < rect.y + rect.h; i++)
+		for(int j=rect.x; j < rect.x + rect.w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], neg_surface->format, &c.r, &c.g, &c.b, &c.a);
 			Uint32 c_neg=SDL_MapRGBA(neg_surface->format, 255 - c.r, 255 - c.g, 255 - c.b, c.a);
@@ -47,10 +48,11 @@ short negative_filter(image *img){
  * Change all surface pixels with black and white filter
  *
  * @param image * img , pointer to an image structure representing an image
+ * @param SDL_Rect , represent the area coordinates on the target surface
  * @return 0 if changes failed , 1 if all changes done.
  */
 
-short black_and_white_filter(image *img){
+short black_and_white_filter(image *img , SDL_Rect rect ){
 	if(img == NULL){
 		fprintf(stderr, "Error black_and_white_filter() : Null argument \n");
 		return 0;
@@ -68,8 +70,8 @@ short black_and_white_filter(image *img){
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=bnw_surface->pixels;
 
-	for(int i=0; i < bnw_surface->h; i++)
-		for(int j=0; j < bnw_surface->w; j++){
+	for(int i=rect.y; i < rect.y + rect.h; i++)
+		for(int j=rect.x; j < rect.x + rect.w ; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], bnw_surface->format, &c.r, &c.g, &c.b, &c.a);
 			int    gray_scale=(int)c.r * 0.2125 + c.g * 0.7154 + c.b * 0.0721;       /*CIE 709 recommandation for grayscale*/
@@ -92,10 +94,11 @@ short black_and_white_filter(image *img){
  * Change all surface pixels with grey filter
  *
  * @param image * img , pointer to image structure representing an image
+ * @param SDL_Rect , represent the area coordinates on the target surface
  * @return 0 if changes failed , 1 if all changes done.
  */
 
-short grey_filter(image *img){
+short grey_filter(image *img ,SDL_Rect rect){
 	if(img == NULL){
 		fprintf(stderr, "Error grey_filter() : Null argument \n");
 		return 0;
@@ -114,8 +117,8 @@ short grey_filter(image *img){
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=gray_surface->pixels;
 
-	for(int i=0; i < gray_surface->h; i++)
-		for(int j=0; j < gray_surface->w; j++){
+	for(int i=rect.y; i < rect.y + rect.h; i++)
+		for(int j=0; j < rect.x + rect.w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], gray_surface->format, &c.r, &c.g, &c.b, &c.a);
 			int    gray_scale=(int)((c.r * 0.2125) + (c.g * 0.7154) + (c.b * 0.0721));      /*CIE 709 recommandation for grayscale*/
@@ -156,13 +159,14 @@ static short margin_colors(SDL_Color current_color, SDL_Color origin_color, int 
  * Change surface pixels color with an another (neighboring) color
  *
  * @param image * img , pointer to image structure representing an image
+ * @param SDL_Rect , represent the area coordinates on the target surface
  * @param SDL_Color origin , represent the color to replace
  * @param SDL_Color target_color , represent the color to apply
  * @param int margin , represent the percentage of color proximity level
  * @return 0 if changes failed , 1 if all changes done.
  */
 
-short replace_color(image *img, SDL_Color origin_color, SDL_Color target_color, int margin){
+short replace_color(image *img,SDL_Rect rect,SDL_Color origin_color, SDL_Color target_color, int margin){
 	if(img == NULL){
 		fprintf(stderr, "Error replace_color() : Null argument \n");
 		return 0;
@@ -180,8 +184,8 @@ short replace_color(image *img, SDL_Color origin_color, SDL_Color target_color, 
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=repl_surface->pixels;
 
-	for(int i=0; i < repl_surface->h; i++)
-		for(int j=0; j < repl_surface->w; j++){
+	for(int i=rect.y ; i < rect.y+rect.h; i++)
+		for(int j=rect.x; j < rect.x+rect.w ; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], repl_surface->format, &c.r, &c.g, &c.b, &c.a);
 			Uint32 repl_c;
@@ -199,19 +203,16 @@ short replace_color(image *img, SDL_Color origin_color, SDL_Color target_color, 
 	return 1;
 }
 
-static int min(int x, int y){
-	return x < y ? x : y;
-}
 
 /**
  * Fill rectangle on image surface
  *
  * @param img * img , pointer to image structure representing an image
  * @param SDL_color , represents the color to apply in the chosen area
- * @param int x1 , x2 , y1 , y2 , represent the area coordinates on the target surface
+ * @param SDL_Rect rect , represent the area coordinates on the target surface
  * @return 0 if changes failed , 1 if all changes done.
  */
-short color_zone(image *img, SDL_Color color, int x1, int x2, int y1, int y2){
+short color_zone(image *img, SDL_Rect rect , SDL_Color color){
 	if(img == NULL){
 		fprintf(stderr, "Error color_zone() : Null argument\n");
 		return 0;
@@ -230,7 +231,6 @@ short color_zone(image *img, SDL_Color color, int x1, int x2, int y1, int y2){
 	if(SDL_MUSTLOCK(zone_surface) == 1) SDL_LockSurface(zone_surface);
 	/*if(SDL_MUSTLOCK(img) == 1) SDL_LockSurface(surface);*/
 
-	SDL_Rect rect={min(x1, x2), min(y1, y2), abs(x2 - x1), abs(y2 - y1)};
 	Uint32   r_color=SDL_MapRGBA(zone_surface->format, color.r, color.g, color.b, color.a);
 	SDL_FillRect(zone_surface, &rect, r_color);
 

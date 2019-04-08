@@ -3,10 +3,10 @@
 
 #include <SDL2/SDL.h>
 #include "m_image.h"
-short negative_filter(image * img);
-short black_and_white_filter(image * img);
-short grey_filter(image * img);
-short replace_color(image * img,SDL_Color origin_color,SDL_Color target_color,int margin);
-short color_zone(image * img ,SDL_Color color,int x1,int x2,int y1,int y2);
+short negative_filter(image * img, SDL_Rect rect);
+short black_and_white_filter(image * img, SDL_Rect rect);
+short grey_filter(image * img,SDL_Rect rect );
+short replace_color(image * img, SDL_Rect rect , SDL_Color origin_color,SDL_Color target_color,int margin);
+short color_zone(image * img ,SDL_Rect rect , SDL_Color color);
 
 #endif

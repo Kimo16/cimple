@@ -2,6 +2,7 @@
 #define M_FRAME_H
 
 #include <SDL2/SDL.h>
+#include "m_image.h"
 
 	short truncate_image(SDL_Surface * img , int x1 , int y1 , int x2 ,int y2);
 	short resize_workspace(SDL_Surface* img,int witdh , int height );

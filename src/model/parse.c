@@ -9,14 +9,14 @@ struct cmd_info {
 
 static struct cmd_info info_tab[LEN_INFO]={
 	{.name="bnw", .len=LEN_BNW, .args_type={0, 1}, .option={"", "-a"}},
-	{.name="copy", .len=LEN_COPY, .args_type={0,1}, .option={"", "-a"}},
-	{.name="cut" , .len=LEN_CUT , .args_type={0,1}, .option={"", "-a"}},
+	{.name="copy", .len=LEN_COPY, .args_type={0, 1}, .option={"", "-a"}},
+	{.name="cut", .len=LEN_CUT, .args_type={0, 1}, .option={"", "-a"}},
 	{.name="greyscale", .len=LEN_GREYS, .args_type={0, 1}, .option={"", "-a"}},
 	{.name="fill", .len=LEN_FILL, .args_type={0, 1, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-a", "", "", "", ""}},
 	{.name="list_buffer", .len=LEN_LIST_BUFFER, .args_type={0}, .option={""}},
 	{.name="load", .len=LEN_LOAD, .args_type={0, 2, NUMBER, STRING}, .option={"", "-w", "", ""}},
 	{.name="negative", .len=LEN_NEG, .args_type={0, 1}, .option={"", "-a"}},
-	{.name="paste", .len=LEN_PASTE , .args_type={0,3,NUMBER,NUMBER}, .option={"", "-a","",""}},
+	{.name="paste", .len=LEN_PASTE, .args_type={0, 3, NUMBER, NUMBER}, .option={"", "-a", "", ""}},
 	{.name="quit", .len=LEN_QUIT, .args_type={0}, .option={""}},
 	{.name="replace", .len=LEN_REPLACE, .args_type={0, 2, POURC, 1, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-m", "", "-a", "", "", "", "", "", "", "", ""}},
 	{.name="resize", .len=LEN_RESIZE, .args_type={0, VIEW, RELATIV, RELATIV}, .option={"", "", "", ""}},
@@ -208,8 +208,8 @@ short is_angle(char *str){
 
 short is_relative(char *str){
 	int i;
-	int n=sscanf(str, "%u", &i);
-	return (n == 1 ) ? 0 : ENUMV;
+	int n=sscanf(str, "%d", &i);
+	return (n == 1) ? 0 : ENUMV;
 }
 
 short is_pixel(char *str){
@@ -266,7 +266,7 @@ short check_option(short index, short i, char *arg){
 short check_token(short flags, char *cmd_name, char *arg){
 	if(strlen(arg) == 0) return msg_error(0, EMSG, cmd_name, NULL);
 	if(flags == STRING && strlen(arg) == 0) return msg_error(0, EMSG, cmd_name, NULL);
-	if(flags == RELATIV && is_relative(arg)) return msg_error(RELATIV,ENUMV,cmd_name,arg);
+	if(flags == RELATIV && is_relative(arg)) return msg_error(RELATIV, ENUMV, cmd_name, arg);
 	if(flags == NUMBER && is_natural(arg)) return msg_error(NUMBER, ENUMV, cmd_name, arg);
 	if(flags == PIXEL && is_pixel(arg)) return msg_error(PIXEL, ENUMV, cmd_name, arg);
 	if(flags == POURC && is_pourcent(arg)) return msg_error(POURC, ENUMV, cmd_name, arg);
@@ -395,5 +395,3 @@ cmd *parse_line(char *line){
 	multiple_free(3, s1, s, token);
 	return command;
 }
-
-

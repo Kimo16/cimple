@@ -34,12 +34,12 @@ static short setPixel(SDL_Surface *surface, SDL_Color color, size_t x, size_t y)
  * @return 1 if success, 0 if failed
  */
 
-short symmetry(image * target, short vertical){
-    if(target == NULL){
+short symmetry(image *target, short vertical){
+	if(target == NULL){
 		fprintf(stderr, "Null argument in symmetry.");
 		return 0;
 	}
-    SDL_Surface * img = get_img_surface(target);
+	SDL_Surface *img=get_img_surface(target);
 	if(img == NULL){
 		fprintf(stderr, "Null surface in symmetry.");
 		return 0;
@@ -54,8 +54,8 @@ short symmetry(image * target, short vertical){
 		SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
 		exit(1);
 	}
-	if(SDL_MUSTLOCK(new_surface)==SDL_TRUE) SDL_LockSurface(new_surface);
-	if(SDL_MUSTLOCK(img)==SDL_TRUE) SDL_LockSurface(img);
+	if(SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
+	if(SDL_MUSTLOCK(img) == SDL_TRUE) SDL_LockSurface(img);
 	Uint32 *pixels_ref=img->pixels;
 	int     height=new_surface->h;
 	int     width=new_surface->w;
@@ -91,10 +91,10 @@ short symmetry(image * target, short vertical){
 			}
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(img);
-    if(set_img_surface(target, new_surface)==0){
-        fprintf(stderr, "Surface not set");
-        return 0;
-    }
+	if(set_img_surface(target, new_surface) == 0){
+		fprintf(stderr, "Surface not set");
+		return 0;
+	}
 	return 1;
 }
 
@@ -106,13 +106,13 @@ short symmetry(image * target, short vertical){
  * @return 1 if success, 0 if failed, -1 if surface wasn't created
  */
 
-short rotate(image * target, int angle){
+short rotate(image *target, int angle){
 	if(target == NULL){
 		fprintf(stderr, "Null image in rotate");
 		return 0;
 	}
-    SDL_Surface * img = get_img_surface(target);
-    if(target == NULL){
+	SDL_Surface *img=get_img_surface(target);
+	if(target == NULL){
 		fprintf(stderr, "Null surface in rotate");
 		return 0;
 	}
@@ -126,8 +126,8 @@ short rotate(image * target, int angle){
 		SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
 		return -1;
 	}
-	if(SDL_MUSTLOCK(new_surface)==SDL_TRUE) SDL_LockSurface(new_surface);
-	if(SDL_MUSTLOCK(img)==SDL_TRUE) SDL_LockSurface(img);
+	if(SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
+	if(SDL_MUSTLOCK(img) == SDL_TRUE) SDL_LockSurface(img);
 	Uint32 *pixels_ref=img->pixels;
 	// when image is turned once clockwise
 	if((angle / 90) % 4 == 1){
@@ -183,9 +183,9 @@ short rotate(image * target, int angle){
 	}
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(img);
-    if(set_img_surface(target, new_surface)==0){
-        fprintf(stderr, "Surface not set");
-        return 0;
-    }
+	if(set_img_surface(target, new_surface) == 0){
+		fprintf(stderr, "Surface not set");
+		return 0;
+	}
 	return 1;
 }

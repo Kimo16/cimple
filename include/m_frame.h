@@ -4,9 +4,9 @@
 #include <SDL2/SDL.h>
 #include "m_image.h"
 
-	short truncate_image(SDL_Surface * img , int x1 , int y1 , int x2 ,int y2);
-	short resize_workspace(SDL_Surface* img,int witdh , int height );
-	short resize_image(SDL_Surface* img, int width, int height);
+	short truncate_image(image * target , int x1 , int y1 , int x2 ,int y2);
+	short resize_workspace(image * target,int witdh , int height );
+	short resize_image(image * target, int width, int height);
 
 
 #endif

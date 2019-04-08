@@ -2,9 +2,10 @@
 #define M_TRANSFORM_H
 
 #include <SDL2/SDL.h>
+#include "m_image.h"
 
-short symmetry(SDL_Surface* img,short vertical);
-short rotate(SDL_Surface* img, int angle);
+short symmetry(image * target,short vertical);
+short rotate(image * target, int angle);
 
 
 #endif

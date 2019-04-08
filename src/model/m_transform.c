@@ -29,14 +29,19 @@ static short setPixel(SDL_Surface *surface, SDL_Color color, size_t x, size_t y)
 /**
  * Applies vertical or horizontal symmetry on a surface
  *
- * @param img target surface, gets replaced by a new one
+ * @param target target image
  * @param vertical 1 for vertical symmetry, 0 for horizontal symmetry
  * @return 1 if success, 0 if failed
  */
 
-short symmetry(SDL_Surface *img, short vertical){
-	if(img == NULL){
+short symmetry(image * target, short vertical){
+    if(target == NULL){
 		fprintf(stderr, "Null argument in symmetry.");
+		return 0;
+	}
+    SDL_Surface * img = get_img_surface(target);
+	if(img == NULL){
+		fprintf(stderr, "Null surface in symmetry.");
 		return 0;
 	}
 	if(vertical != 0 && vertical != 1){
@@ -49,8 +54,8 @@ short symmetry(SDL_Surface *img, short vertical){
 		SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
 		exit(1);
 	}
-	SDL_LockSurface(new_surface);
-	SDL_LockSurface(img);
+	if(SDL_MUSTLOCK(new_surface)==SDL_TRUE) SDL_LockSurface(new_surface);
+	if(SDL_MUSTLOCK(img)==SDL_TRUE) SDL_LockSurface(img);
 	Uint32 *pixels_ref=img->pixels;
 	int     height=new_surface->h;
 	int     width=new_surface->w;
@@ -86,37 +91,43 @@ short symmetry(SDL_Surface *img, short vertical){
 			}
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(img);
-	SDL_Surface *tmp=img;
-	img=new_surface;
-	SDL_FreeSurface(tmp);
+    if(set_img_surface(target, new_surface)==0){
+        fprintf(stderr, "Surface not set");
+        return 0;
+    }
 	return 1;
 }
 
 /**
  * Rotates the image clockwise
  *
- * @param img target surface, gets replaced by a new one
+ * @param target image to work with
  * @param angle a positive miltiple of 90,the angle to rotate the surface
  * @return 1 if success, 0 if failed, -1 if surface wasn't created
  */
 
-short rotate(SDL_Surface *img, int angle){
-	if(img == NULL){
+short rotate(image * target, int angle){
+	if(target == NULL){
 		fprintf(stderr, "Null image in rotate");
 		return 0;
 	}
-	SDL_Surface *new_surface;
+    SDL_Surface * img = get_img_surface(target);
+    if(target == NULL){
+		fprintf(stderr, "Null surface in rotate");
+		return 0;
+	}
 	// if image is not changed (i.e. 360 degrees)
 	if((angle / 90) % 4 == 0)
 		return 1;
 	// create a surface to be filled
+	SDL_Surface *new_surface;
 	new_surface=SDL_CreateRGBSurfaceWithFormat(0, img->h, img->w, 32, img->format->format);
 	if(new_surface == NULL){
 		SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
 		return -1;
 	}
-	SDL_LockSurface(new_surface);
-	SDL_LockSurface(img);
+	if(SDL_MUSTLOCK(new_surface)==SDL_TRUE) SDL_LockSurface(new_surface);
+	if(SDL_MUSTLOCK(img)==SDL_TRUE) SDL_LockSurface(img);
 	Uint32 *pixels_ref=img->pixels;
 	// when image is turned once clockwise
 	if((angle / 90) % 4 == 1){
@@ -172,8 +183,9 @@ short rotate(SDL_Surface *img, int angle){
 	}
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(img);
-	SDL_Surface *tmp=img;
-	img=new_surface;
-	SDL_FreeSurface(tmp);
+    if(set_img_surface(target, new_surface)==0){
+        fprintf(stderr, "Surface not set");
+        return 0;
+    }
 	return 1;
 }

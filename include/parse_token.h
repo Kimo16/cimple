@@ -9,6 +9,6 @@
 #define VIEW            16
 #define ANGLE           17
 #define STRING          18
-
+#define RELATIV         19
 
 #endif

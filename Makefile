@@ -5,10 +5,11 @@
 
 NAME = cimple
 CC = gcc
-CFLAGS = -Wall
 INCLUDES = -I include
-SDL_CFLAGS=$(shell sdl2-config --cflags --libs) -lSDL2_image
-TESTFLAGS = -lcmocka $(SDL_CFLAGS)
+STD_CFLAGS = -Wall $(shell pkg-config sdl2 SDL2_image libjpeg libpng --cflags)
+STD_CLIBS = $(shell pkg-config sdl2 SDL2_image libjpeg libpng --libs)
+TEST_CFLAGS = $(shell pkg-config cmocka --cflags) $(STD_CFLAGS)
+TEST_CLIBS = $(shell pkg-config cmocka --libs) $(STD_CLIBS)
 
 include const.mk
 
@@ -21,13 +22,13 @@ all : $(NAME)
 
 $(NAME) :  $(OBJS)
 	@printf "\n== LINKING : %s ==\n" $(NAME)
-	$(CC) -o $@ $(CFLAGS) $(INCLUDES) $(SDL_CFLAGS) $^
+	$(CC) $(STD_CFLAGS) $(INCLUDES) -o $@ $^ $(STD_CLIBS) 
 	@printf "=== END LINKING ==\n"
 
 $(BUILD)%.o : $(SRC_FOLDER)%.c
 	@mkdir -p $(dir $@)
 	@printf "Compile : %s\n" $<
-	@$(CC) -c $(CFLAGS) $(INCLUDES) $(SDL_CFLAGS) -o $@ $<
+	@$(CC) $(STD_CFLAGS) $(INCLUDES) -c -o $@ $< $(STD_CLIBS) 
 
 .PHONY: view model controller
 view : $(OBJ_VIEW) 
@@ -41,11 +42,11 @@ controller : $(OBJ_CONTR)
 $(BUILD)%.o : $(TESTS_FOLDER)%.c
 	@mkdir -p $(dir $@)
 	@printf "Compile TEST : %s\n" $<
-	@$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $< $(TESTFLAGS)
+	@$(CC) $(INCLUDES) $(TEST_CFLAGS) -c -o $@ $< $(TEST_CLIBS) 
 
 $(TESTS)testing: $(OBJ_TESTS) $(TESTS_DEPS)
 	@printf "\n== LINKING TESTS ==\n"
-	$(CC) -o $@ $(CFLAGS) $(INCLUDES) $^ $(TESTFLAGS) $(SDL_CFLAGS)
+	$(CC) $(INCLUDES) $(TEST_CFLAGS) -o $@ $^ $(TEST_CLIBS) 
 	@printf "=== END LINKING ==\n"
 
 

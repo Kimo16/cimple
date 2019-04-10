@@ -12,13 +12,15 @@
 #include "err_flags.h"
 
 #define LEN_MAX         13
-#define LEN_INFO        17
+#define LEN_INFO        19
 #define LEN_BNW         3
 #define LEN_COPY        3
+#define LEN_CONSTRAST   3
 #define LEN_CUT         3
 #define LEN_FILL        7
 #define LEN_LOAD        5
 #define LEN_LIST_BUFFER 2
+#define LEN_LIGHT       3
 #define LEN_QUIT        2
 #define LEN_PASTE       5
 #define LEN_RESIZE      5

@@ -10,5 +10,6 @@
 #define ANGLE           17
 #define STRING          18
 #define RELATIV         19
+#define POURCR          20
 
 #endif

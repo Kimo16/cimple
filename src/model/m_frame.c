@@ -156,13 +156,13 @@ short resize_image(image *target, int width, int height){
 	}
 	SDL_Surface *new_surface;
 	new_surface=SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, surface->format->format);
-	if(new_surface==NULL){
+	if(new_surface == NULL){
 		fprintf(stderr, "New surface not created");
 		return 0;
 	}
 	if(SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
 	if(SDL_MUSTLOCK(surface) == SDL_TRUE) SDL_LockSurface(surface);
-	if(SDL_BlitScaled(surface, NULL, new_surface, NULL)!=0){
+	if(SDL_BlitScaled(surface, NULL, new_surface, NULL) != 0){
 		fprintf(stderr, "BlitScale failed");
 		return 0;
 	}

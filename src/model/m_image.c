@@ -4,7 +4,7 @@ struct image {
 	char *       name;
 	char *       save_path;
 	char *       extension;
-	SDL_Surface *img;
+	SDL_Surface * surface;
 };
 
 /**
@@ -66,7 +66,7 @@ image *new_img(char *path){
 		free(new);
 		return NULL;
 	}
-	new->img=NULL;
+	new->surface=NULL;
 	return new;
 }
 
@@ -123,11 +123,11 @@ char *get_img_ext(image *img){
  */
 
 SDL_Surface *get_img_surface(image *img){
-	if(img == NULL || img->img == NULL){
+	if(img==NULL || img->surface == NULL){
 		fprintf(stderr, "get_img_surface failed\n");
 		return NULL;
 	}
-	return img->img;
+	return img->surface;
 }
 
 /**
@@ -215,12 +215,15 @@ short set_img_ext(image *img, char *ext){
  */
 
 short set_img_surface(image *img, SDL_Surface *surface){
-	if(img == NULL || surface == NULL){
+  if(img == NULL || surface == NULL){
 		fprintf(stderr, "Setter failed\n");
 		return 0;
 	}
-	img->img=surface;
-	if(img->img == NULL) return 0;
+  SDL_Surface * image_to_free = img->surface;
+  img->surface = surface;
+  if (image_to_free != NULL) {
+    SDL_FreeSurface(image_to_free);
+  }
 	return 1;
 }
 
@@ -242,13 +245,13 @@ image *copy_image(image *ref){
 		fprintf(stderr, "Copy failed\n");
 		return NULL;
 	}
-	SDL_Surface *copy_surface=SDL_ConvertSurface(ref->img, ref->img->format, 0);
+	SDL_Surface *copy_surface=SDL_ConvertSurface(ref->surface, ref->surface->format, 0);
 	if(copy_surface == NULL){
 		fprintf(stderr, "Copy failed\n");
 		free_image(copy);
 		return NULL;
 	}
-	copy->img=copy_surface;
+	copy->surface=copy_surface;
 	return copy;
 }
 
@@ -260,7 +263,7 @@ image *copy_image(image *ref){
 
 void free_image(image *image){
 	if(image != NULL){
-		if(image->img != NULL) SDL_FreeSurface(image->img);
+		if(image->surface != NULL) SDL_FreeSurface(image->surface);
 		if(image->extension != NULL) free(image->extension);
 		if(image->save_path != NULL) free(image->save_path);
 		if(image->name != NULL) free(image->name);

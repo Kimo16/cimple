@@ -143,6 +143,7 @@ short resize_workspace(image *target, int width_p, int height_p){
  * @return 1 if succeded, 0 if failed
  */
 
+
 short resize_image(image *target, int width, int height){
 	if(target == NULL){
 		fprintf(stderr, "Null image in truncate");
@@ -153,10 +154,16 @@ short resize_image(image *target, int width, int height){
 		fprintf(stderr, "Null surface in truncate");
 		return 0;
 	}
+	SDL_Surface *new_surface;
+	new_surface=SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, surface->format->format);
+	if(new_surface==NULL){
+		fprintf(stderr, "New surface not created");
+		return 0;
+	}
+	if(SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
 	if(SDL_MUSTLOCK(surface) == SDL_TRUE) SDL_LockSurface(surface);
-	SDL_Surface *new_surface=SDL_ResizeXY(surface, width, height, 6);
-	if(new_surface == NULL){
-		fprintf(stderr, "Resize failed");
+	if(SDL_BlitScaled(surface, NULL, new_surface, NULL)!=0){
+		fprintf(stderr, "BlitScale failed");
 		return 0;
 	}
 	SDL_UnlockSurface(new_surface);

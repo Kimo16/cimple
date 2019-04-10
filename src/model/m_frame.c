@@ -1,7 +1,7 @@
 #include "m_frame.h"
 
 /**
- * @brief 
+ * @brief
  * Returns the maximum of two numbers
  *
  * @param a first number
@@ -15,7 +15,7 @@ static int get_int_max(int a, int b){
 }
 
 /**
- * @brief 
+ * @brief
  * Returns the minimum of two numbers
  *
  * @param a first number
@@ -29,10 +29,10 @@ static int get_int_min(int a, int b){
 }
 
 /**
- * @brief 
+ * @brief
  * Truncates the image
  *
- * @param target image 
+ * @param target image
  * @param x1 x coordinate of the first summit
  * @param y1 y coordinate of the first summit
  * @param x2 x coordinate of the second summit
@@ -85,10 +85,10 @@ short truncate_image(image *target, int x1, int y1, int x2, int y2){
 }
 
 /**
- * @brief 
+ * @brief
  * Resizes the workspace, width and height may be negative
  *
- * @param target image 
+ * @param target image
  * @param width_p the value added to the width
  * @param height_p the value added to the height
  * @return 1 if succeded, 0 if failed
@@ -134,10 +134,10 @@ short resize_workspace(image *target, int width_p, int height_p){
 }
 
 /**
- * @brief 
+ * @brief
  * Resizes the image
  *
- * @param target image 
+ * @param target image
  * @param width new width
  * @param height new height
  * @return 1 if succeded, 0 if failed
@@ -154,8 +154,8 @@ short resize_image(image *target, int width, int height){
 		return 0;
 	}
 	if(SDL_MUSTLOCK(surface) == SDL_TRUE) SDL_LockSurface(surface);
-	SDL_Surface *new_surface = SDL_ResizeXY(surface, width, height, 6);
-	if(new_surface==NULL){
+	SDL_Surface *new_surface=SDL_ResizeXY(surface, width, height, 6);
+	if(new_surface == NULL){
 		fprintf(stderr, "Resize failed");
 		return 0;
 	}

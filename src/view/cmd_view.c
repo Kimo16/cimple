@@ -7,6 +7,5 @@
  * the content
  */
 char *get_cmdline() {
-
-
+  return NULL;
 }

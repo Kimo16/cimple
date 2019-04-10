@@ -118,7 +118,7 @@ short grey_filter(image *img ,SDL_Rect rect){
 	Uint32 *dest_pixels=gray_surface->pixels;
 
 	for(int i=rect.y; i < rect.y + rect.h; i++)
-		for(int j=0; j < rect.x + rect.w; j++){
+		for(int j=rect.x; j < rect.x + rect.w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], gray_surface->format, &c.r, &c.g, &c.b, &c.a);
 			int    gray_scale=(int)((c.r * 0.2125) + (c.g * 0.7154) + (c.b * 0.0721));      /*CIE 709 recommandation for grayscale*/
@@ -174,7 +174,7 @@ short replace_color(image *img,SDL_Rect rect,SDL_Color origin_color, SDL_Color t
 	SDL_Surface *surface=get_img_surface(img);
 	SDL_Surface *repl_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if(repl_surface == NULL){
-		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
+		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s\n", SDL_GetError());
 		return 0;
 	}
 
@@ -220,11 +220,11 @@ short color_zone(image *img, SDL_Rect rect , SDL_Color color){
 	SDL_Surface *surface=get_img_surface(img);
 	SDL_Surface *zone_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if(zone_surface == NULL){
-		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
+		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s\n", SDL_GetError());
 		return 0;
 	}
 	if(SDL_BlitSurface(surface, NULL, zone_surface, NULL) != 0){
-		fprintf(stderr, "SDL_BlitSurface() failed: %s", SDL_GetError());
+		fprintf(stderr, "SDL_BlitSurface() failed: %s\n", SDL_GetError());
 		return 0;
 	}
 
@@ -239,4 +239,46 @@ short color_zone(image *img, SDL_Rect rect , SDL_Color color){
 	set_img_surface(img, zone_surface);
 
 	return 1;
+}
+
+static int light_func( int c , int n ){
+ 	double n1 = 1 + n/100 ; 
+ 	return (int) (255 * pow((double)c / 255 , n1 ));
+	
+}
+
+
+short light_filter(image * img , SDL_Rect rect , int percent ){
+
+	if(img == NULL ){
+		fprintf(stderr , "Error light_filter() : Null argument\n");
+	}
+
+	SDL_Surface * surface = get_img_surface(img);
+	SDL_Surface * light_surface = SDL_CreateRGBSurfaceWithFormat(0, surface -> w , surface -> h , 32 , surface -> format -> format);
+	if (light_surface == NULL){
+		fprintf(stderr , "SDL_CreateSurfaceWithFormat(= failed: %s\n", SDL_GetError());
+		return 0; 
+	} 
+
+	if(SDL_MUSTLOCK(surface) == 1 ) SDL_UnlockSurface(surface);
+	if(SDL_MUSTLOCK(light_surface) == 1 ) SDL_UnlockSurface(light_surface);
+
+	Uint32 * src_pixels = surface -> pixels ;
+	Uint32 * dest_pixels = light_surface -> pixels ; 
+
+	for ( int i  = rect.y ; i < rect.y + rect.h ; i ++ ){
+		for ( int j = rect.x ; j < rect.x + rect.w ; j++){
+			SDL_Color c={0};
+			SDL_GetRGBA(src_pixels[i * surface->w + j], light_surface->format, &c.r, &c.g, &c.b, &c.a);
+			Uint32 light_c;
+			light_c=SDL_MapRGBA(light_surface->format, light_func(c.r,percent ), light_func(c.g,percent) ,light_func(c.b, percent) , c.a);
+			dest_pixels[i * light_surface->w + j]=light_c;
+		}
+	}
+
+	SDL_UnlockSurface(light_surface);
+	SDL_UnlockSurface(surface);
+	set_img_surface(img, light_surface);
+	return 1 ; 
 }

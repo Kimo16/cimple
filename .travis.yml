@@ -1,6 +1,5 @@
-language: c
-dist: xenial
-sudo: requiered
-install: sudo apt-get update && sudo apt-get install valgrind libegl1-mesa-dev libgles2-mesa-dev libsdl2-dev libsdl2-image-dev libcmocka-dev libjpeg8-dev libpng12-dev
 os: linux
-script: sh .travis.sh
+language: minimal
+
+install: make docker-build
+script: make docker-run

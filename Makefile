@@ -71,6 +71,17 @@ check_valgrind:
 .PHONY: checkall
 checkall: check check_valgrind
 
+####################
+# DOCKER for tests #
+####################
+
+docker-build:
+	docker build -t kolibs/travis_test .
+
+docker-run:
+	docker run --rm kolibs/travis_test sh -c "cd root ; make check"
+
+
 
 ##########
 # CLEANS #

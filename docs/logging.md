@@ -52,4 +52,18 @@
     * (Alex) M_transform / m_frame
     * (Etienne) View readline
     * Check model and tests
+    
+## 05/04/2019 - Tests - Model :
+  * Done :
+    * M_color
+    * M_transform
+  * TODO :
+    * Check model (All)
+
+## 05/04/2019 - Tests - Model :
+  * Done :
+    * Correct Test environment
+    * Correct tests
+  * TODO :
+    * Check model (All) and begin view
 

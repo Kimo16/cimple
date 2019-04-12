@@ -40,6 +40,7 @@ static short break_full_path(char *init_path, char **path, char **name, char **e
 	char *new_name = malloc(dot_p-slash_p);
 	if(new_name==NULL){
 		fprintf(stderr, "Path error");
+		free(new_path);
 		return 0;
 	}
 	memcpy(new_name, slash_p+1, dot_p-slash_p-1);
@@ -48,6 +49,8 @@ static short break_full_path(char *init_path, char **path, char **name, char **e
 	char *new_ext = malloc(strlen(dot_p));
 	if(new_ext==NULL){
 		fprintf(stderr, "Path error");
+		free(new_name);
+		free(new_path);
 		return 0;
 	}
 	memcpy(new_ext, dot_p+1, strlen(dot_p));

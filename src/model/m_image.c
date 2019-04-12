@@ -18,28 +18,46 @@ struct image {
  */
 
 static short break_full_path(char *init_path, char **path, char **name, char **ext){
-	char *parsed_name=memrchr(init_path, '/', strlen(init_path) - 1) + 1;
-	if(parsed_name == NULL){
-		fprintf(stderr, "Name not set\n");
+	char * slash_p = memrchr(init_path, '/', strlen(init_path));
+	if(slash_p==NULL){
+		fprintf(stderr, "Path error");
 		return 0;
 	}
-	*name=parsed_name;
-	char *parsed_ext=memrchr(parsed_name, '.', strlen(parsed_name));
-	if(parsed_ext == NULL){
-		fprintf(stderr, "Extension not set\n");
+	char * dot_p = memrchr(init_path, '.', strlen(init_path));
+	if(dot_p==NULL){
+		fprintf(stderr, "Path error, extension not found");
 		return 0;
 	}
-	*parsed_ext='\0';
-	*ext=parsed_ext + 1;
-	char *parsed_path=malloc(parsed_name - init_path + 1);
-	memcpy(parsed_path, init_path, parsed_name - init_path + 1);
-	if(parsed_path == NULL){
-		fprintf(stderr, "Path not set\n");
+	//path
+	char *new_path = malloc((slash_p-init_path)+1);
+	if(new_path==NULL){
+		fprintf(stderr, "Path error");
 		return 0;
 	}
-	parsed_path[parsed_name - init_path]='\0';
-	*path=parsed_path;
+	memcpy(new_path, init_path, (slash_p-init_path)+1);
+	new_path[slash_p-init_path]='\0';
+	//name
+	char *new_name = malloc(dot_p-slash_p);
+	if(new_name==NULL){
+		fprintf(stderr, "Path error");
+		return 0;
+	}
+	memcpy(new_name, slash_p+1, dot_p-slash_p-1);
+	new_name[dot_p-slash_p]='\0';
+	//extension
+	char *new_ext = malloc(strlen(dot_p));
+	if(new_ext==NULL){
+		fprintf(stderr, "Path error");
+		return 0;
+	}
+	memcpy(new_ext, dot_p+1, strlen(dot_p));
+	new_ext[strlen(dot_p)]='\0';
+	//affectations
+	*path=new_path;
+	*name=new_name;
+	*ext=new_ext;
 	return 1;
+
 }
 
 /**

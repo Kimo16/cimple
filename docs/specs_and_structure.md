@@ -49,7 +49,7 @@ The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
 * ```cut [-a]``` Copy an area into the buffer and fill the area with black. Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```contrast [-a] percent``` Increase or decrease the contrast of the current buffer. Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```light [-a] percent``` Increase or decrease the light of the current buffer. Copy an area into the buffer and fill the area with black. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
-* ```quit [-a] [buffer]``` Quit a buffer specified by `buffer`. If the flag -a is passed, applies to all buffers opened.
+* ```quit [-w buffer]``` Quit a buffer specified by `buffer`. If none is specified, applies to all buffers opened.
 
 ## Extended Version (v2.0)
 

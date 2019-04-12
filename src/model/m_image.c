@@ -69,7 +69,7 @@ static short break_full_path(char *init_path, char **path, char **name, char **e
 
 image *new_img(char *path){
 	// checking if it's a valid path
-	if(path == NULL || !access(path, R_OK | W_OK)){
+	if(path == NULL){
 		fprintf(stderr, "Path not valid\n");
 		return NULL;
 	}

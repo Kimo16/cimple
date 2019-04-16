@@ -44,6 +44,12 @@ The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
 * ```negative [-a]``` Put the selected area in negative. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```greyscale [-a]``` Put the selected area in greyscale. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```bnw [-a]``` Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+* ```copy [-a]``` Copy an area into the buffer. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+* ```paste [-a] [x] [y]``` Paste the buffer onto the current image. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+* ```cut [-a]``` Copy an area into the buffer and fill the area with black. Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+* ```contrast [-a] percent``` Increase or decrease the contrast of the current buffer. Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+* ```light [-a] percent``` Increase or decrease the light of the current buffer. Copy an area into the buffer and fill the area with black. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+* ```quit [-w buffer]``` Quit a buffer specified by `buffer`. If none is specified, applies to all buffers opened.
 
 ## Extended Version (v2.0)
 

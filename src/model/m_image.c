@@ -4,7 +4,7 @@ struct image {
 	char *       name;
 	char *       save_path;
 	char *       extension;
-	SDL_Surface * surface;
+	SDL_Surface *surface;
 };
 
 /**
@@ -18,49 +18,47 @@ struct image {
  */
 
 static short break_full_path(char *init_path, char **path, char **name, char **ext){
-	char * slash_p = memrchr(init_path, '/', strlen(init_path));
-	if(slash_p==NULL){
+	char *slash_p=memrchr(init_path, '/', strlen(init_path));
+	if(slash_p == NULL){
 		fprintf(stderr, "Path error");
 		return 0;
 	}
-	char * dot_p = memrchr(init_path, '.', strlen(init_path));
-	if(dot_p==NULL){
+	char *dot_p=memrchr(init_path, '.', strlen(init_path));
+	if(dot_p == NULL){
 		fprintf(stderr, "Path error, extension not found");
 		return 0;
 	}
 	//path
-	char *new_path = malloc((slash_p-init_path)+1);
-	if(new_path==NULL){
+	char *new_path=malloc((slash_p - init_path) + 1);
+	if(new_path == NULL){
 		fprintf(stderr, "Path error");
 		return 0;
 	}
-	memcpy(new_path, init_path, (slash_p-init_path)+1);
-	new_path[slash_p-init_path]='\0';
+	memcpy(new_path, init_path, (slash_p - init_path) + 1);
+	new_path[slash_p - init_path]='\0';
+	*path=new_path;
 	//name
-	char *new_name = malloc(dot_p-slash_p);
-	if(new_name==NULL){
+	char *new_name=malloc(dot_p - slash_p);
+	if(new_name == NULL){
 		fprintf(stderr, "Path error");
 		free(new_path);
 		return 0;
 	}
-	memcpy(new_name, slash_p+1, dot_p-slash_p-1);
-	new_name[dot_p-slash_p]='\0';
+	memcpy(new_name, slash_p + 1, dot_p - slash_p - 1);
+	new_name[dot_p - slash_p - 1]='\0';
+	*name=new_name;
 	//extension
-	char *new_ext = malloc(strlen(dot_p));
-	if(new_ext==NULL){
+	char *new_ext=malloc(strlen(dot_p));
+	if(new_ext == NULL){
 		fprintf(stderr, "Path error");
 		free(new_name);
 		free(new_path);
 		return 0;
 	}
-	memcpy(new_ext, dot_p+1, strlen(dot_p));
+	memcpy(new_ext, dot_p + 1, strlen(dot_p));
 	new_ext[strlen(dot_p)]='\0';
-	//affectations
-	*path=new_path;
-	*name=new_name;
 	*ext=new_ext;
 	return 1;
-
 }
 
 /**
@@ -144,7 +142,7 @@ char *get_img_ext(image *img){
  */
 
 SDL_Surface *get_img_surface(image *img){
-	if(img==NULL || img->surface == NULL){
+	if(img == NULL || img->surface == NULL){
 		fprintf(stderr, "get_img_surface failed\n");
 		return NULL;
 	}
@@ -186,8 +184,13 @@ short set_img_name(image *img, char *name){
 		fprintf(stderr, "Setter failed\n");
 		return 0;
 	}
+	char *tmp=img->name;
 	img->name=name;
-	if(img->name == NULL) return 0;
+	free(tmp);
+	if(img->name == NULL){
+		free(img);
+		return 0;
+	}
 	return 1;
 }
 
@@ -204,8 +207,13 @@ short set_img_path(image *img, char *path){
 		fprintf(stderr, "Setter failed\n");
 		return 0;
 	}
+	char *tmp=img->save_path;
 	img->save_path=path;
-	if(img->save_path == NULL) return 0;
+	free(tmp);
+	if(img->save_path == NULL){
+		free(img);
+		return 0;
+	}
 	return 1;
 }
 
@@ -222,8 +230,13 @@ short set_img_ext(image *img, char *ext){
 		fprintf(stderr, "Setter failed\n");
 		return 0;
 	}
+	char *tmp=img->extension;
 	img->extension=ext;
-	if(img->extension == NULL) return 0;
+	free(tmp);
+	if(img->extension == NULL){
+		free(img);
+		return 0;
+	}
 	return 1;
 }
 
@@ -236,15 +249,14 @@ short set_img_ext(image *img, char *ext){
  */
 
 short set_img_surface(image *img, SDL_Surface *surface){
-  if(img == NULL || surface == NULL){
+	if(img == NULL || surface == NULL){
 		fprintf(stderr, "Setter failed\n");
 		return 0;
 	}
-  SDL_Surface * image_to_free = img->surface;
-  img->surface = surface;
-  if (image_to_free != NULL) {
-    SDL_FreeSurface(image_to_free);
-  }
+	SDL_Surface *image_to_free=img->surface;
+	img->surface=surface;
+	if(image_to_free != NULL)
+		SDL_FreeSurface(image_to_free);
 	return 1;
 }
 

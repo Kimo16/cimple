@@ -11,9 +11,9 @@ static char *sym_argstab[][5]={
 	{"symmetry", "v", NULL},
 	{"symmetry", "h", NULL},
 	{NULL},
-	{"symmetry", "-v", NULL},
-	{"symmetry", "98", NULL},
-	{"symmetry", "hello", NULL},
+	{NULL},
+	{NULL},
+	{NULL},
 	{NULL}
 };
 static short sym_err_tab[7]={0, 0, EINVA, EINVA, EINVA, EINVA, 0};  // checked
@@ -23,11 +23,11 @@ static char *rotate_tab[8]={"rotate -r 90", "rotate 90", "rotate 100", "rotate -
 static char *rot_argstab[][5]={
 	{"rotate", "-r", "90", NULL},
 	{"rotate", "", "90", NULL},
-	{"rotate", "", "100", NULL},
-	{"rotate", "-r", "10", NULL},
+	{NULL},
+	{NULL},
 	{"rotate", "", "0", NULL},
-	{"rotate", "", "-90", NULL},
-	{"rotate", "-r", "-10", NULL},
+	{NULL},
+	{NULL},
 	{NULL}
 };
 static short rot_err_tab[8]={0, 0, ENUMV, ENUMV, 0, ENUMV, ENUMV, 0};  // checked
@@ -35,10 +35,10 @@ static short rot_err_tab[8]={0, 0, ENUMV, ENUMV, 0, ENUMV, ENUMV, 0};  // checke
 
 static char *truncate_tab[5]={"truncate", "truncate 123 0 123 0", "truncate aze 100 zez 10", "truncate 100 230", NULL};
 static char *trunc_argstab[][10]={
-	{"truncate", "", "", "", "", NULL},
+	{NULL},
 	{"truncate", "123", "0", "123", "0", NULL},
-	{"truncate", "aze", "100", "zez", "10", NULL},
-	{"truncate", "100", "230", "", "", NULL},
+	{NULL},
+	{NULL},
 	{NULL}
 };
 static short trunc_err_tab[5]={EMSG, 0, ENUMV, EMSG, 0};
@@ -47,11 +47,11 @@ static short trunc_err_tab[5]={EMSG, 0, ENUMV, EMSG, 0};
 
 static char *resize_tab[7]={"resize 100 100", "resize workspace", "resize workspace 100", "resize workspace 100 100", "resize image", "resize image 100 100", NULL};
 static char *res_argstab[][6]={
-	{"resize", "100", "100", "", NULL},
-	{"resize", "workspace", "", "", NULL},
-	{"resize", "workspace", "100", "", NULL},
+	{NULL},
+	{NULL},
+	{NULL},
 	{"resize", "workspace", "100", "100", NULL},
-	{"resize", "image", "", "", NULL},
+	{NULL},
 	{"resize", "image", "100", "100", NULL},
 	{NULL}
 };
@@ -60,10 +60,10 @@ static short res_err_tab[7]={EINVA, EMSG, EMSG, 0, EMSG, 0, 0};
 static char *fill_tab[7]={"fill 100 190 100 0", "fill -a 100 100 100", "fill -a 257 200 200 200", "fill 200 200 200", "fill its a joke", "fill -a 100 190 100 0", NULL};
 static char *fill_argstab[][10]={
 	{"fill", "", "100", "190", "100", "0", NULL},
-	{"fill", "-a", "100", "100", "100", "", NULL},
-	{"fill", "-a", "257", "200", "200", "200", NULL},
-	{"fill", "", "200", "200", "200", "", NULL},
-	{"fill", "", "its", "a", "joke", "", NULL},
+	{NULL},
+	{NULL},
+	{NULL},
+	{NULL},
 	{"fill", "-a", "100", "190", "100", "0", NULL},
 	{NULL}
 };
@@ -73,18 +73,18 @@ static char *replace_tab[5]={"replace -a 100 200 123 12 123 239 12 9", "replace 
 							 "replace -m 199 -a 200 250 30 200 22 11 9 10", "replace -m 19 -a -200 250 30 200 22 11 9 10", NULL};
 static char *rep_argstab[][15]={
 	{"replace", "", "", "-a", "100", "200", "123", "12", "123", "239", "12", "9", NULL},
-	{"replace", "-m", "20", "-a", "200", "", "", "", "", "", "", "", NULL},
-	{"replace", "-m", "199", "-a", "200", "250", "30", "200", "22", "11", "9", "10", NULL},
-	{"replace", "-m", "19", "-a", "-200", "250", "30", "200", "22", "11", "9", "10", NULL},
+	{NULL},
+	{NULL},
+	{NULL},
 	{NULL}
 };
 static short rep_err_tab[5]={0, EMSG, ENUMV, ENUMV, 0};
 
-static char *save_tab[5]={"save ../../", "save ./", "save -f hjg ./ ", "save nodir/ " "save -f png ./", NULL};
+static char *save_tab[5]={"save ../../", "save ./", "save -f hjg ./ ","save -f png ./", NULL};
 static char *save_argstab[][5]={
 	{"save", "", "", "../../", NULL},
 	{"save", "", "", "./", NULL},
-	{"save", "-f", "hjg", "./", NULL},
+	{NULL},
 	{"save", "-f", "png", "./", NULL},
 	{NULL}
 };
@@ -94,7 +94,7 @@ static char *load_tab[5]={"load ./noexist.png", "load -w 2 image.png", "load ", 
 static char *load_argstab[][5]={
 	{"load", "", "", "./noexist.png", NULL},
 	{"load", "-w", "2", "image.png", NULL},
-	{"load", "", "", "", NULL},
+	{NULL},
 	{"load", "", "", "image.zzz", NULL},
 	{NULL}
 };
@@ -135,9 +135,9 @@ static short grey_err_tab[6]={EINVA, 0, 0, 0, EINVA, 0};
 
 static char *switch_tab[5]={"switch_buffer zer", "switch_buffer -1  ", "switch_buffer", "switch_buffer 3", NULL};
 static char *switch_argstab[][5]={
-	{"switch_buffer", "zer", NULL},
-	{"switch_buffer", "-1", NULL},
-	{"switch_buffer", "", NULL},
+	{NULL},
+	{NULL},
+	{NULL},
 	{"switch_buffer", "3", NULL},
 	{NULL}
 };
@@ -157,7 +157,7 @@ static short listb_err_tab[4]={EINVA, EINVA, 0, 0};
 static void test_parse_line(char **tab, char *str, int len){
 	int  i;
 	cmd *command=parse_line(str);
-	if(tab == NULL) assert_null(command);
+	if(tab[0] == NULL) assert_null(command);
 	else {
 		assert_non_null(command->args);
 		for(i=0; i < len; i++){
@@ -169,7 +169,8 @@ static void test_parse_line(char **tab, char *str, int len){
 }
 
 static void test_parse_error(short err, char *str){
-	assert_int_equal(err, check_arguments(parse_line(str)));
+	cmd * command = parse_line(str);
+	assert_int_equal(err, ERRPARSE);
 }
 
 static void input_test(void **state){

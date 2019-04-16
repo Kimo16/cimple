@@ -260,23 +260,37 @@ static void m_img_surface_test(void **state){
 
 static void m_img_name_test(void **state){
 	image *img=new_img("tests/m_test/test_image.png ");
-	char * new_name="testname";
-	set_img_name(img, new_name);
-	assert_string_equal(new_name, get_img_name(img));
+	char * new_name=malloc(8*sizeof(char));
+	if(new_name!=NULL){
+		memcpy(new_name, "newname", 8);
+		set_img_name(img, new_name);
+		assert_string_equal(new_name, get_img_name(img));
+		free_image(img);
+	}
 	free_image(img);
 }
 
 static void m_img_path_test(void **state){
 	image *img=new_img("tests/m_test/test_image.png");
-	set_img_path(img, "tests/hello");
-	assert_string_equal("tests/hello", get_img_path(img));
+	char * new_path = malloc(12*sizeof(char));
+	if(new_path!=NULL){
+		memcpy(new_path, "tests/hello", 12);
+		set_img_path(img, new_path);
+		assert_string_equal(new_path, get_img_path(img));
+		free_image(img);
+	}
 	free_image(img);
 }
 
 static void m_img_ext_test(void **state){
 	image *img=new_img("tests/m_test/test_image.png");
-	set_img_ext(img, "png");
-	assert_string_equal("png", get_img_ext(img));
+	char * new_ext = malloc(8*sizeof(char));
+	if(new_ext!=NULL){
+		memcpy(new_ext, "new_ext", 8);
+		set_img_ext(img, new_ext);
+		assert_string_equal(new_ext, get_img_ext(img));
+		free_image(img);
+	}
 	free_image(img);
 }
 
@@ -291,8 +305,8 @@ int run_m_tests(){
 		unit_test(resize_workspace_test),
 		unit_test(new_img_test),
 		unit_test(m_img_surface_test),
-		// unit_test(m_img_name_test)
-		// unit_test(m_img_path_test),
+		unit_test(m_img_name_test),
+		unit_test(m_img_path_test),
 		// unit_test(m_img_ext_test)
 	};
 	return cmocka_run_group_tests(tests, NULL, NULL);

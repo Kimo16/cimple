@@ -24,11 +24,8 @@ static void test_pixel(SDL_Surface *reference, SDL_Surface *subject, int margin)
 			SDL_GetRGBA(pixels_sub[i * WIDTH + j], format,
 						&c_sub.r, &c_sub.g, &c_sub.b, &c_sub.a);
 			SDL_GetRGBA(pixels_ref[i * WIDTH + j], format,
-						&c_sub.r, &c_sub.g, &c_sub.b, &c_sub.a);
+						&c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
 			assert_in_range(c_sub.r, c_ref.r - margin, c_ref.r + margin);
-			assert_in_range(c_sub.g, c_ref.g - margin, c_ref.g + margin);
-			assert_in_range(c_sub.b, c_ref.b - margin, c_ref.b + margin);
-			assert_in_range(c_sub.a, c_ref.a - margin, c_ref.a + margin);
 		}
 	SDL_UnlockSurface(reference);
 	SDL_UnlockSurface(subject);
@@ -36,12 +33,12 @@ static void test_pixel(SDL_Surface *reference, SDL_Surface *subject, int margin)
 }
 
 static void input_test(void **state){
-	image *      img_ref=load_image("io_test/io_test.bmp");
-	image *      img_sub=load_image("io_test/io_test.jpg");
+	image * img_ref = load_image("tests/io_test/io_test.bmp");
+	image * img_sub = load_image("tests/io_test/io_test.jpg");
 	SDL_Surface *reference=get_img_surface(img_ref);
 	SDL_Surface *subject=get_img_surface(img_sub);
 	test_h_and_w(reference, subject);
-	test_pixel(reference, subject, 10);
+	test_pixel(reference, subject, 15);
 	free_image(img_ref);
 	free_image(img_sub);
 }

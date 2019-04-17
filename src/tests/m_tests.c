@@ -12,16 +12,28 @@ static void compare_surface(SDL_Surface *test_surface, SDL_Surface *ref_surface,
 	Uint32 *pixels_test=test_surface->pixels;
 	SDL_LockSurface(test_surface);
 	SDL_LockSurface(ref_surface);
+	int min, max;
 	for(int i=0; i < ref_surface->h; i++)
 		for(int j=0; j < ref_surface->w; j++){
 			SDL_Color c_ref={0};
 			SDL_Color c_test={0};
 			SDL_GetRGBA(pixels_ref[i * ref_surface->w + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[i * ref_surface->w + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
-			assert_in_range(c_test.r, c_ref.r - diff, c_ref.r + diff);
-			assert_in_range(c_test.g, c_ref.g - diff, c_ref.g + diff);
-			assert_in_range(c_test.b, c_ref.b - diff, c_ref.b + diff);
-			assert_in_range(c_test.a, c_ref.a - diff, c_ref.a + diff);
+			SDL_GetRGBA(pixels_test[i * test_surface->w + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			min=c_ref.r - diff;
+			if(min < 0) min=0;
+			max=c_ref.r + diff;
+			if(max > 255) max=255;
+			assert_in_range(c_test.r, min, max);
+			min=c_ref.g - diff;
+			if(min < 0) min=0;
+			max=c_ref.g + diff;
+			if(max > 255) max=255;
+			assert_in_range(c_test.g, min, max);
+			min=c_ref.b - diff;
+			if(min < 0) min=0;
+			max=c_ref.b + diff;
+			if(max > 255) max=255;
+			assert_in_range(c_test.b, min, max);
 		}
 	SDL_UnlockSurface(test_surface);
 	SDL_UnlockSurface(ref_surface);
@@ -30,13 +42,13 @@ static void compare_surface(SDL_Surface *test_surface, SDL_Surface *ref_surface,
 
 static void negative_filter_test(void **state){
 	//Loading of the reference image and the image to test
-	image *test_image=load_image("m_test/test_image.png");
-	image *ref_image=load_image("m_test/test_image_negative.png");
+	image *test_image=load_image("tests/m_test/test_image.png");
+	image *ref_image=load_image("tests/m_test/test_image_negative.png");
 	//Loading corresponding surfaces
 	SDL_Surface *ref_surface=get_img_surface(ref_image);
 	//Applying the negative effect
-	SDL_Rect rect = {.x=0, .y=0, .w=ref_surface->w, .h=ref_surface->h};
-	negative_filter(ref_image, rect);
+	SDL_Rect rect={.x=0, .y=0, .w=ref_surface->w, .h=ref_surface->h};
+	negative_filter(test_image, rect);
 	SDL_Surface *test_surface=get_img_surface(test_image);
 	//Launching test
 	compare_surface(test_surface, ref_surface, 15);
@@ -47,12 +59,12 @@ static void negative_filter_test(void **state){
 
 static void black_and_white_filter_test(void **state){
 	//Loading of the reference image and the image to test
-	image *test_image=load_image("m_test/test_image.png");
-	image *ref_image=load_image("m_test/test_image_bnw.png");
+	image *test_image=load_image("tests/m_test/test_image.png");
+	image *ref_image=load_image("tests/m_test/test_image_bnw.png");
 	//Loading corresponding surfaces
 	SDL_Surface *ref_surface=get_img_surface(ref_image);
 	//Applying the black and white filter
-	SDL_Rect rect = {.x=0, .y=0, .w=ref_surface->w, .h=ref_surface->h};
+	SDL_Rect rect={.x=0, .y=0, .w=ref_surface->w, .h=ref_surface->h};
 	black_and_white_filter(test_image, rect);
 	SDL_Surface *test_surface=get_img_surface(test_image);
 	//Launching test
@@ -64,12 +76,12 @@ static void black_and_white_filter_test(void **state){
 
 static void grey_filter_test(void **state){
 	//Loading of the reference image and the image to test
-	image *test_image=load_image("m_test/test_image.png");
-	image *ref_image=load_image("m_test/test_image_grayscale.png");
+	image *test_image=load_image("tests/m_test/test_image.png");
+	image *ref_image=load_image("tests/m_test/test_image_grayscale.png");
 	//Loading corresponding surfaces
 	SDL_Surface *ref_surface=get_img_surface(ref_image);
 	//Applying the grayscale effect
-	SDL_Rect rect = {.x=0, .y=0, .w=ref_surface->w, .h=ref_surface->h};
+	SDL_Rect rect={.x=0, .y=0, .w=ref_surface->w, .h=ref_surface->h};
 	grey_filter(test_image, rect);
 	SDL_Surface *test_surface=get_img_surface(test_image);
 	//Launching test
@@ -81,10 +93,10 @@ static void grey_filter_test(void **state){
 
 static void color_zone_test(void **state){
 	//Loading the image to test
-	image *test_image=load_image("m_test/test_image.png");
+	image *test_image=load_image("tests/m_test/test_image.png");
 	//Draw an orange rectangle
 	SDL_Color color={.r=255, .g=165, .b=0, .a=255};
-	SDL_Rect rect = {.x=10, .y=10, .w=40, .h=40};
+	SDL_Rect  rect={.x=10, .y=10, .w=40, .h=40};
 	color_zone(test_image, rect, color);
 	SDL_Surface *test_surface=get_img_surface(test_image);
 	//Test the image
@@ -95,10 +107,10 @@ static void color_zone_test(void **state){
 	}
 	Uint32 *pixels_test=test_surface->pixels;
 	SDL_LockSurface(test_surface);
-	for(int i=10; i < 50; i++)
-		for(int j=10; j < 50; j++){
+	for(int i=rect.y; i < rect.h; i++)
+		for(int j=rect.x; j < rect.w; j++){
 			SDL_Color c_test={0};
-			SDL_GetRGBA(pixels_test[i * 50 + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_test[i * test_surface->w + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, color.r);
 			assert_int_equal(c_test.g, color.g);
 			assert_int_equal(c_test.b, color.b);
@@ -111,8 +123,8 @@ static void color_zone_test(void **state){
 
 static void symmetry_test(void **state){
 	//Loading the images for tests
-	image *test_image=load_image("m_test/test_image.png");
-	image *ref_image=load_image("m_test/test_image.png");
+	image *test_image=load_image("tests/m_test/test_image.png");
+	image *ref_image=load_image("tests/m_test/test_image.png");
 	//Loading corresponding surfaces
 	SDL_Surface *    ref_surface=get_img_surface(ref_image);
 	SDL_Surface *    test_surface;
@@ -136,15 +148,18 @@ static void symmetry_test(void **state){
 			SDL_Color c_test={0};
 			SDL_Color c_ref={0};
 			SDL_GetRGBA(pixels_ref[i * test_surface->w + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[i * test_surface->w + (test_surface->w - j)], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_test[i * test_surface->w + (test_surface->w - j - 1)], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);
 			assert_int_equal(c_test.a, c_ref.a);
 		}
+	free_image(test_image);
 	//Testing horizontal symmetry
+	test_image=load_image("tests/m_test/test_image.png");
 	symmetry(test_image, 0);
 	test_surface=get_img_surface(test_image);
+	SDL_LockSurface(test_surface);
 	assert_int_equal(ref_surface->w, test_surface->w);
 	assert_int_equal(ref_surface->h, test_surface->h);
 	pixels_test=test_surface->pixels;
@@ -153,7 +168,7 @@ static void symmetry_test(void **state){
 			SDL_Color c_test={0};
 			SDL_Color c_ref={0};
 			SDL_GetRGBA(pixels_ref[i * test_surface->w + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[(test_surface->h - i) * test_surface->w + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_test[(test_surface->h - i - 1) * test_surface->w + j], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);
@@ -164,12 +179,13 @@ static void symmetry_test(void **state){
 	SDL_UnlockSurface(ref_surface);
 	SDL_FreeFormat(pixel_format);
 	free_image(test_image);
+	free_image(ref_image);
 }
 
 static void rotate_test(void **state){
 	//Loading the images for tests
-	image *test_image=load_image("m_test/test_image.png");
-	image *ref_image=load_image("m_test/test_image.png");
+	image *test_image=load_image("tests/m_test/test_image.png");
+	image *ref_image=load_image("tests/m_test/test_image.png");
 	//Loading corresponding surfaces
 	SDL_Surface *    ref_surface=get_img_surface(ref_image);
 	SDL_PixelFormat *pixel_format=SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
@@ -177,10 +193,12 @@ static void rotate_test(void **state){
 		perror("PixelFormat");
 		exit(1);
 	}
-	Uint32 *pixels_ref=ref_surface->pixels;
+	if(SDL_MUSTLOCK(ref_surface) == SDL_TRUE) SDL_LockSurface(ref_surface);
 	//Testing rotate
 	rotate(test_image, 90);
-	SDL_Surface *    test_surface=get_img_surface(test_image);
+	SDL_Surface *test_surface=get_img_surface(test_image);
+	if(SDL_MUSTLOCK(test_surface) == SDL_TRUE) SDL_LockSurface(test_surface);
+	Uint32 *pixels_ref=ref_surface->pixels;
 	Uint32 *pixels_test=test_surface->pixels;
 	//Checking dimensions
 	assert_int_equal(test_surface->w, ref_surface->h);
@@ -191,7 +209,7 @@ static void rotate_test(void **state){
 			SDL_Color c_test={0};
 			SDL_Color c_ref={0};
 			SDL_GetRGBA(pixels_ref[i * ref_surface->w + j], pixel_format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			SDL_GetRGBA(pixels_test[j * ref_surface->w + ref_surface->w - i], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
+			SDL_GetRGBA(pixels_test[j * ref_surface->h + ref_surface->h - i - 1], pixel_format, &c_test.r, &c_test.g, &c_test.b, &c_test.a);
 			assert_int_equal(c_test.r, c_ref.r);
 			assert_int_equal(c_test.g, c_ref.g);
 			assert_int_equal(c_test.b, c_ref.b);
@@ -201,11 +219,12 @@ static void rotate_test(void **state){
 	SDL_UnlockSurface(ref_surface);
 	SDL_FreeFormat(pixel_format);
 	free_image(test_image);
+	free_image(ref_image);
 }
 
 static void resize_workspace_test(void **state){
 	//Loading the image to test
-	image *test_image=load_image("m_test/test_image.png");
+	image *test_image=load_image("tests/m_test/test_image.png");
 	//Loading corresponding surface
 	SDL_Surface *test_surface=get_img_surface(test_image);
 	int          w_before, h_before, w_after, h_after;
@@ -225,14 +244,14 @@ static void resize_workspace_test(void **state){
 }
 
 static void new_img_test(void **state){
-	image *img=new_img("m_test/test_image.png");
+	image *img=new_img("tests/m_test/test_image.png");
 	assert_non_null(img);
 }
 
 // m_*_test functions test the getters and setters for a struct image fields
 
 static void m_img_surface_test(void **state){
-	image *      img=new_img("m_test/test_image.png");
+	image *      img=new_img("tests/m_test/test_image.png");
 	SDL_Surface *surface=SDL_CreateRGBSurface(0, 100, 100, 32, 0, 0, 0, 0);
 	set_img_surface(img, surface);
 	assert_ptr_equal(surface, get_img_surface(img));
@@ -240,23 +259,35 @@ static void m_img_surface_test(void **state){
 }
 
 static void m_img_name_test(void **state){
-	image *img=new_img("m_test/test_image.png ");
-	set_img_name(img, "Image - sama ");
-	assert_string_equal("Image - sama ", get_img_name(img));
+	image *img=new_img("tests/m_test/test_image.png ");
+	char * new_name=malloc(8*sizeof(char));
+	if(new_name!=NULL){
+		memcpy(new_name, "newname", 8);
+		set_img_name(img, new_name);
+		assert_string_equal(new_name, get_img_name(img));
+	}
 	free_image(img);
 }
 
 static void m_img_path_test(void **state){
-	image *img=new_img("m_test/test_image.png");
-	set_img_path(img, "m_test/");
-	assert_string_equal("m_test/", get_img_path(img));
+	image *img=new_img("tests/m_test/test_image.png");
+	char * new_path = malloc(12*sizeof(char));
+	if(new_path!=NULL){
+		memcpy(new_path, "tests/hello", 12);
+		set_img_path(img, new_path);
+		assert_string_equal(new_path, get_img_path(img));
+	}
 	free_image(img);
 }
 
 static void m_img_ext_test(void **state){
-	image *img=new_img("m_test/test_image.png");
-	set_img_ext(img, "png");
-	assert_string_equal("png", get_img_ext(img));
+	image *img=new_img("tests/m_test/test_image.png");
+	char * new_ext = malloc(8*sizeof(char));
+	if(new_ext!=NULL){
+		memcpy(new_ext, "new_ext", 8);
+		set_img_ext(img, new_ext);
+		assert_string_equal(new_ext, get_img_ext(img));
+	}
 	free_image(img);
 }
 
@@ -273,7 +304,7 @@ int run_m_tests(){
 		unit_test(m_img_surface_test),
 		unit_test(m_img_name_test),
 		unit_test(m_img_path_test),
-		unit_test(m_img_ext_test),
+		unit_test(m_img_ext_test)
 	};
 	return cmocka_run_group_tests(tests, NULL, NULL);
 }

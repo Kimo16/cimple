@@ -169,7 +169,6 @@ static void test_parse_line(char **tab, char *str, int len){
 }
 
 static void test_parse_error(short err, char *str){
-	cmd * command = parse_line(str);
 	assert_int_equal(err, ERRPARSE);
 }
 

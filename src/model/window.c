@@ -33,19 +33,21 @@ frame *init_frame(char *path){
 			return NULL;
 		}
 	}
-	new_frame->texture=SDL_CreateTextureFromSurface(new_frame->renderer, surface);
-	if(new_frame->texture == NULL){
+	SDL_Texture  * texture=SDL_CreateTextureFromSurface(new_frame->renderer, surface);
+	if(texture == NULL){
 		fprintf(stderr, "Error SDL_CreateTextureFromSurface : %s", SDL_GetError());
 		free_frame(new_frame);
 		return NULL;
 	}
-	int rc=SDL_RenderCopy(renderer, new_frame->texture, NULL, NULL);
+	int rc=SDL_RenderCopy(renderer, texture, NULL, NULL);
 	if(rc < 0){
 		fprintf(stderr, "Render error");
 		SDL_DestroyTexture(texture);
 		free_frame(new_frame);
 		return NULL;
 	}
+  SDL_SetRenderTarget(renderer,NULL);
+  SDL_DestroyTexture(texture);
 	return frame;
 }
 
@@ -56,9 +58,6 @@ short update_frame(frame *target){
 		free_frame(target);
 		return 0;
 	}
-	SDL_Texture *tmp=target->texture;
-	target->texture=new_texture;
-	SDL_DestroyTexture(tmp);
 	int rc=SDL_RenderCopy(target->renderer, new_texture, NULL, NULL);
 	if(rc < 0){
 		fprintf(stderr, "Render error");
@@ -66,6 +65,7 @@ short update_frame(frame *target){
 		free_frame(target);
 		return 0;
 	}
+  SDL_DestroyTexture(new_texture);
 	return 1;
 }
 

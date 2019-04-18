@@ -7,7 +7,6 @@ struct frame {
   image * image;
   SDL_Window * window;
   SDL_Renderer * renderer;
-  SDL_Texture * texture;
 };
 
 typedef struct frame frame;

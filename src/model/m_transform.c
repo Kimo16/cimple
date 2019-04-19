@@ -70,12 +70,17 @@ short symmetry(image *target, short vertical){
  *
  * @param target image to work with
  * @param angle a positive miltiple of 90,the angle to rotate the surface
+ * @param rev 1 if reversed rotation, 0 otherwise
  * @return 1 if success, 0 if failed, -1 if surface wasn't created
  */
 
-short rotate(image *target, int angle){
+short rotate(image *target, int angle, short rev){
 	if(target == NULL){
 		fprintf(stderr, "Null image in rotate");
+		return 0;
+	}
+	if(rev!=0 && rev!=1){
+		fprintf(stderr, "Invalid rev argument");
 		return 0;
 	}
 	SDL_Surface *img=get_img_surface(target);
@@ -88,9 +93,10 @@ short rotate(image *target, int angle){
 		return 1;
 	// create a surface to be filled
 	SDL_Surface *new_surface;
-	if((angle / 90) % 4 == 1 || (angle / 90) % 4 == 3)
+	int mod = (angle / 90) % 4;
+	if(mod % 2 == 1)
 		new_surface=SDL_CreateRGBSurfaceWithFormat(0, img->h, img->w, 32, img->format->format);
-	if((angle / 90) % 4 == 0 || (angle / 90) % 4 == 2)
+	if(mod % 2 == 0)
 		new_surface=SDL_CreateRGBSurfaceWithFormat(0, img->w, img->h, 32, img->format->format);
 	if(new_surface == NULL){
 		SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
@@ -101,7 +107,7 @@ short rotate(image *target, int angle){
 	Uint32 *pixels_ref=img->pixels;
 	Uint32 *pixels_test=new_surface->pixels;
 	// when image is turned once clockwise
-	if((angle / 90) % 4 == 1)
+	if((rev == 0 && mod == 1) || (rev == 1 && mod == 3))
 		for(int i=0; i < img->h; i++)
 			for(int j=0; j < img->w; j++){
 				SDL_Color c_ref={0};
@@ -110,7 +116,7 @@ short rotate(image *target, int angle){
 				pixels_test[j * new_surface->w + new_surface->w - i - 1]=new_color;
 			}
 	// when image is turned twice clockwise
-	if((angle / 90) % 4 == 2)
+	if(mod == 2)
 		for(int i=0; i < img->h; i++)
 			for(int j=0; j < img->w; j++){
 				SDL_Color c_ref={0};
@@ -119,7 +125,7 @@ short rotate(image *target, int angle){
 				pixels_test[(new_surface->h - i - 1) * new_surface->w + new_surface->w - j - 1]=new_color;
 			}
 	// when image is turned three times clockwise
-	if((angle / 90) % 4 == 3)
+	if((rev == 0 && mod == 3) || (rev == 1 && mod == 1))
 		for(int i=0; i < img->h; i++)
 			for(int j=0; j < img->w; j++){
 				SDL_Color c_ref={0};

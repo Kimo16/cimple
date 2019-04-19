@@ -249,7 +249,7 @@ static int light_func(int c, int n){
  * Change lumosity on image surface
  *
  * @param img * img , pointer to image structure representing an image
- * @param int percentage , degree of luminosity percentage 
+ * @param int percentage , degree of luminosity percentage
  * @param SDL_Rect rect , represent the area coordinates on the target surface
  * @return 0 if changes failed , 1 if all changes done.
  */
@@ -284,71 +284,67 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 	SDL_UnlockSurface(light_surface);
 	SDL_UnlockSurface(surface);
 	if(set_img_surface(img, light_surface))
-    return 0;
-	return 1 ; 
+		return 0;
+	return 1;
 }
 
 /*
  * Keep color between 0 and 255
  */
-static Uint8 keep_format(int color) {
-  if(color < 0) 
-    return 0;
-  if(color > 255) 
-    return 255;
-  return color;
+static Uint8 keep_format(int color){
+	if(color < 0)
+		return 0;
+	if(color > 255)
+		return 255;
+	return color;
 }
-
 
 /**
  * Get the color for contrast transformation
  */
-static Uint32 get_new_pixel(SDL_Color c, SDL_PixelFormat *format, int contrast) {
-  float alpha = (259.0 * (contrast + 255.0)) / (255.0 * (259-contrast));
-  Uint8 red   = keep_format((int)(alpha *(c.r - 128) + 128));
-  Uint8 blue  = keep_format((int)(alpha *(c.b - 128) + 128));
-  Uint8 green = keep_format((int)(alpha *(c.g - 128) + 128));
-  return SDL_MapRGBA(format, red, blue, green, c.a);
+static Uint32 get_new_pixel(SDL_Color c, SDL_PixelFormat *format, int contrast){
+	float alpha=(259.0 * (contrast + 255.0)) / (255.0 * (259 - contrast));
+	Uint8 red=keep_format((int)(alpha * (c.r - 128) + 128));
+	Uint8 blue=keep_format((int)(alpha * (c.b - 128) + 128));
+	Uint8 green=keep_format((int)(alpha * (c.g - 128) + 128));
+	return SDL_MapRGBA(format, red, blue, green, c.a);
 }
-
 
 /**
  * @brief
  * Change image contrast
  * @param img image with surface
  * @param rect zone where apply contrast
- * @param percent rate of contrast 
+ * @param percent rate of contrast
  */
-short contrast(image * img , SDL_Rect rect , int percent){
-	if(img == NULL ){
-		fprintf(stderr , "contrast image error : Null argument\n");
+short contrast(image *img, SDL_Rect rect, int percent){
+	if(img == NULL)
+		fprintf(stderr, "contrast image error : Null argument\n");
+
+	SDL_Surface *surface=get_img_surface(img);
+	SDL_Surface *new_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
+	if(new_surface == NULL){
+		fprintf(stderr, "SDL_CreateSurfaceWithFormat = failed: %s\n", SDL_GetError());
+		return 0;
 	}
 
-	SDL_Surface * surface = get_img_surface(img);
-	SDL_Surface * new_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32 , surface->format->format);
-	if (new_surface == NULL){
-		fprintf(stderr , "SDL_CreateSurfaceWithFormat = failed: %s\n", SDL_GetError());
-		return 0; 
-	} 
+	if(SDL_MUSTLOCK(surface) == 1) SDL_UnlockSurface(surface);
+	if(SDL_MUSTLOCK(new_surface) == 1) SDL_UnlockSurface(new_surface);
 
-	if(SDL_MUSTLOCK(surface) == 1 ) SDL_UnlockSurface(surface);
-	if(SDL_MUSTLOCK(new_surface) == 1 ) SDL_UnlockSurface(new_surface);
+	Uint32 *src_pixels=surface->pixels;
+	Uint32 *new_pixels=new_surface->pixels;
 
-	Uint32 * src_pixels = surface->pixels; 
-	Uint32 * new_pixels = new_surface->pixels ; 
-
-	for ( int i  = rect.y ; i < rect.y + rect.h ; i++){
-		for ( int j = rect.x ; j < rect.x + rect.w ; j++){
+	for(int i=rect.y; i < rect.y + rect.h; i++)
+		for(int j=rect.x; j < rect.x + rect.w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], surface->format, &c.r, &c.g, &c.b, &c.a);
-			Uint32 contrast_pixel = get_new_pixel(c, surface->format, percent);
-			new_pixels[i * surface->w + j]= contrast_pixel;
+			Uint32 contrast_pixel=get_new_pixel(c, surface->format, percent);
+			new_pixels[i * surface->w + j]=contrast_pixel;
 		}
-	}
 
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(surface);
-	if (!set_img_surface(img, new_surface))
-    return 0;
-	return 1 ; 
+	if(!set_img_surface(img, new_surface))
+		return 0;
+	return 1;
 }

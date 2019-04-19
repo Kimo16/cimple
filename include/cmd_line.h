@@ -5,6 +5,7 @@
 #include "m_color.h"
 #include "m_image.h"
 #include "m_transform.h"
+#include "m_frame.h"
 #include "in.h"
 #include "out.h"
 

@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include "m_image.h"
+#include "in.h"
 
 struct frame {
   image * image;

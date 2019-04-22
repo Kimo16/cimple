@@ -12,7 +12,7 @@ frame *init_frame(char *path){
 		free_frame(new_frame);
 		return NULL;
 	}
-	SDl_Surface *surface=get_img_surface(new_frame->image);
+	SDL_Surface *surface=get_img_surface(new_frame->image);
 	if(surface == NULL){
 		fprintf(stderr, "Cannot get surface");
 		free_frame(new_frame);
@@ -39,25 +39,27 @@ frame *init_frame(char *path){
 		free_frame(new_frame);
 		return NULL;
 	}
-	int rc=SDL_RenderCopy(renderer, texture, NULL, NULL);
+	int rc=SDL_RenderCopy(new_frame->renderer, texture, NULL, NULL);
 	if(rc < 0){
 		fprintf(stderr, "Render error");
 		SDL_DestroyTexture(texture);
 		free_frame(new_frame);
 		return NULL;
 	}
-  SDL_SetRenderTarget(renderer,NULL);
+  SDL_SetRenderTarget(new_frame->renderer,NULL);
   SDL_DestroyTexture(texture);
-	return frame;
+	return new_frame;
 }
 
 short update_frame(frame *target){
-	SDL_Texture *new_texture=SDL_CreateTextureFromSurface(target->renderer, get_img_surface(target->image));
+	SDL_Surface * surface = get_img_surface(target->image);
+	SDL_Texture *new_texture=SDL_CreateTextureFromSurface(target->renderer, surface);
 	if(new_texture == NULL){
 		fprintf(stderr, "Error updating texture");
 		free_frame(target);
 		return 0;
 	}
+	SDL_SetWindowSize(target->window, surface->w, surface->h);
 	int rc=SDL_RenderCopy(target->renderer, new_texture, NULL, NULL);
 	if(rc < 0){
 		fprintf(stderr, "Render error");
@@ -73,6 +75,5 @@ void free_frame(frame *target){
 	if(target->image != NULL) free_image(target->image);
 	if(target->window != NULL) SDL_DestroyWindow(target->window);
 	if(target->renderer != NULL) SDL_DestroyRenderer(target->renderer);
-	if(target->texture != NULL) SDL_DestroyTexture(target->texture);
 	free(target);
 }

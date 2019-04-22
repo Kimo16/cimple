@@ -33,7 +33,7 @@ frame *init_frame(char *path){
 			return NULL;
 		}
 	}
-	SDL_Texture  * texture=SDL_CreateTextureFromSurface(new_frame->renderer, surface);
+	SDL_Texture *texture=SDL_CreateTextureFromSurface(new_frame->renderer, surface);
 	if(texture == NULL){
 		fprintf(stderr, "Error SDL_CreateTextureFromSurface : %s", SDL_GetError());
 		free_frame(new_frame);
@@ -46,13 +46,13 @@ frame *init_frame(char *path){
 		free_frame(new_frame);
 		return NULL;
 	}
-  SDL_SetRenderTarget(new_frame->renderer,NULL);
-  SDL_DestroyTexture(texture);
+	SDL_SetRenderTarget(new_frame->renderer, NULL);
+	SDL_DestroyTexture(texture);
 	return new_frame;
 }
 
 short update_frame(frame *target){
-	SDL_Surface * surface = get_img_surface(target->image);
+	SDL_Surface *surface=get_img_surface(target->image);
 	SDL_Texture *new_texture=SDL_CreateTextureFromSurface(target->renderer, surface);
 	if(new_texture == NULL){
 		fprintf(stderr, "Error updating texture");
@@ -67,13 +67,13 @@ short update_frame(frame *target){
 		free_frame(target);
 		return 0;
 	}
-  SDL_DestroyTexture(new_texture);
+	SDL_DestroyTexture(new_texture);
 	return 1;
 }
 
 void free_frame(frame *target){
-	if(target->image != NULL) free_image(target->image);
 	if(target->window != NULL) SDL_DestroyWindow(target->window);
 	if(target->renderer != NULL) SDL_DestroyRenderer(target->renderer);
+	if(target->image != NULL) free_image(target->image);
 	free(target);
 }

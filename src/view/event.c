@@ -48,8 +48,33 @@ int draw_select(SDL_Rect selection) {
 
 /**
  * @brief
- * Get event of selection
+ * Get point location
  */
+SDL_Point get_point() {
+  SDL_Event event;
+  SDL_Point point;
+  memset(&point, 0, sizeof(SDL_Rect));
+  short run = 1;
+
+  while(run) {
+    SDL_WaitEvent(&event);
+
+    // Key is pressed for leaving
+    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
+      point.x = -1;
+      run = 0;
+    }   
+    else if (event.type == SDL_MOUSEBUTTONDOWN &&
+             (event.window.windowID == SDL_GetWindowID(frame_buffer[cursor]->window))) {
+      point.x = event.button.x;
+      point.y = event.button.y;
+      run = 0;
+    }
+  }
+  return point;
+}
+
+
 SDL_Rect get_select_array() {
   SDL_Event event;
   SDL_Rect rect;
@@ -89,7 +114,6 @@ SDL_Rect get_select_array() {
   }  
   return rect;
 }
-
 
 /**
  * Get the frame at buffer position

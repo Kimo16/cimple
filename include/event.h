@@ -10,6 +10,7 @@
 #define MAX_BUFFER 10
 
 SDL_Rect get_select_array(void);
+SDL_Point get_point(void);
 frame *get_cursor_buffer(void);
 int get_free_buffer(void);
 void moveto_first_buffer(void);

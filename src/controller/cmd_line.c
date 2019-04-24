@@ -21,26 +21,19 @@ static int string_to_int(char *str){
 	return i;
 }
 
-static SDL_Rect *build_rect(int x, int y, int w, int h){
-	SDL_Rect *rect=NULL;
-	rect->x=x;
-	rect->y=y;
-	rect->w=w;
-	rect->h=h;
-	return rect;
-}
 
 short handler_cmd_bnw(cmd *command){                                      /*not finish*/
 	frame * f = get_cursor_buffer();
+	printf("here\n");
 	if(f == NULL ) return 0;
 	image *   img=f -> image;
-
-	SDL_Rect *rect=NULL;
-	if(strcmp(command->args[1], "-a") == 0)
-		rect=build_rect(0, 0, get_img_surface(img)->w, get_img_surface(img)->h);
-	else
-		*rect=get_select_array();       
-	return black_and_white_filter(img, *rect);
+	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
+	if(strcmp(command->args[1], "") == 0){
+		rect=get_select_array(); 
+	}     
+	if(black_and_white_filter(img, rect) != 1 ) return 0;
+	if(update_frame(f) != 1) return 0;
+	return 1 ;
 }
 
 short handler_cmd_copy(cmd *command){                                      
@@ -48,12 +41,14 @@ short handler_cmd_copy(cmd *command){
 	if(f == NULL ) return 0;
 	image *   img=f -> image;
 
-	SDL_Rect *rect=NULL;
-	if(strcmp(command->args[1], "-a") == 0)
-		rect=build_rect(0, 0, get_img_surface(img)->w, get_img_surface(img)->h);
-	else
-		*rect=get_select_array();       /*select zone in the windows*/
-	return copy(img, *rect);
+	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
+
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();  
+
+	if(copy(img, rect) != 1 ) return 0;
+	if(update_frame(f) != 1) return 0;
+	return 1 ;
 }
 
 short handler_cmd_contrast(cmd *command){                                      
@@ -63,14 +58,14 @@ short handler_cmd_contrast(cmd *command){
 	
 	int       percent=string_to_int(command->args[2]);
 	
-	SDL_Rect *rect=NULL;
+	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 	
-	if(strcmp(command->args[1], "-a") == 0)
-		rect=build_rect(0, 0, get_img_surface(img)->w, get_img_surface(img)->h);
-	else
-		*rect=get_select_array();        /*select zone in the windows*/
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();  
 
-	return contrast(img, *rect, percent);
+	if(contrast(img, rect, percent) != 1 ) return 0;
+	if(update_frame(f) != 1) return 0;
+	return 1;
 }
 
 short handler_cmd_cut(cmd *command){                                      
@@ -78,14 +73,14 @@ short handler_cmd_cut(cmd *command){
 	if(f == NULL ) return 0;
 	image *   img=f -> image;
 
-	SDL_Rect *rect=NULL;
+	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 	
-	if(strcmp(command->args[1], "-a") == 0)
-		rect=build_rect(0, 0, get_img_surface(img)->w, get_img_surface(img)->h);
-	else
-		*rect=get_select_array();     
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();     
 	
-	return negative_filter(img, *rect);
+	if(negative_filter(img, rect) != 1 ) return 0;
+	if(update_frame(f) != 1) return 0;
+	return 1;
 }
 
 short handler_cmd_greyscale(cmd *command){                                      
@@ -93,14 +88,14 @@ short handler_cmd_greyscale(cmd *command){
 	if(f == NULL ) return 0;
 	image *   img=f -> image;
 
-	SDL_Rect *rect=NULL;
-	
-	if(strcmp(command->args[1], "-a") == 0)
-		rect=build_rect(0, 0, get_img_surface(img)->w, get_img_surface(img)->h);
-	else
-		*rect=get_select_array();       
-	
-	return grey_filter(img, *rect);
+	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
+
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();
+
+	if(grey_filter(img, rect)!=1)return 0;     
+	if(update_frame(f) != 1) return 0;
+	return 1;
 }
 
 short handler_cmd_fill(cmd *command){                                       
@@ -113,15 +108,15 @@ short handler_cmd_fill(cmd *command){
 	int       col_b=string_to_int(command->args[4]);
 	int       col_a=string_to_int(command->args[5]);
 	
-	SDL_Rect *rect=NULL;
+	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 	SDL_Color color={col_r, col_g, col_b, col_a};
 	
-	if(strcmp(command->args[1], "-a") == 0)
-		rect=build_rect(0, 0, get_img_surface(img)->w, get_img_surface(img)->h);
-	else
-		*rect=get_select_array();        
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();        
 	
-	return color_zone(img, *rect, color);
+	if(color_zone(img, rect, color)!= 1) return 0;
+	if(update_frame(f) != 1) return 0;
+	return 1;
 }
 
 short handler_cmd_ligth(cmd *command){                                       
@@ -131,14 +126,14 @@ short handler_cmd_ligth(cmd *command){
 
 	int       percent=string_to_int(command->args[2]);
 	
-	SDL_Rect *rect=NULL;
+	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 	
-	if(strcmp(command->args[1], "-a") == 0)
-		rect=build_rect(0, 0, get_img_surface(img)->w, get_img_surface(img)->h);
-	else
-		*rect=get_select_array();
-	
-	return light_filter(img, *rect, percent);
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();
+
+	if(light_filter(img, rect, percent)!= 1 ) return 0 ;
+	if(update_frame(f) != 1) return 0;
+	return 1;
 }
 
 short handler_cmd_list_buff(cmd *command){ /*not finish*/
@@ -152,10 +147,7 @@ short handler_cmd_list_buff(cmd *command){ /*not finish*/
 
 short handler_cmd_load(cmd *command){                                       
 	if(strcmp(command->args[1], "-w") != 0){
-		if(new_frame(command -> args[3]) == 0){
-			fprintf(stderr, "Error command [load]: too many windows are open\n");
-			return 0;
-		}
+		if(new_frame(command -> args[3]) == 0) return 0;
 	}
 	else{
 		int index=string_to_int(command->args[2]);
@@ -173,14 +165,14 @@ short handler_cmd_negative(cmd *command){
 	if(f == NULL ) return 0;
 	image *   img=f -> image;
 
-	SDL_Rect *rect=NULL;
+	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if(strcmp(command->args[1], "-a") == 0)
-		rect=build_rect(0, 0, get_img_surface(img)->w, get_img_surface(img)->h);
-	else
-		*rect=get_select_array();     
-	
-	return negative_filter(img, *rect);
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();
+
+	if(negative_filter(img, rect) != 1 )return 0;
+	if(update_frame(f) != 1) return 0;
+	return 1;
 }
 
 short handler_cmd_paste(cmd *command){                                                  /*not finish*/
@@ -239,14 +231,14 @@ short handler_cmd_replace(cmd *command){                                        
 	SDL_Color origin_color={orig_r, orig_g, orig_b, orig_a};
 	SDL_Color target_color={targ_r, targ_g, targ_b, targ_a};
 	
-	SDL_Rect *rect=NULL;
+	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 	
-	if(strcmp(command->args[3], "-a") == 0)
-		rect=build_rect(0, 0, get_img_surface(img)->w, get_img_surface(img)->h);
-	else
-		*rect=get_select_array();                /*select zone in windows*/
+	if(strcmp(command->args[3], "") == 0)
+		rect=get_select_array();                /*select zone in windows*/
 	
-	return replace_color(img, *rect, origin_color, target_color, percent);
+	if(replace_color(img, rect, origin_color, target_color, percent) != 1 ) return 0 ;
+	if(update_frame(f) != 1)return 0 ; 
+	return 1 ;
 }
 
 short handler_cmd_resize(cmd *command){
@@ -265,10 +257,12 @@ short handler_cmd_rotate(cmd *command){                                      /*n
 	frame * f = get_cursor_buffer();
 	if(f == NULL ) return 0;
 	image *   img=f -> image;
-
+	int n ; 
 	int    angle=string_to_int(command->args[2]);
-	if(strcmp(command->args[1], "-r") == 0) return rotate(img, angle,1);  
-	return rotate(img, angle,0);                                         
+	if(strcmp(command->args[1], "-r") == 0) n = rotate(img, angle,1);  
+	n = rotate(img, angle,0);  
+	update_frame(f);
+	return  n ;                                       
 }
 
 short handler_cmd_save(cmd *command){

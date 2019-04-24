@@ -240,6 +240,7 @@ int new_frame(char *path) {
     return 0;
   }
   frame_buffer[pos] = current;
+  cursor = pos;
   return 1;
 }
 

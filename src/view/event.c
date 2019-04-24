@@ -252,12 +252,21 @@ int new_frame(char *path){
 	return 1;
 }
 
+void print_frame(){
+  for ( int i = 0 ; i < MAX_BUFFER ; i ++){
+    if(frame_buffer[i] != NULL ) 
+      printf("Window id : %d | picture : %s\n", i , get_img_name(frame_buffer[i]->image));
+    else 
+      printf("Window id : %d | not open window \n", i );
+  }
+}
+
 /**
  * Delete a buffer and move cursor
  * to next non_empty position
  */
 void free_frame_buffer(int i){
-	if(i > 0 && i < MAX_BUFFER && frame_buffer[i] != NULL){
+	if(i >= 0 && i < MAX_BUFFER && frame_buffer[i] != NULL){
 		free_frame(frame_buffer[i]);
 		frame_buffer[i]=NULL;
 	}

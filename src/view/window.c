@@ -52,7 +52,17 @@ frame *init_frame(char *path){
 	return new_frame;
 }
 
-short update_frame(frame *target){
+short update_frame(frame *target, char * path){
+	if( path != NULL ){ 
+		image * img = target -> image; 
+		target->image=load_image(path);
+		if(target->image == NULL){
+			fprintf(stderr, "Image could not be set");
+			target -> image = img;
+			return 0 ;
+		}
+		free_image(img);
+	}
 	SDL_Surface *surface=get_img_surface(target->image);
 	SDL_Texture *new_texture=SDL_CreateTextureFromSurface(target->renderer, surface);
 	if(new_texture == NULL){

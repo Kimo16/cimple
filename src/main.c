@@ -2,6 +2,5 @@
 #include "cmd_line.h"
 
 int main(){
-	cimple_handler();
-	return 0;
+	return cimple_handler();
 }

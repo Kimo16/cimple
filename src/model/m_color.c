@@ -28,7 +28,7 @@ short negative_filter(image *img, SDL_Rect rect){
 
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=neg_surface->pixels;
-	
+
 	for(int i=0; i < neg_surface->h; i++)
 		for(int j=0; j < neg_surface->w; j++){
 			SDL_Color c={0};
@@ -266,12 +266,14 @@ short color_zone(image *img, SDL_Rect rect, SDL_Color color){
 }
 
 static int light_func(int c, int n){
-	double n1=n / 100;
+	/*double n1=1 +n / 100;
 	printf("%f\n", n1);
 	int n2=(int)(255 * pow((double)(c / 255), n1));
 	printf("%d\n", c);
-	printf("%d\n", n2);
-	return n2;
+	printf("%d\n", n2);*/
+	if( c + n > 255)return 255 ; 
+	if( c + n < 0) return 0 ; 
+	return c;
 }
 
 /**
@@ -299,7 +301,7 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 
 	if(SDL_MUSTLOCK(surface) == 1) SDL_UnlockSurface(surface);
 	if(SDL_MUSTLOCK(light_surface) == 1) SDL_UnlockSurface(light_surface);
-	printf("here9\n");
+	
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=light_surface->pixels;
 
@@ -380,7 +382,7 @@ short contrast(image *img, SDL_Rect rect, int percent){
 			else
 				new_pixels[i * surface->w + j]=SDL_MapRGBA(surface->format, c.r, c.g, c.b, c.a);
 		}
-	
+
 
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(surface);

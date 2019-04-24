@@ -16,7 +16,6 @@
 #include "event.h"
 
 
-void filter_handler(char * option/*,pixels matrice struct*/);
-void cimple_handler();
+short cimple_handler();
 
 #endif

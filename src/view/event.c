@@ -60,14 +60,13 @@ int draw_select(SDL_Rect selection) {
     return 0;
   }
 
+  SDL_SetRenderTarget(current->renderer, texture);
+  SDL_RenderCopy(current->renderer, texture, NULL, NULL);
   if(non_empty(selection)) {
-    SDL_SetRenderTarget(current->renderer, texture);
     SDL_SetRenderDrawColor(current->renderer, select.r, select.g, select.b, select.a);
     SDL_RenderDrawRect(current->renderer, &selection);
-    SDL_RenderCopy(current->renderer, texture, NULL, NULL);
-    SDL_SetRenderTarget(current->renderer, NULL);
   }
-  
+  SDL_SetRenderTarget(current->renderer, NULL);
   SDL_RenderPresent(current->renderer);
   
   return 1;
@@ -145,6 +144,7 @@ SDL_Rect get_select_array() {
       rect.y = event.motion.y;
       rect.h = event.motion.xrel;
       rect.w = event.motion.yrel;
+      printf("Rect : x:%d, y:%d, h:%d, w:%d\n", rect.x, rect.y, rect.h, rect.w);
     }
     
     // Draw the selection

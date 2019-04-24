@@ -28,6 +28,20 @@ short negative_filter(image *img, SDL_Rect rect){
 
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=neg_surface->pixels;
+	
+	for(int i=0; i < neg_surface->h; i++)
+		for(int j=0; j < neg_surface->w; j++){
+			SDL_Color c={0};
+			SDL_GetRGBA(src_pixels[i * surface->w + j], neg_surface->format, &c.r, &c.g, &c.b, &c.a);
+			if(i >= rect.y && i < rect.y + rect.h && j < rect.x + rect.w && j >= rect.x){
+				SDL_Color c={0};
+				SDL_GetRGBA(src_pixels[i * surface->w + j], neg_surface->format, &c.r, &c.g, &c.b, &c.a);
+				Uint32 c_neg=SDL_MapRGBA(neg_surface->format, 255 - c.r, 255 - c.g, 255 - c.b, c.a);
+				dest_pixels[i * neg_surface->w + j]=c_neg;
+			}
+			else
+				dest_pixels[i * neg_surface->w + j]=SDL_MapRGBA(neg_surface->format, c.r, c.g, c.b, c.a);
+		}
 
 	for(int i=rect.y; i < rect.y + rect.h; i++)
 		for(int j=rect.x; j < rect.x + rect.w; j++){
@@ -355,14 +369,18 @@ short contrast(image *img, SDL_Rect rect, int percent){
 
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *new_pixels=new_surface->pixels;
-
-	for(int i=rect.y; i < rect.y + rect.h; i++)
-		for(int j=rect.x; j < rect.x + rect.w; j++){
+	for(int i=0; i < new_surface->h; i++)
+		for(int j=0; j < new_surface->w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], surface->format, &c.r, &c.g, &c.b, &c.a);
-			Uint32 contrast_pixel=get_new_pixel(c, surface->format, percent);
-			new_pixels[i * surface->w + j]=contrast_pixel;
+			if(i >= rect.y && i < rect.y + rect.h && j < rect.x + rect.w && j >= rect.x){
+				Uint32 contrast_pixel=get_new_pixel(c, surface->format, percent);
+				new_pixels[i * surface->w + j]=contrast_pixel;
+			}
+			else
+				new_pixels[i * surface->w + j]=SDL_MapRGBA(surface->format, c.r, c.g, c.b, c.a);
 		}
+	
 
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(surface);

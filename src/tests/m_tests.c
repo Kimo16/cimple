@@ -195,7 +195,7 @@ static void rotate_test(void **state){
 	}
 	if(SDL_MUSTLOCK(ref_surface) == SDL_TRUE) SDL_LockSurface(ref_surface);
 	//Testing rotate
-	rotate(test_image, 90);
+	rotate(test_image, 90, 0);
 	SDL_Surface *test_surface=get_img_surface(test_image);
 	if(SDL_MUSTLOCK(test_surface) == SDL_TRUE) SDL_LockSurface(test_surface);
 	Uint32 *pixels_ref=ref_surface->pixels;

@@ -34,7 +34,6 @@ short has_click(SDL_Point point) {
  * a standard rect
  */
 static void standard_rect(SDL_Rect* origin) {
-  printf("Rect : x:%d, y:%d, h:%d, w:%d\n", origin->x, origin->y, origin->h, origin->w);
   if(origin->w < 0) {
     origin->x += origin->w;
     origin->w = -origin->w;
@@ -43,8 +42,7 @@ static void standard_rect(SDL_Rect* origin) {
     origin->y += origin->h;
     origin->h = -origin->h;
   }
-  printf("Rect : x:%d, y:%d, h:%d, w:%d\n", origin->x, origin->y, origin->h, origin->w);
-}
+ }
 
 /**
  * --- Selection --- 

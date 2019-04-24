@@ -121,11 +121,11 @@ short handler_cmd_light(cmd *command){
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;
-	if( strcmp (command -> args[2] ,"") == 0 ){
-		fprintf(stderr, "Error command [%s] : please enter a percent rate\n",command -> args[0] );
-		return 0 ;
+	if(strcmp(command->args[2], "") == 0){
+		fprintf(stderr, "Error command [%s] : please enter a percent rate\n", command->args[0]);
+		return 0;
 	}
-	int percent=string_to_int(command->args[2]);
+	int      percent=string_to_int(command->args[2]);
 	SDL_Rect rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
 	if(strcmp(command->args[1], "") == 0)
@@ -246,15 +246,15 @@ short handler_cmd_resize(cmd *command){
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;
-	short n;
-	int width=string_to_int(command->args[2]);
-	int height=string_to_int(command->args[3]);
+	short  n;
+	int    width=string_to_int(command->args[2]);
+	int    height=string_to_int(command->args[3]);
 
-	if(strcmp(command->args[1], "workspace") == 0) n =  resize_workspace(img, width, height);
-	else n = resize_image(img, width, height);
-	if( n != 1) return 0 ;
-	if(update_frame(f) != 1 ) return 0 ; 
-	return 1; 
+	if(strcmp(command->args[1], "workspace") == 0) n=resize_workspace(img, width, height);
+	else n=resize_image(img, width, height);
+	if(n != 1) return 0;
+	if(update_frame(f) != 1) return 0;
+	return 1;
 }
 
 short handler_cmd_rotate(cmd *command){                                      /*not finish*/

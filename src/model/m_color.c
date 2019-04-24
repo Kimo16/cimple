@@ -70,11 +70,11 @@ short black_and_white_filter(image *img, SDL_Rect rect){
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=bnw_surface->pixels;
 
-	for(int i=0; i < bnw_surface -> h ; i++)
-		for(int j=0; j < bnw_surface -> w ; j++){
+	for(int i=0; i < bnw_surface->h; i++)
+		for(int j=0; j < bnw_surface->w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], bnw_surface->format, &c.r, &c.g, &c.b, &c.a);
-			if( i >= rect.y && i < rect.y + rect.h  && j <rect.x + rect.w && j >= rect.x ){
+			if(i >= rect.y && i < rect.y + rect.h && j < rect.x + rect.w && j >= rect.x){
 				int    gray_scale=(int)c.r * 0.2125 + c.g * 0.7154 + c.b * 0.0721;       /*CIE 709 recommandation for grayscale*/
 				Uint32 c_bnw;
 				if(gray_scale < 128)
@@ -82,9 +82,9 @@ short black_and_white_filter(image *img, SDL_Rect rect){
 				else
 					c_bnw=SDL_MapRGBA(bnw_surface->format, 255, 255, 255, c.a);
 				dest_pixels[i * bnw_surface->w + j]=c_bnw;
-			}else{
-				dest_pixels[i * bnw_surface->w + j]=SDL_MapRGBA(bnw_surface->format, c.r, c.g, c.b, c.a);
 			}
+			else
+				dest_pixels[i * bnw_surface->w + j]=SDL_MapRGBA(bnw_surface->format, c.r, c.g, c.b, c.a);
 		}
 
 	SDL_UnlockSurface(bnw_surface);
@@ -121,17 +121,17 @@ short grey_filter(image *img, SDL_Rect rect){
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=gray_surface->pixels;
 
-	for(int i=0; i < gray_surface -> h ; i++)
-		for(int j=0; j < gray_surface -> w ; j++){
+	for(int i=0; i < gray_surface->h; i++)
+		for(int j=0; j < gray_surface->w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], gray_surface->format, &c.r, &c.g, &c.b, &c.a);
-			if( i >= rect.y && i < rect.y + rect.h  && j <rect.x + rect.w && j >= rect.x ){
+			if(i >= rect.y && i < rect.y + rect.h && j < rect.x + rect.w && j >= rect.x){
 				int    gray_scale=(int)((c.r * 0.2125) + (c.g * 0.7154) + (c.b * 0.0721));      /*CIE 709 recommandation for grayscale*/
 				Uint32 c_gray=SDL_MapRGBA(gray_surface->format, gray_scale, gray_scale, gray_scale, c.a);
 				dest_pixels[i * gray_surface->w + j]=c_gray;
-			}else{
-				dest_pixels[i * gray_surface->w + j]=SDL_MapRGBA(gray_surface->format, c.r, c.g, c.b, c.a);
 			}
+			else
+				dest_pixels[i * gray_surface->w + j]=SDL_MapRGBA(gray_surface->format, c.r, c.g, c.b, c.a);
 		}
 
 	SDL_UnlockSurface(gray_surface);
@@ -191,20 +191,20 @@ short replace_color(image *img, SDL_Rect rect, SDL_Color origin_color, SDL_Color
 
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=repl_surface->pixels;
-	for(int i=0; i < repl_surface -> h ; i++)
-		for(int j=0; j < repl_surface -> w ; j++){
+	for(int i=0; i < repl_surface->h; i++)
+		for(int j=0; j < repl_surface->w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], repl_surface->format, &c.r, &c.g, &c.b, &c.a);
-			if( i >= rect.y && i < rect.y + rect.h  && j <rect.x + rect.w && j >= rect.x ){
+			if(i >= rect.y && i < rect.y + rect.h && j < rect.x + rect.w && j >= rect.x){
 				Uint32 repl_c;
 				if(margin_colors(c, origin_color, margin) == 1)
 					repl_c=SDL_MapRGBA(repl_surface->format, target_color.r, target_color.g, target_color.b, target_color.a);
 				else
 					repl_c=src_pixels[i * surface->w + j];
 				dest_pixels[i * repl_surface->w + j]=repl_c;
-			}else{
-				dest_pixels[i * repl_surface->w + j]=SDL_MapRGBA(repl_surface->format, c.r, c.g, c.b, c.a);
 			}
+			else
+				dest_pixels[i * repl_surface->w + j]=SDL_MapRGBA(repl_surface->format, c.r, c.g, c.b, c.a);
 		}
 
 	SDL_UnlockSurface(repl_surface);
@@ -252,12 +252,12 @@ short color_zone(image *img, SDL_Rect rect, SDL_Color color){
 }
 
 static int light_func(int c, int n){
-	double n1=  n / 100;
-	printf("%f\n",n1 );
-	int n2 = (int)(255 * pow((double)(c / 255), n1));
-	printf("%d\n", c );
-	printf("%d\n",n2 );
-	return n2 ;
+	double n1=n / 100;
+	printf("%f\n", n1);
+	int n2=(int)(255 * pow((double)(c / 255), n1));
+	printf("%d\n", c);
+	printf("%d\n", n2);
+	return n2;
 }
 
 /**
@@ -273,7 +273,7 @@ static int light_func(int c, int n){
 short light_filter(image *img, SDL_Rect rect, int percent){
 	if(img == NULL){
 		fprintf(stderr, "Error light_filter() : Null argument\n");
-		return 0 ; 
+		return 0;
 	}
 
 	SDL_Surface *surface=get_img_surface(img);
@@ -289,16 +289,16 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=light_surface->pixels;
 
-	for(int i=0; i < light_surface -> h ; i++)
-		for(int j=0; j < light_surface -> w ; j++){
+	for(int i=0; i < light_surface->h; i++)
+		for(int j=0; j < light_surface->w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], light_surface->format, &c.r, &c.g, &c.b, &c.a);
-			if( i >= rect.y && i < rect.y + rect.h  && j <rect.x + rect.w && j >= rect.x ){
+			if(i >= rect.y && i < rect.y + rect.h && j < rect.x + rect.w && j >= rect.x){
 				Uint32 light_c=SDL_MapRGBA(light_surface->format, light_func(c.r, percent), light_func(c.g, percent), light_func(c.b, percent), c.a);
 				dest_pixels[i * light_surface->w + j]=light_c;
-			}else{
-				dest_pixels[i * light_surface->w + j]=SDL_MapRGBA(light_surface->format, c.r, c.g, c.b, c.a);
 			}
+			else
+				dest_pixels[i * light_surface->w + j]=SDL_MapRGBA(light_surface->format, c.r, c.g, c.b, c.a);
 		}
 
 	SDL_UnlockSurface(light_surface);
@@ -340,7 +340,7 @@ static Uint32 get_new_pixel(SDL_Color c, SDL_PixelFormat *format, int contrast){
 short contrast(image *img, SDL_Rect rect, int percent){
 	if(img == NULL){
 		fprintf(stderr, "contrast image error : Null argument\n");
-		return 0 ; 
+		return 0;
 	}
 
 	SDL_Surface *surface=get_img_surface(img);

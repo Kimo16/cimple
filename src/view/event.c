@@ -1,19 +1,47 @@
 #include "event.h"
 
+/**
+ * -- Local variables
+ */
+
 static frame * frame_buffer[MAX_BUFFER];
 static int cursor = -1;
 
-// Return 1 if non empty
+
+
+/**
+ * --- Helpers --- 
+ */
+
+/**
+ * @brief
+ * Return 1 if the rect is non_empty
+ */
 short non_empty(SDL_Rect rect) {
-  return rect.x && rect.y && rect.h && rect.w;
+  return rect.x || rect.y || rect.h || rect.w;
+}
+
+/**
+ * @brief
+ * Return 1 if the user has click
+ */
+short has_click(SDL_Point point) {
+  return point.x != -1;
 }
 
 
-// Draw selection
+
+/**
+ * --- Selection --- 
+ */
+
+/**
+ *  Draw selection
+ */
 int draw_select(SDL_Rect selection) {
   frame *current = frame_buffer[cursor];
 
-  SDL_Color select = {255, 0, 0, 0};
+  SDL_Color select = {255, 0, 0, 255};
   SDL_Surface *surface = get_img_surface(current->image);
   SDL_Texture *texture = NULL;
 
@@ -49,12 +77,16 @@ int draw_select(SDL_Rect selection) {
 /**
  * @brief
  * Get point location
+ * @return the point with a negative x in case of
+ * quit
  */
 SDL_Point get_point() {
   SDL_Event event;
   SDL_Point point;
-  memset(&point, 0, sizeof(SDL_Rect));
+  memset(&point, 0, sizeof(SDL_Point));
   short run = 1;
+  SDL_RaiseWindow(frame_buffer[cursor]->window);
+  SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_TRUE);
 
   while(run) {
     SDL_WaitEvent(&event);
@@ -71,15 +103,24 @@ SDL_Point get_point() {
       run = 0;
     }
   }
+  
+  SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_FALSE);
   return point;
 }
 
 
+/**
+ * @brief
+ * Launch a selection in the current window
+ * @return an SDL_Rect with non empty fields
+ */
 SDL_Rect get_select_array() {
   SDL_Event event;
   SDL_Rect rect;
   memset(&rect, 0, sizeof(SDL_Rect));
   short run = 1;
+  SDL_RaiseWindow(frame_buffer[cursor]->window);
+  SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_TRUE);
 
   while(run) {
     SDL_WaitEvent(&event);
@@ -111,9 +152,17 @@ SDL_Rect get_select_array() {
       memset(&rect, 0, sizeof(SDL_Rect));
       run = 0;
     }
-  }  
+  }
+  SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_FALSE);
+  
   return rect;
 }
+
+
+
+/**
+ * --- Getters and move options ---
+ */
 
 /**
  * Get the frame at buffer position
@@ -150,6 +199,29 @@ void moveto_first_buffer() {
   }
 }
 
+/**
+ * @brief 
+ * Move cursor to frame
+ * @param pos new position
+ * @return -1 in case of wrong id
+ * 0 in case of NULL frame
+ * 1 else
+ */
+int moveto_buffer(int pos) {
+  if(pos < 0 || pos > MAX_BUFFER)
+    return -1;
+  if(frame_buffer[pos] == NULL)
+    return 0;
+  cursor = pos;
+  SDL_RaiseWindow(frame_buffer[cursor]->window);
+  return 1;
+}
+
+
+
+/**
+ * --- Frame buffer manager --
+ */
 
 /**
  * Init a new frame at free position

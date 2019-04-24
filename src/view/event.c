@@ -29,7 +29,22 @@ short has_click(SDL_Point point) {
   return point.x != -1;
 }
 
-
+/**
+ * Static function to return 
+ * a standard rect
+ */
+static void standard_rect(SDL_Rect* origin) {
+  printf("Rect : x:%d, y:%d, h:%d, w:%d\n", origin->x, origin->y, origin->h, origin->w);
+  if(origin->w < 0) {
+    origin->x += origin->w;
+    origin->w = -origin->w;
+  }
+  if(origin->h < 0) {
+    origin->y += origin->h;
+    origin->h = -origin->h;
+  }
+  printf("Rect : x:%d, y:%d, h:%d, w:%d\n", origin->x, origin->y, origin->h, origin->w);
+}
 
 /**
  * --- Selection --- 
@@ -62,10 +77,12 @@ int draw_select(SDL_Rect selection) {
 
   SDL_SetRenderTarget(current->renderer, texture);
   SDL_RenderCopy(current->renderer, texture, NULL, NULL);
+
   if(non_empty(selection)) {
     SDL_SetRenderDrawColor(current->renderer, select.r, select.g, select.b, select.a);
     SDL_RenderDrawRect(current->renderer, &selection);
   }
+
   SDL_SetRenderTarget(current->renderer, NULL);
   SDL_RenderPresent(current->renderer);
   
@@ -95,8 +112,7 @@ SDL_Point get_point() {
       point.x = -1;
       run = 0;
     }   
-    else if (event.type == SDL_MOUSEBUTTONDOWN &&
-             (event.window.windowID == SDL_GetWindowID(frame_buffer[cursor]->window))) {
+    else if (event.type == SDL_MOUSEBUTTONDOWN) {
       point.x = event.button.x;
       point.y = event.button.y;
       run = 0;
@@ -134,18 +150,22 @@ SDL_Rect get_select_array() {
       } else if (non_empty(rect) && event.key.keysym.sym == SDLK_c) {
         memset(&rect, 0, sizeof(SDL_Rect));
       }
-      
-      // Mouse is in motion
+    }
+
+    // Mouse is in motion
+    else if (event.type == SDL_MOUSEBUTTONDOWN) {
+      rect.x = event.button.x;
+      rect.y = event.button.y;
+      rect.h = 0;
+      rect.w = 0;
     }
     else if (event.type == SDL_MOUSEMOTION &&
-             (event.motion.state & SDL_BUTTON_LEFT) &&
-             (event.window.windowID == SDL_GetWindowID(frame_buffer[cursor]->window))) {
-      rect.x = event.motion.x;
-      rect.y = event.motion.y;
-      rect.h = event.motion.xrel;
-      rect.w = event.motion.yrel;
-      printf("Rect : x:%d, y:%d, h:%d, w:%d\n", rect.x, rect.y, rect.h, rect.w);
+             (event.motion.state & SDL_BUTTON_LEFT)) {
+      rect.h += event.motion.yrel;
+      rect.w += event.motion.xrel;
     }
+
+
     
     // Draw the selection
     if(!draw_select(rect)) {
@@ -154,7 +174,8 @@ SDL_Rect get_select_array() {
     }
   }
   SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_FALSE);
-  
+  standard_rect(&rect);
+  draw_select(rect);
   return rect;
 }
 

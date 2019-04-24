@@ -1,5 +1,9 @@
 #ifndef CMD_LINE_H
 #define CMD_LINE_H
+
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "cmd_view.h"
 #include "parse.h"
 #include "m_color.h"

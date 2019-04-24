@@ -8,6 +8,8 @@
 #include "m_frame.h"
 #include "in.h"
 #include "out.h"
+#include "window.h"
+#include "event.h"
 
 
 void filter_handler(char * option/*,pixels matrice struct*/);

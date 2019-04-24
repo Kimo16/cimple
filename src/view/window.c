@@ -47,7 +47,7 @@ frame *init_frame(char *path){
 		return NULL;
 	}
 	SDL_SetRenderTarget(new_frame->renderer, NULL);
-  	SDL_RenderPresent(new_frame->renderer);
+	SDL_RenderPresent(new_frame->renderer);
 	SDL_DestroyTexture(texture);
 	return new_frame;
 }

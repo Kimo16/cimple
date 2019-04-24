@@ -79,7 +79,7 @@ short rotate(image *target, int angle, short rev){
 		fprintf(stderr, "Null image in rotate");
 		return 0;
 	}
-	if(rev!=0 && rev!=1){
+	if(rev != 0 && rev != 1){
 		fprintf(stderr, "Invalid rev argument");
 		return 0;
 	}
@@ -93,7 +93,7 @@ short rotate(image *target, int angle, short rev){
 		return 1;
 	// create a surface to be filled
 	SDL_Surface *new_surface;
-	int mod = (angle / 90) % 4;
+	int          mod=(angle / 90) % 4;
 	if(mod % 2 == 1)
 		new_surface=SDL_CreateRGBSurfaceWithFormat(0, img->h, img->w, 32, img->format->format);
 	if(mod % 2 == 0)

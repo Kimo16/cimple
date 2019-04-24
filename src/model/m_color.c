@@ -241,8 +241,12 @@ short color_zone(image *img, SDL_Rect rect, SDL_Color color){
 }
 
 static int light_func(int c, int n){
-	double n1=1 + n / 100;
-	return (int)(255 * pow((double)c / 255, n1));
+	double n1=  n / 100;
+	printf("%f\n",n1 );
+	int n2 = (int)(255 * pow((double)(c / 255), n1));
+	printf("%d\n", c );
+	printf("%d\n",n2 );
+	return n2 ;
 }
 
 /**
@@ -256,8 +260,10 @@ static int light_func(int c, int n){
 
 
 short light_filter(image *img, SDL_Rect rect, int percent){
-	if(img == NULL)
+	if(img == NULL){
 		fprintf(stderr, "Error light_filter() : Null argument\n");
+		return 0 ; 
+	}
 
 	SDL_Surface *surface=get_img_surface(img);
 	SDL_Surface *light_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
@@ -268,7 +274,7 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 
 	if(SDL_MUSTLOCK(surface) == 1) SDL_UnlockSurface(surface);
 	if(SDL_MUSTLOCK(light_surface) == 1) SDL_UnlockSurface(light_surface);
-
+	printf("here9\n");
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=light_surface->pixels;
 
@@ -276,14 +282,15 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 		for(int j=rect.x; j < rect.x + rect.w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], light_surface->format, &c.r, &c.g, &c.b, &c.a);
-			Uint32 light_c;
-			light_c=SDL_MapRGBA(light_surface->format, light_func(c.r, percent), light_func(c.g, percent), light_func(c.b, percent), c.a);
+			
+			
+			Uint32 light_c=SDL_MapRGBA(light_surface->format, light_func(c.r, percent), light_func(c.g, percent), light_func(c.b, percent), c.a);
 			dest_pixels[i * light_surface->w + j]=light_c;
 		}
 
 	SDL_UnlockSurface(light_surface);
 	SDL_UnlockSurface(surface);
-	if(set_img_surface(img, light_surface))
+	if(!set_img_surface(img, light_surface))
 		return 0;
 	return 1;
 }
@@ -318,8 +325,10 @@ static Uint32 get_new_pixel(SDL_Color c, SDL_PixelFormat *format, int contrast){
  * @param percent rate of contrast
  */
 short contrast(image *img, SDL_Rect rect, int percent){
-	if(img == NULL)
+	if(img == NULL){
 		fprintf(stderr, "contrast image error : Null argument\n");
+		return 0 ; 
+	}
 
 	SDL_Surface *surface=get_img_surface(img);
 	SDL_Surface *new_surface=SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);

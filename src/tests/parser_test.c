@@ -80,7 +80,7 @@ static char *rep_argstab[][15]={
 };
 static short rep_err_tab[5]={0, EMSG, ENUMV, ENUMV, 0};
 
-static char *save_tab[5]={"save ../../", "save ./", "save -f hjg ./ ","save -f png ./", NULL};
+static char *save_tab[5]={"save ../../", "save ./", "save -f hjg ./ ", "save -f png ./", NULL};
 static char *save_argstab[][5]={
 	{"save", "", "", "../../", NULL},
 	{"save", "", "", "./", NULL},

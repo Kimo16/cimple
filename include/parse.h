@@ -22,7 +22,7 @@
 #define LEN_LIST_BUFFER 2
 #define LEN_LIGHT       4
 #define LEN_QUIT        4
-#define LEN_PASTE       5
+#define LEN_PASTE       3
 #define LEN_RESIZE      5
 #define LEN_ROTATE      4
 #define LEN_TRUNCATE    6

@@ -171,7 +171,8 @@ SDL_Rect get_select_array(){
 	}
 	SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_FALSE);
 	standard_rect(&rect);
-	draw_select(rect);
+  SDL_Rect empty_rect = {0};
+	draw_select(empty_rect);
 	return rect;
 }
 

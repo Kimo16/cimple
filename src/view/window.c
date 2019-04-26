@@ -24,9 +24,9 @@ frame *init_frame(char *path){
 		free_frame(new_frame);
 		return NULL;
 	}
-	new_frame->renderer=SDL_CreateRenderer(new_frame->window, -1, SDL_RENDERER_ACCELERATED);  // trying to use hardware acceleration for the renderer
+	new_frame->renderer=SDL_CreateRenderer(new_frame->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE);  // trying to use hardware acceleration for the renderer
 	if(new_frame->renderer == NULL){
-		new_frame->renderer=SDL_CreateRenderer(new_frame->window, -1, SDL_RENDERER_SOFTWARE); // the renderer is a software fallback
+		new_frame->renderer=SDL_CreateRenderer(new_frame->window, -1, SDL_RENDERER_SOFTWARE | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE); // the renderer is a software fallback
 		if(new_frame->renderer == NULL){
 			fprintf(stderr, "Renderer not initialized");
 			free_frame(new_frame);
@@ -52,25 +52,32 @@ frame *init_frame(char *path){
 	return new_frame;
 }
 
-short update_frame(frame *target, char * path){
-	if( path != NULL ){ 
-		image * img = target -> image; 
+short update_frame(frame *target, char *path){
+	if(path != NULL){
+		image *img=target->image;
 		target->image=load_image(path);
 		if(target->image == NULL){
 			fprintf(stderr, "Image could not be set");
-			target -> image = img;
-			return 0 ;
+			target->image=img;
+			return 0;
 		}
 		free_image(img);
 	}
+	SDL_RenderClear(target->renderer);
 	SDL_Surface *surface=get_img_surface(target->image);
+	if(surface == NULL){
+		fprintf(stderr, "Error getting surface");
+		free_frame(target);
+		return 0;
+	}
+	SDL_SetWindowSize(target->window, surface->w, surface->h);
 	SDL_Texture *new_texture=SDL_CreateTextureFromSurface(target->renderer, surface);
 	if(new_texture == NULL){
 		fprintf(stderr, "Error updating texture");
 		free_frame(target);
 		return 0;
 	}
-	SDL_SetWindowSize(target->window, surface->w, surface->h);
+	SDL_RenderPresent(target->renderer);
 	int rc=SDL_RenderCopy(target->renderer, new_texture, NULL, NULL);
 	if(rc < 0){
 		fprintf(stderr, "Render error");

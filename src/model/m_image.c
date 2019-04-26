@@ -85,7 +85,7 @@ image *new_img(char *path){
 		free(new);
 		return NULL;
 	}
-	new->surface=NULL;
+    	new->surface=NULL;
 	return new;
 }
 
@@ -161,13 +161,13 @@ char *get_full_image_path(image *image){
 		fprintf(stderr, "Get_path malloc failed\n");
 		return NULL;
 	}
-	int   size_fullpath=strlen(image->extension) + strlen(image->save_path) + strlen(image->name) + 2;
+	int   size_fullpath=strlen(image->extension) + strlen(image->save_path) + strlen(image->name) + 3;
 	char *fullpath=malloc(size_fullpath);
 	if(fullpath == NULL){
 		fprintf(stderr, "Get_path malloc failed\n");
 		return NULL;
 	}
-	snprintf(fullpath, size_fullpath, "%s%s.%s", image->save_path, image->name, image->extension);
+	snprintf(fullpath, size_fullpath, "%s/%s.%s", image->save_path, image->name, image->extension);
 	return fullpath;
 }
 

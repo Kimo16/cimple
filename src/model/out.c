@@ -123,7 +123,7 @@ image *save_image_as(image *img, char *path){
     free_image(res);
     return NULL;
   }
-  if(!save_image(res))
+  if(save_image(res))
     return NULL;
   return res;
 }
@@ -153,8 +153,7 @@ short save_image(image *img){
   }
   else if(memcmp("PNG", get_img_ext(img), 3) == 0){
     return save_png(img);
-    return 1;
-  }
+}
   else if(memcmp("bmp", get_img_ext(img), 3) == 0){
     return save_bmp(img);
   }

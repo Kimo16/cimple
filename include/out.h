@@ -10,7 +10,7 @@
 
 #include"m_image.h"
 
-image *save_image_as(image* img,char * path , char* format);
+image *save_image_as(image* img, char * path);
 short save_image(image* img);
 short save_secure(image* img);
 

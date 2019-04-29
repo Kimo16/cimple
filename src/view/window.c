@@ -3,18 +3,18 @@
 frame *init_frame(char *path){
 	frame *new_frame=malloc(sizeof(frame));
 	if(new_frame == NULL){
-		fprintf(stderr, "Frame not initialized");
+		fprintf(stderr, "Frame not initialized\n");
 		return NULL;
 	}
 	new_frame->image=load_image(path);
 	if(new_frame->image == NULL){
-		fprintf(stderr, "Image could not be set");
+		fprintf(stderr, "Image could not be set\n");
 		free_frame(new_frame);
 		return NULL;
 	}
 	SDL_Surface *surface=get_img_surface(new_frame->image);
 	if(surface == NULL){
-		fprintf(stderr, "Cannot get surface");
+		fprintf(stderr, "Cannot get surface\n");
 		free_frame(new_frame);
 		return NULL;
 	}

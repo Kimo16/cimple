@@ -146,7 +146,7 @@ short handler_cmd_list_buff(cmd *command){
 
 short handler_cmd_load(cmd *command){       /*not finish*/
 	if(strcmp(command->args[1], "-w") != 0){
-		if(new_frame(command->args[3]) != 1) return 0;
+		if(new_frame(command->args[3]) != 0) return 0;
 	}
 	else{
 		int index=string_to_int(command->args[2]);

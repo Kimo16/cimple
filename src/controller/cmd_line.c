@@ -271,8 +271,8 @@ short handler_cmd_save(cmd *command){
 	}
 	image *img=f->image;
 
-	if(strcmp(command->args[1], "-f") == 0){
-		image *new_img=save_image_as(img, command->args[3], command->args[2]);
+	if(strcmp(command->args[1], "-p") == 0){
+		image *new_img=save_image_as(img, command->args[2]);
 		if(new_img == NULL){
 			fprintf(stderr, "Error command [%s] : error while saving the image\n", command->args[0]);
 			return 0;

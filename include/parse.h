@@ -26,7 +26,7 @@
 #define LEN_RESIZE      5
 #define LEN_ROTATE      4
 #define LEN_TRUNCATE    6
-#define LEN_SAVE        5
+#define LEN_SAVE        4
 #define LEN_SWITCH      3
 #define LEN_GREYS       3
 #define LEN_NEG         3

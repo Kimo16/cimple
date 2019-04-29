@@ -80,15 +80,15 @@ static char *rep_argstab[][15]={
 };
 static short rep_err_tab[5]={0, EMSG, ENUMV, ENUMV, 0};
 
-static char *save_tab[5]={"save ../../", "save ./", "save -f hjg ./ ", "save -f png ./", NULL};
+static char *save_tab[5]={"save", "save ./", "save -p hjg", "save -g pick", NULL};
 static char *save_argstab[][5]={
-	{"save", "", "", "../../", NULL},
-	{"save", "", "", "./", NULL},
+	{"save", "", "", NULL},
 	{NULL},
-	{"save", "-f", "png", "./", NULL},
+	{"save", "-p", "hjg" , NULL},
+	{NULL},
 	{NULL}
 };
-static short save_err_tab[5]={0, 0, EFFORM, 0, 0};
+static short save_err_tab[5]={0, EINVA, 0, EOPT, 0};
 
 static char *load_tab[5]={"load ./noexist.png", "load -w 2 image.png", "load ", "load image.zzz", NULL};
 static char *load_argstab[][5]={

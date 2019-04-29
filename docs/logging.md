@@ -67,3 +67,21 @@
   * TODO :
     * Check model (All) and begin view
 
+## 19/04/2019 - Correction - Model :
+  * Done : 
+    * Correct model content
+    * Update Dockerfile
+    * Begin view
+  * TODO : 
+    * Finish view
+    * Begin test
+
+## 26/04/2019 - View / Controller :
+  * Done :
+    * Implementation of view
+    * Event manager
+  * TODO :
+    * Tests view
+    * Correct bugs
+    * Define next part
+    * Add coverage

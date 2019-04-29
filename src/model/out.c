@@ -115,15 +115,11 @@ static short save_jpeg(image *img){
  * @param path new image path with name
  * @param format the image format
  */
-image *save_image_as(image *img, char *path, char *format){
+image *save_image_as(image *img, char *path){
   if(img == NULL || path == NULL) return NULL;
   image *res=new_img(path);
   if(res == NULL) return NULL;
   if(!set_img_surface(res, get_img_surface(img))){
-    free_image(res);
-    return NULL;
-  }
-  if(format != NULL && !set_img_ext(res, format)){
     free_image(res);
     return NULL;
   }
@@ -174,9 +170,9 @@ short save_image(image *img){
  */
 short save_secure(image *img){
   char *path="/tmp/cimpletmp/";
-  char *save_name=malloc(strlen(path) + strlen(get_img_name(img)) + 1);
-  sprintf("%s%s", path, get_img_name(img));
-  if(save_image_as(img, save_name, "bmp") == NULL)
+  char *save_name=malloc(strlen(path) + strlen(get_img_name(img)) + 4);
+  sprintf("%s%s.bmp", path, get_img_name(img));
+  if(save_image_as(img, save_name) == NULL)
     return 0;
   return 1;
 }

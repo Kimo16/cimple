@@ -52,8 +52,8 @@ static short save_png(image *img){
   SDL_Surface *surface=get_img_surface(img);
   char *       file=get_full_image_path(img);
   if(!IMG_SavePNG(surface, file))
-    return 0;
-  return 1;
+    return 1;
+  return 0;
 }
 
 
@@ -68,12 +68,10 @@ static short save_jpeg(image *img){
   struct jpeg_compress_struct jpg;
   struct jpeg_error_mgr       jpgerror;
   unsigned char *row;
-  int            err=1;
-
+  
   if((output=fopen(file, "wb")) == NULL){
     fprintf(stderr, "Can't write image...");
-    err=0;
-    return err;
+    return 1;
   }
 
   jpg.err=jpeg_std_error(&jpgerror);
@@ -91,7 +89,7 @@ static short save_jpeg(image *img){
   // Get format pixels
   row=malloc(sizeof(unsigned char) * 3 * surface->w);
   if(row == NULL)
-    err=0;
+    return 0;
   else {
     // Start compression
     jpeg_start_compress(&jpg, TRUE);
@@ -103,7 +101,7 @@ static short save_jpeg(image *img){
   if(!output) fclose(output);
   jpeg_destroy_compress(&jpg);
   if(!row) free(row);
-  return err;
+  return 1;
 }
 
 
@@ -123,7 +121,7 @@ image *save_image_as(image *img, char *path){
     free_image(res);
     return NULL;
   }
-  if(save_image(res))
+  if(!save_image(res))
     return NULL;
   return res;
 }

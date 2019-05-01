@@ -259,18 +259,14 @@ short color_zone(image *img, SDL_Rect rect, SDL_Color color){
 	SDL_FillRect(zone_surface, &rect, r_color);
 
 	SDL_UnlockSurface(zone_surface);
-	/*SDL_UnlockSurface(surface);*/
+
 	set_img_surface(img, zone_surface);
 
 	return 1;
 }
 
 static int light_func(int c, int n){
-	/*double n1=1 +n / 100;
-	printf("%f\n", n1);
-	int n2=(int)(255 * pow((double)(c / 255), n1));
-	printf("%d\n", c);
-	printf("%d\n", n2);*/
+
 	if( c + n > 255)return 255 ; 
 	if( c + n < 0) return 0 ; 
 	return c;

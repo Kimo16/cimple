@@ -1,8 +1,7 @@
 #include "cmd_line.h"
 
 
-/* Don't forget to add free rect in m_*.c file */
-/*add test for correct coordinate (paste)*/
+
 
 
 static char *string_cpy(char *s){
@@ -36,7 +35,7 @@ short handler_cmd_bnw(cmd *command){
 	return 1;
 }
 
-short handler_cmd_copy(cmd *command){   /*not finish*/
+short handler_cmd_copy(cmd *command){   
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;
@@ -68,7 +67,7 @@ short handler_cmd_contrast(cmd *command){
 	return 1;
 }
 
-short handler_cmd_cut(cmd *command){      /*not finish*/
+short handler_cmd_cut(cmd *command){      
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;
@@ -144,7 +143,7 @@ short handler_cmd_list_buff(cmd *command){
 	return 1;
 }
 
-short handler_cmd_load(cmd *command){       /*not finish*/
+short handler_cmd_load(cmd *command){      
 	if(strcmp(command->args[1], "-w") != 0){
 		if(new_frame(command->args[3]) != 0) return 0;
 	}
@@ -174,7 +173,7 @@ short handler_cmd_negative(cmd *command){
 	return 1;
 }
 
-short handler_cmd_paste(cmd *command){                                                  /*not finish*/
+short handler_cmd_paste(cmd *command){                                                  
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;
@@ -251,7 +250,7 @@ short handler_cmd_resize(cmd *command){
 	return 1;
 }
 
-short handler_cmd_rotate(cmd *command){                                      /*not finish*/
+short handler_cmd_rotate(cmd *command){                                     
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;
@@ -301,7 +300,7 @@ short handler_cmd_symmetry(cmd *command){
 	return 1;
 }
 
-short handler_cmd_truncate(cmd *command){                                        /*correction in parser needed*/
+short handler_cmd_truncate(cmd *command){                                       
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;

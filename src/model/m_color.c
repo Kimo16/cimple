@@ -266,9 +266,8 @@ short color_zone(image *img, SDL_Rect rect, SDL_Color color){
 }
 
 static int light_func(int c, int n){
-
-	if( c + n > 255)return 255 ; 
-	if( c + n < 0) return 0 ; 
+	if(c + n > 255) return 255;
+	if(c + n < 0) return 0;
 	return c;
 }
 
@@ -297,7 +296,7 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 
 	if(SDL_MUSTLOCK(surface) == 1) SDL_UnlockSurface(surface);
 	if(SDL_MUSTLOCK(light_surface) == 1) SDL_UnlockSurface(light_surface);
-	
+
 	Uint32 *src_pixels=surface->pixels;
 	Uint32 *dest_pixels=light_surface->pixels;
 
@@ -335,11 +334,11 @@ static Uint8 keep_format(int color){
  * Get the color for contrast transformation
  */
 static Uint32 get_new_pixel(SDL_Color c, SDL_PixelFormat *format, double contrast){
-  // ((colour scale - median color) * percent contrast + median color) * scale)
-  Uint8 red   = keep_format((int)((((c.r / 255.0) - 0.5)*contrast + 0.5 )*255.0));
-  Uint8 blue  = keep_format((int)((((c.g / 255.0) - 0.5)*contrast + 0.5 )*255.0));
-  Uint8 green = keep_format((int)((((c.b / 255.0) - 0.5)*contrast + 0.5 )*255.0));
-  return SDL_MapRGBA(format, red, blue, green, c.a);
+	// ((colour scale - median color) * percent contrast + median color) * scale)
+	Uint8 red=keep_format((int)((((c.r / 255.0) - 0.5) * contrast + 0.5) * 255.0));
+	Uint8 blue=keep_format((int)((((c.g / 255.0) - 0.5) * contrast + 0.5) * 255.0));
+	Uint8 green=keep_format((int)((((c.b / 255.0) - 0.5) * contrast + 0.5) * 255.0));
+	return SDL_MapRGBA(format, red, blue, green, c.a);
 }
 
 /**
@@ -366,17 +365,17 @@ short contrast(image *img, SDL_Rect rect, int percent){
 	if(SDL_MUSTLOCK(new_surface) == 1) SDL_UnlockSurface(new_surface);
 
 
-        // Calculate amount of contrast 
-        double contrast = pow((100.0 + percent) / 100.0, 2);
+	// Calculate amount of contrast
+	double contrast=pow((100.0 + percent) / 100.0, 2);
 
-        Uint32 *src_pixels=surface->pixels;
+	Uint32 *src_pixels=surface->pixels;
 	Uint32 *new_pixels=new_surface->pixels;
 	for(int i=0; i < new_surface->h; i++)
 		for(int j=0; j < new_surface->w; j++){
 			SDL_Color c={0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], surface->format, &c.r, &c.g, &c.b, &c.a);
 			if(i >= rect.y && i < rect.y + rect.h && j < rect.x + rect.w && j >= rect.x){
-				Uint32 contrast_pixel = get_new_pixel(c, surface->format, contrast);
+				Uint32 contrast_pixel=get_new_pixel(c, surface->format, contrast);
 				new_pixels[i * surface->w + j]=contrast_pixel;
 			}
 			else

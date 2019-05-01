@@ -14,26 +14,25 @@ struct image {
  * @param path the original path
  * @return the new path
  */
-static char * normalize_path(char *path) {
-  int size = strlen(path);
-  char *n_path;
-  if(size < 2 || path[0] == '/' || (path[0] == '.' && path[1] == '/') ){
-    n_path = malloc(size+1);
-    if(n_path == NULL)
-      return NULL;
-    memcpy(n_path, path, size+1);
-  } 
-  else {
-    n_path = malloc(size+3);
-    if(n_path == NULL)
-      return NULL;
-    n_path[0] = '.';
-    n_path[1] = '/';
-    memcpy(n_path+2, path, size+1);
-  }
-  return n_path; 
+static char *normalize_path(char *path){
+	int   size=strlen(path);
+	char *n_path;
+	if(size < 2 || path[0] == '/' || (path[0] == '.' && path[1] == '/')){
+		n_path=malloc(size + 1);
+		if(n_path == NULL)
+			return NULL;
+		memcpy(n_path, path, size + 1);
+	}
+	else {
+		n_path=malloc(size + 3);
+		if(n_path == NULL)
+			return NULL;
+		n_path[0]='.';
+		n_path[1]='/';
+		memcpy(n_path + 2, path, size + 1);
+	}
+	return n_path;
 }
-
 
 /**
  * Fills the struct image elements according to path
@@ -47,9 +46,9 @@ static char * normalize_path(char *path) {
 
 static short break_full_path(char *init_path, char **path, char **name, char **ext){
 	char *slash_p=memrchr(init_path, '/', strlen(init_path));
-  if(slash_p == NULL){
-	  fprintf(stderr, "Path error\n");
-		return 0; 
+	if(slash_p == NULL){
+		fprintf(stderr, "Path error\n");
+		return 0;
 	}
 	char *dot_p=memrchr(init_path, '.', strlen(init_path));
 	if(dot_p == NULL){
@@ -102,27 +101,27 @@ image *new_img(char *path){
 		fprintf(stderr, "Path not valid\n");
 		return NULL;
 	}
-  char *n_path = normalize_path(path);
-  if(n_path == NULL) {
-    fprintf(stderr, "Can't normalize path\n");
-    return NULL;
-  }
+	char *n_path=normalize_path(path);
+	if(n_path == NULL){
+		fprintf(stderr, "Can't normalize path\n");
+		return NULL;
+	}
 	// allocate memory
 	image *new=malloc(sizeof(struct image));
 	if(new == NULL){
 		fprintf(stderr, "Image not initialized\n");
 		free(n_path);
-    return NULL;
-	}
-  if(!break_full_path(n_path, &new->save_path, &new->name, &new->extension)){
-		fprintf(stderr, "Image not initialized\n");
-		free(new);
-    free(n_path);
 		return NULL;
 	}
-  new->surface=NULL;
-  printf("New path <%s>\n", n_path);
-  free(n_path);
+	if(!break_full_path(n_path, &new->save_path, &new->name, &new->extension)){
+		fprintf(stderr, "Image not initialized\n");
+		free(new);
+		free(n_path);
+		return NULL;
+	}
+	new->surface=NULL;
+	printf("New path <%s>\n", n_path);
+	free(n_path);
 	return new;
 }
 

@@ -23,7 +23,7 @@ static struct cmd_info info_tab[LEN_INFO]={
 	{.name="replace", .len=LEN_REPLACE, .args_type={0, 2, POURC, 1, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-m", "", "-a", "", "", "", "", "", "", "", ""}},
 	{.name="resize", .len=LEN_RESIZE, .args_type={0, VIEW, RELATIV, RELATIV}, .option={"", "", "", ""}},
 	{.name="rotate", .len=LEN_ROTATE, .args_type={0, 1, ANGLE}, .option={"", "-r", ""}},
-	{.name="save", .len=LEN_SAVE, .args_type={0, 2,STRING}, .option={"", "-p", "" }},
+	{.name="save", .len=LEN_SAVE, .args_type={0, 2, STRING}, .option={"", "-p", ""}},
 	{.name="switch_buffer", .len=LEN_SWITCH, .args_type={0, NUMBER}, .option={"", ""}},
 	{.name="symmetry", .len=LEN_SYM, .args_type={0, SYMTYPE}, .option={"", ""}},
 	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "", "", "", ""}}

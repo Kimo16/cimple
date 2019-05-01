@@ -2,8 +2,6 @@
 
 
 
-
-
 static char *string_cpy(char *s){
 	char *str=malloc(sizeof(char) * (strlen(s) + 1));
 	if((str=memcpy(str, s, strlen(s) + 1)) == NULL){
@@ -19,6 +17,12 @@ static int string_to_int(char *str){
 	sscanf(str, "%d", &i);
 	return i;
 }
+/**
+ * Call black_and_white model function in m_color.c to modify and apply modifications by calling view function
+ * Call select function in event.c when -a option isn't present
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
 
 short handler_cmd_bnw(cmd *command){
 	frame *f=get_cursor_buffer();
@@ -35,7 +39,15 @@ short handler_cmd_bnw(cmd *command){
 	return 1;
 }
 
-short handler_cmd_copy(cmd *command){   
+/**
+ * Call greyscale model function in m_color.c to modify pixels and apply modifications by calling view function
+ * Call select function in event.c when -a option isn't present
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+short handler_cmd_greyscale(cmd *command){
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;
@@ -45,10 +57,41 @@ short handler_cmd_copy(cmd *command){
 	if(strcmp(command->args[1], "") == 0)
 		rect=get_select_array();
 
-	if(copy(img, rect) != 1) return 0;
+	if(grey_filter(img, rect) != 1) return 0;
 	if(update_frame(f, NULL) != 1) return 0;
 	return 1;
 }
+
+/**
+ * Call negative model function in m_color.c to modify pixels and apply modifications by calling view function
+ * Call select function in event.c when -a option isn't present
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+short handler_cmd_negative(cmd *command){
+	frame *f=get_cursor_buffer();
+	if(f == NULL) return 0;
+	image *img=f->image;
+
+	SDL_Rect rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
+
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();
+
+	if(negative_filter(img, rect) != 1) return 0;
+	if(update_frame(f, NULL) != 1) return 0;
+	return 1;
+}
+
+/**
+ * Call contrast model function in m_color.c to modify pixels and apply modifications by calling view function
+ * Call select function in event.c when -a option isn't present
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
 
 short handler_cmd_contrast(cmd *command){
 	frame *f=get_cursor_buffer();
@@ -67,56 +110,13 @@ short handler_cmd_contrast(cmd *command){
 	return 1;
 }
 
-short handler_cmd_cut(cmd *command){      
-	frame *f=get_cursor_buffer();
-	if(f == NULL) return 0;
-	image *img=f->image;
-
-	SDL_Rect rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
-
-	if(strcmp(command->args[1], "") == 0)
-		rect=get_select_array();
-
-	if(cut(img, rect) != 1) return 0;
-	if(update_frame(f, NULL) != 1) return 0;
-	return 1;
-}
-
-short handler_cmd_greyscale(cmd *command){
-	frame *f=get_cursor_buffer();
-	if(f == NULL) return 0;
-	image *img=f->image;
-
-	SDL_Rect rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
-
-	if(strcmp(command->args[1], "") == 0)
-		rect=get_select_array();
-
-	if(grey_filter(img, rect) != 1) return 0;
-	if(update_frame(f, NULL) != 1) return 0;
-	return 1;
-}
-
-short handler_cmd_fill(cmd *command){
-	frame *f=get_cursor_buffer();
-	if(f == NULL) return 0;
-	image *img=f->image;
-
-	int col_r=string_to_int(command->args[2]);
-	int col_g=string_to_int(command->args[3]);
-	int col_b=string_to_int(command->args[4]);
-	int col_a=string_to_int(command->args[5]);
-
-	SDL_Rect  rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
-	SDL_Color color={col_r, col_g, col_b, col_a};
-
-	if(strcmp(command->args[1], "") == 0)
-		rect=get_select_array();
-
-	if(color_zone(img, rect, color) != 1) return 0;
-	if(update_frame(f, NULL) != 1) return 0;
-	return 1;
-}
+/**
+ * Call light model function in m_color.c to modify pixels and apply modifications by calling view function
+ * Call select function in event.c when -a option isn't present
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
 
 short handler_cmd_light(cmd *command){
 	frame *f=get_cursor_buffer();
@@ -138,71 +138,13 @@ short handler_cmd_light(cmd *command){
 	return 1;
 }
 
-short handler_cmd_list_buff(cmd *command){
-	print_frame();
-	return 1;
-}
-
-short handler_cmd_load(cmd *command){      
-	if(strcmp(command->args[1], "-w") != 0){
-		if(new_frame(command->args[3]) != 0) return 0;
-	}
-	else{
-		int index=string_to_int(command->args[2]);
-		if(moveto_buffer(index) != 1){
-			fprintf(stderr, "Error command[load] : invalid window id \n");
-			return 0;
-		}
-		if(update_frame(get_cursor_buffer(), command->args[3]) != 1) return 0;
-	}
-	return 1;
-}
-
-short handler_cmd_negative(cmd *command){
-	frame *f=get_cursor_buffer();
-	if(f == NULL) return 0;
-	image *img=f->image;
-
-	SDL_Rect rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
-
-	if(strcmp(command->args[1], "") == 0)
-		rect=get_select_array();
-
-	if(negative_filter(img, rect) != 1) return 0;
-	if(update_frame(f, NULL) != 1) return 0;
-	return 1;
-}
-
-short handler_cmd_paste(cmd *command){                                                  
-	frame *f=get_cursor_buffer();
-	if(f == NULL) return 0;
-	image *img=f->image;
-
-	int x =0 , y = 0;
-	if(strcmp(command->args[1], "") == 0){
-		SDL_Point p =get_point();
-		x =  p.x ;
-		y =  p.y ;
-	}
-	if(paste(img , x , y ) != 1) return 0 ; 
-	if(update_frame(f, NULL ) != 1 )return 0 ;
-	return 1;
-}
-
-short handler_cmd_quit(cmd *command){
-	if(strcmp(command->args[1], "-w") != 0){
-		free_frames();
-		printf("CIMPLE PHOTO EDITOR ----> SHUT DOWN\n");
-		exit(0);
-	}
-	int index=string_to_int(command->args[2]);
-	if(moveto_buffer(index) != 1){
-		fprintf(stderr, "Error command [quit] : invalid window id \n");
-		return 0;
-	}
-	free_frame_buffer(index);
-	return 1;
-}
+/**
+ * Call replace model function in m_color.c to modify pixels and apply modifications by calling view function
+ * Call select function in event.c when -a option isn't present
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
 
 short handler_cmd_replace(cmd *command){
 	frame *f=get_cursor_buffer();
@@ -235,6 +177,135 @@ short handler_cmd_replace(cmd *command){
 	return 1;
 }
 
+/**
+ * Call colorzone function in m_color.c and apply the modification by calling view function
+ * Call select function in event.c when -a option isn't present
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+short handler_cmd_fill(cmd *command){
+	frame *f=get_cursor_buffer();
+	if(f == NULL) return 0;
+	image *img=f->image;
+
+	int col_r=string_to_int(command->args[2]);
+	int col_g=string_to_int(command->args[3]);
+	int col_b=string_to_int(command->args[4]);
+	int col_a=string_to_int(command->args[5]);
+
+	SDL_Rect  rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
+	SDL_Color color={col_r, col_g, col_b, col_a};
+
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();
+
+	if(color_zone(img, rect, color) != 1) return 0;
+	if(update_frame(f, NULL) != 1) return 0;
+	return 1;
+}
+
+/**
+ * Call copy function in m_transform.c and apply the modification by calling view function
+ * Call select function in event.c when -a option isn't present
+ * 
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+short handler_cmd_copy(cmd *command){
+	frame *f=get_cursor_buffer();
+	if(f == NULL) return 0;
+	image *img=f->image;
+
+	SDL_Rect rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
+
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();
+
+	if(copy(img, rect) != 1) return 0;
+	if(update_frame(f, NULL) != 1) return 0;
+	return 1;
+}
+
+
+/**
+ * Call cut function in m_transform.c and apply the modification by calling view function
+ * Call select function in event.c when -a option isn't present
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+short handler_cmd_cut(cmd *command){
+	frame *f=get_cursor_buffer();
+	if(f == NULL) return 0;
+	image *img=f->image;
+
+	SDL_Rect rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
+
+	if(strcmp(command->args[1], "") == 0)
+		rect=get_select_array();
+
+	if(cut(img, rect) != 1) return 0;
+	if(update_frame(f, NULL) != 1) return 0;
+	return 1;
+}
+
+/**
+ * Call paste function in m_transform.c and apply the modification by calling view function
+ * Call select point function in event.c when -a option isn't present
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+short handler_cmd_paste(cmd *command){
+	frame *f=get_cursor_buffer();
+	if(f == NULL) return 0;
+	image *img=f->image;
+
+	int x=0, y=0;
+	if(strcmp(command->args[1], "") == 0){
+		SDL_Point p=get_point();
+		x=p.x;
+		y=p.y;
+	}
+	if(paste(img, x, y) != 1) return 0;
+	if(update_frame(f, NULL) != 1) return 0;
+	return 1;
+}
+
+/**
+ * Call symmetry function in m_transform.c and apply the modification by calling view function
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+short handler_cmd_symmetry(cmd *command){
+	frame *f=get_cursor_buffer();
+	if(f == NULL) return 0;
+	image *img=f->image;
+
+	int mode=0;
+
+	if(strcmp(command->args[1], "v") == 0) mode=1;
+	if(symmetry(img, mode) != 1) return 0;
+	if(update_frame(f, NULL) != 1) return 0;
+	return 1;
+}
+
+
+/**
+ * Call resize function in m_frame.c and apply the modification by calling view function
+ * Resize the workspace or the current image
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
 short handler_cmd_resize(cmd *command){
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
@@ -250,7 +321,14 @@ short handler_cmd_resize(cmd *command){
 	return 1;
 }
 
-short handler_cmd_rotate(cmd *command){                                     
+/**
+ * Call rotate function in m_frame.c and apply the modification by calling view function
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+short handler_cmd_rotate(cmd *command){
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;
@@ -261,6 +339,106 @@ short handler_cmd_rotate(cmd *command){
 	update_frame(f, NULL);
 	return n;
 }
+
+/**
+ * Call truncation function in m_frame.c and apply the modification by calling view function
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+
+short handler_cmd_truncate(cmd *command){
+	frame *f=get_cursor_buffer();
+	if(f == NULL) return 0;
+	image *img=f->image;
+
+	int x1=string_to_int(command->args[1]);
+	int x2=string_to_int(command->args[2]);
+	int y1=string_to_int(command->args[3]);
+	int y2=string_to_int(command->args[4]);
+
+
+	if(truncate_image(img, x1, x2, y1, y2) != 1) return 0;
+	if(update_frame(f, NULL) != 1) return 0;
+	return 1;
+}
+
+
+
+/**
+ * Print frame list by calling function in event.c
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 1 
+ */
+
+short handler_cmd_list_buff(cmd *command){
+	print_frame();
+	return 1;
+}
+
+/**
+ * Quit Cimple program , or close a specific frame by window id 
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if changes failed , 1 if changes done.
+ */
+
+short handler_cmd_quit(cmd *command){
+	if(strcmp(command->args[1], "-w") != 0){
+		free_frames();
+		printf("CIMPLE PHOTO EDITOR ----> SHUT DOWN\n");
+		exit(0);
+	}
+	int index=string_to_int(command->args[2]);
+	if(moveto_buffer(index) != 1){
+		fprintf(stderr, "Error command [quit] : invalid window id \n");
+		return 0;
+	}
+	free_frame_buffer(index);
+	return 1;
+}
+
+/**
+ * Change the current frame by calling view function in event.c 
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if change failed , 1 if change done .
+ */
+
+short handler_cmd_switch_buff(cmd *command){
+	return moveto_buffer(string_to_int(command->args[1]));
+}
+
+/**
+ * Call load function in in.c and open an image in a frame by calling view function
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if load failed , 1 if load done.
+ */
+
+short handler_cmd_load(cmd *command){
+	if(strcmp(command->args[1], "-w") != 0){
+		if(new_frame(command->args[3]) != 0) return 0;
+	}
+	else{
+		int index=string_to_int(command->args[2]);
+		if(moveto_buffer(index) != 1){
+			fprintf(stderr, "Error command[load] : invalid window id \n");
+			return 0;
+		}
+		if(update_frame(get_cursor_buffer(), command->args[3]) != 1) return 0;
+	}
+	return 1;
+}
+
+/**
+ * Call save function in out.c and apply the modification by calling view function if image format change
+ *
+ * @param cmd * command , pointer to a command structure 
+ * @return 0 if save failed , 1 if save done.
+ */
 
 short handler_cmd_save(cmd *command){
 	frame *f=get_cursor_buffer();
@@ -283,41 +461,15 @@ short handler_cmd_save(cmd *command){
 	return 1;
 }
 
-short handler_cmd_switch_buff(cmd *command){
-	return moveto_buffer(string_to_int(command->args[1]));
-}
-
-short handler_cmd_symmetry(cmd *command){
-	frame *f=get_cursor_buffer();
-	if(f == NULL) return 0;
-	image *img=f->image;
-
-	int mode=0;
-
-	if(strcmp(command->args[1], "v") == 0) mode=1;
-	if(symmetry(img, mode) != 1) return 0;
-	if(update_frame(f, NULL) != 1) return 0;
-	return 1;
-}
-
-short handler_cmd_truncate(cmd *command){                                       
-	frame *f=get_cursor_buffer();
-	if(f == NULL) return 0;
-	image *img=f->image;
-
-	int x1=string_to_int(command->args[1]);
-	int x2=string_to_int(command->args[2]);
-	int y1=string_to_int(command->args[3]);
-	int y2=string_to_int(command->args[4]);
 
 
-	if(truncate_image(img, x1, x2, y1, y2) != 1) return 0;
-	if(update_frame(f, NULL) != 1) return 0;
-	return 1;
+/**
+ * Redirection to a specific handler function by the help of command name 
+ *
+ * @param cmd pointer contains all command informations 
+ * @return 0 if the command will execute with sucess , 1 if an error has occured 
+ */
 
-
-	return 0;
-}
 
 static short cmd_function_handler(cmd *command){
 	if(strcmp(command->name, "bnw") == 0) return handler_cmd_bnw(command);
@@ -343,12 +495,20 @@ static short cmd_function_handler(cmd *command){
 	return 0;
 }
 
+/**
+ * Loop on user command input and call parse function to build command structure and give it 
+ * to the command handler function 
+ * 
+ * @return n 
+ */
+
+
 short cimple_handler(){
 	int n=0;
 	while(1){
 		char *cmd_line=getcmdline();
 		if(cmd_line == NULL) continue;
-		cmd * command=parse_line(string_cpy(cmd_line));
+		cmd *command=parse_line(string_cpy(cmd_line));
 		if(command != NULL){
 			n=cmd_function_handler(command);
 			free(cmd_line);

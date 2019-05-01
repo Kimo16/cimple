@@ -160,7 +160,7 @@ short resize_image(image *target, int width, int height){
 		fprintf(stderr, "New surface not created");
 		return 0;
 	}
-	SDL_SetSurfaceBlendMode(surface , SDL_BLENDMODE_NONE);
+	SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
 	if(SDL_BlitScaled(surface, NULL, new_surface, NULL) != 0){
 		SDL_FreeSurface(new_surface);
 		fprintf(stderr, "BlitScale failed");

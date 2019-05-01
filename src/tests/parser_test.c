@@ -84,7 +84,7 @@ static char *save_tab[5]={"save", "save ./", "save -p hjg", "save -g pick", NULL
 static char *save_argstab[][5]={
 	{"save", "", "", NULL},
 	{NULL},
-	{"save", "-p", "hjg" , NULL},
+	{"save", "-p", "hjg", NULL},
 	{NULL},
 	{NULL}
 };

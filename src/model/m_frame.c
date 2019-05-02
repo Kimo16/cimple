@@ -40,7 +40,7 @@ static int get_int_min(int a, int b){
  * @return 1 if succeded, 0 if failed
  */
 
-short truncate_image(image *target, int x1, int y1, int x2, int y2){
+short truncate_image(image *target, SDL_Rect rect){
 	if(target == NULL){
 		fprintf(stderr, "Null image in truncate\n");
 		return 0;
@@ -51,29 +51,27 @@ short truncate_image(image *target, int x1, int y1, int x2, int y2){
 		fprintf(stderr, "Null surface in truncate\n");
 		return 0;
 	}
-	int x_min=get_int_min(x1, x2);
-	int x_max=get_int_max(x1, x2);
-	int y_min=get_int_min(y1, y2);
-	int y_max=get_int_max(y1, y2);
-	// checking if coords are in the box
-	if(x_min < 0 || y_min < 0 || x_max > surface->w || y_max > surface->h){
-		fprintf(stderr, "Wrong coordinated in truncate\n");
+	int x_min = get_int_min(rect.x, rect.x+rect.w);
+	int y_min = get_int_min(rect.y, rect.y+rect.h);
+	int x_max = get_int_max(rect.x, rect.x+rect.w);
+	int y_max = get_int_max(rect.y, rect.y+rect.w);
+	if(x_min<0 || y_min <0 || x_max > surface->w || y_max > surface->h){
+		fprintf(stderr, "Invalid coord for truncate\n");
 		return 0;
 	}
-	int          width=x_max - x_min;
-	int          height=y_max - y_min;
+	SDL_Rect zone = {.x=x_min, .y=y_min, .w=x_max-x_min, .h=y_max-y_min};
 	SDL_Surface *new_surface;
-	new_surface=SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, surface->format->format);
+	new_surface=SDL_CreateRGBSurfaceWithFormat(0, zone.w, zone.h, 32, surface->format->format);
 	if(SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
 	if(SDL_MUSTLOCK(surface) == SDL_TRUE) SDL_LockSurface(surface);
 	Uint32 *pixels_ref=surface->pixels;
 	Uint32 *pixels_new=new_surface->pixels;
-	for(int i=0; i < height; i++)
-		for(int j=0; j < width; j++){
+	for(int i=0; i <zone.h; i++)
+		for(int j=0;j<zone.w; j++){
 			SDL_Color c_ref={0};
-			SDL_GetRGBA(pixels_ref[(i + y_min) * width + (j + x_min)], new_surface->format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			Uint32 new_color=SDL_MapRGBA(surface->format, c_ref.r, c_ref.g, c_ref.b, c_ref.a);
-			pixels_new[i * width + j]=new_color;
+			SDL_GetRGBA(pixels_ref[(i+zone.y) * surface->w + (j+zone.x)], new_surface->format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			Uint32 new_color=SDL_MapRGBA(new_surface->format, c_ref.r, c_ref.g, c_ref.b, c_ref.a);
+			pixels_new[i * new_surface->w + j]=new_color;
 		}
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(surface);

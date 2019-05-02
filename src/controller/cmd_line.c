@@ -20,7 +20,7 @@ static int string_to_int(char *str){
 /**
  * Call black_and_white model function in m_color.c to modify and apply modifications by calling view function
  * Call select function in event.c when -a option isn't present
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -43,7 +43,7 @@ short handler_cmd_bnw(cmd *command){
  * Call greyscale model function in m_color.c to modify pixels and apply modifications by calling view function
  * Call select function in event.c when -a option isn't present
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -66,7 +66,7 @@ short handler_cmd_greyscale(cmd *command){
  * Call negative model function in m_color.c to modify pixels and apply modifications by calling view function
  * Call select function in event.c when -a option isn't present
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -89,7 +89,7 @@ short handler_cmd_negative(cmd *command){
  * Call contrast model function in m_color.c to modify pixels and apply modifications by calling view function
  * Call select function in event.c when -a option isn't present
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -114,7 +114,7 @@ short handler_cmd_contrast(cmd *command){
  * Call light model function in m_color.c to modify pixels and apply modifications by calling view function
  * Call select function in event.c when -a option isn't present
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -142,7 +142,7 @@ short handler_cmd_light(cmd *command){
  * Call replace model function in m_color.c to modify pixels and apply modifications by calling view function
  * Call select function in event.c when -a option isn't present
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -181,7 +181,7 @@ short handler_cmd_replace(cmd *command){
  * Call colorzone function in m_color.c and apply the modification by calling view function
  * Call select function in event.c when -a option isn't present
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -209,8 +209,8 @@ short handler_cmd_fill(cmd *command){
 /**
  * Call copy function in m_transform.c and apply the modification by calling view function
  * Call select function in event.c when -a option isn't present
- * 
- * @param cmd * command , pointer to a command structure 
+ *
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -234,7 +234,7 @@ short handler_cmd_copy(cmd *command){
  * Call cut function in m_transform.c and apply the modification by calling view function
  * Call select function in event.c when -a option isn't present
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -257,7 +257,7 @@ short handler_cmd_cut(cmd *command){
  * Call paste function in m_transform.c and apply the modification by calling view function
  * Call select point function in event.c when -a option isn't present
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -280,7 +280,7 @@ short handler_cmd_paste(cmd *command){
 /**
  * Call symmetry function in m_transform.c and apply the modification by calling view function
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -302,7 +302,7 @@ short handler_cmd_symmetry(cmd *command){
  * Call resize function in m_frame.c and apply the modification by calling view function
  * Resize the workspace or the current image
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -324,7 +324,7 @@ short handler_cmd_resize(cmd *command){
 /**
  * Call rotate function in m_frame.c and apply the modification by calling view function
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -343,7 +343,7 @@ short handler_cmd_rotate(cmd *command){
 /**
  * Call truncation function in m_frame.c and apply the modification by calling view function
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -353,13 +353,23 @@ short handler_cmd_truncate(cmd *command){
 	if(f == NULL) return 0;
 	image *img=f->image;
 
-	int x1=string_to_int(command->args[1]);
-	int x2=string_to_int(command->args[2]);
-	int y1=string_to_int(command->args[3]);
-	int y2=string_to_int(command->args[4]);
+	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
+	if(strcmp(command->args[1], "") == 0){
+		rect=get_select_array();
+	}
+	else {
+		int x1=string_to_int(command->args[1]);
+		int y1=string_to_int(command->args[2]);
+		int x2=string_to_int(command->args[3]);
+		int y2=string_to_int(command->args[4]);
+		rect.x = x1;
+		rect.y = y1;
+		rect.w = x2-x1;
+		rect.h=y2-y1;
+	}
 
-	if(truncate_image(img, x1, x2, y1, y2) != 1) return 0;
+	if(truncate_image(img, rect) != 1) return 0;
 	if(update_frame(f, NULL) != 1) return 0;
 	return 1;
 }
@@ -369,8 +379,8 @@ short handler_cmd_truncate(cmd *command){
 /**
  * Print frame list by calling function in event.c
  *
- * @param cmd * command , pointer to a command structure 
- * @return 1 
+ * @param cmd * command , pointer to a command structure
+ * @return 1
  */
 
 short handler_cmd_list_buff(cmd *command){
@@ -379,9 +389,9 @@ short handler_cmd_list_buff(cmd *command){
 }
 
 /**
- * Quit Cimple program , or close a specific frame by window id 
+ * Quit Cimple program , or close a specific frame by window id
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if changes failed , 1 if changes done.
  */
 
@@ -401,9 +411,9 @@ short handler_cmd_quit(cmd *command){
 }
 
 /**
- * Change the current frame by calling view function in event.c 
+ * Change the current frame by calling view function in event.c
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if change failed , 1 if change done .
  */
 
@@ -414,7 +424,7 @@ short handler_cmd_switch_buff(cmd *command){
 /**
  * Call load function in in.c and open an image in a frame by calling view function
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if load failed , 1 if load done.
  */
 
@@ -436,7 +446,7 @@ short handler_cmd_load(cmd *command){
 /**
  * Call save function in out.c and apply the modification by calling view function if image format change
  *
- * @param cmd * command , pointer to a command structure 
+ * @param cmd * command , pointer to a command structure
  * @return 0 if save failed , 1 if save done.
  */
 
@@ -464,10 +474,10 @@ short handler_cmd_save(cmd *command){
 
 
 /**
- * Redirection to a specific handler function by the help of command name 
+ * Redirection to a specific handler function by the help of command name
  *
- * @param cmd pointer contains all command informations 
- * @return 0 if the command will execute with sucess , 1 if an error has occured 
+ * @param cmd pointer contains all command informations
+ * @return 0 if the command will execute with sucess , 1 if an error has occured
  */
 
 
@@ -496,10 +506,10 @@ static short cmd_function_handler(cmd *command){
 }
 
 /**
- * Loop on user command input and call parse function to build command structure and give it 
- * to the command handler function 
- * 
- * @return n 
+ * Loop on user command input and call parse function to build command structure and give it
+ * to the command handler function
+ *
+ * @return n
  */
 
 

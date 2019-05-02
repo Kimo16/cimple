@@ -193,7 +193,7 @@ short copy(image *img, SDL_Rect area){
 
 	for(int i=0; i < area.h; i++)
 		for(int j=0; j < area.w; j++)
-                  buffer[i * area.w + j]= pixels[(area.x + j) + ((area.y+i) * current->w)] ;
+			buffer[i * area.w + j]=pixels[(area.x + j) + ((area.y + i) * current->w)];
 	SDL_UnlockSurface(current);
 	return 1;
 }
@@ -217,8 +217,8 @@ short cut(image *img, SDL_Rect area){
 		return 0;
 	}
 	free_buffer();
-        buffer_h = area.h;
-	buffer_w = area.w;
+	buffer_h=area.h;
+	buffer_w=area.w;
 	buffer=malloc(area.w * area.h * sizeof(Uint32));
 	if(buffer == NULL){
 		fprintf(stderr, "Buffer cut error\n");
@@ -227,12 +227,11 @@ short cut(image *img, SDL_Rect area){
 	if(SDL_MUSTLOCK(current) == SDL_TRUE) SDL_LockSurface(current);
 	Uint32 *pixels=current->pixels;
 
-	for(int i=0; i < area.h; i++) {
-          for(int j=0 ; j < area.w; j++){
-            buffer[i * area.w + j]= pixels[(area.x + j) + ((area.y+i) * current->w)] ;
-            pixels[(area.x + j) + ((area.y+i) * current->w)] = 0; // Couleur noire
-          }
-        }
+	for(int i=0; i < area.h; i++)
+		for(int j=0; j < area.w; j++){
+			buffer[i * area.w + j]=pixels[(area.x + j) + ((area.y + i) * current->w)];
+			pixels[(area.x + j) + ((area.y + i) * current->w)]=0; // Couleur noire
+		}
 	SDL_UnlockSurface(current);
 	return 1;
 }
@@ -259,7 +258,7 @@ short paste(image *img, int x, int y){
 	for(int i=0; i < buffer_h; i++)
 		for(int j=0; j < buffer_w; j++)
 			if(is_in_image(x + j, y + i, current->w, current->h))
-                          pixels[(x+j)+ ((y+i)* current->w)]=buffer[i * buffer_w + j];
+				pixels[(x + j) + ((y + i) * current->w)]=buffer[i * buffer_w + j];
 	SDL_UnlockSurface(current);
 	return 1;
 }

@@ -171,7 +171,7 @@ SDL_Rect get_select_array(){
 	}
 	SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_FALSE);
 	standard_rect(&rect);
-  SDL_Rect empty_rect = {0};
+	SDL_Rect empty_rect={0};
 	draw_select(empty_rect);
 	return rect;
 }
@@ -254,12 +254,12 @@ int new_frame(char *path){
 }
 
 void print_frame(){
-  for ( int i = 0 ; i < MAX_BUFFER ; i ++){
-    if(frame_buffer[i] != NULL ) 
-      printf("Window id : %d | picture : %s\n", i , get_img_name(frame_buffer[i]->image));
-    else 
-      printf("Window id : %d | not open window \n", i );
-  }
+	for(int i=0; i < MAX_BUFFER; i++){
+		if(frame_buffer[i] != NULL)
+			printf("Window id : %d | picture : %s\n", i, get_img_name(frame_buffer[i]->image));
+		else
+			printf("Window id : %d | not open window \n", i);
+	}
 }
 
 /**

@@ -104,7 +104,7 @@ short resize_workspace(image *target, int width_p, int height_p){
 	}
 	int          width_new=surface->w + width_p;
 	int          height_new=surface->h + height_p;
-	if(width_new < 0 || height_new < 0){
+	if(width_new <= 0 || height_new <= 0){
 		fprintf(stderr, "Cant resize\n");
 		return 0;
 	}
@@ -147,6 +147,10 @@ short resize_workspace(image *target, int width_p, int height_p){
 
 
 short resize_image(image *target, int width, int height){
+	if(width <= 0 || height <= 0){
+		fprintf(stderr, "Cannot resize to negative value\n");
+		return 0;
+	}
 	if(target == NULL){
 		fprintf(stderr, "Null image in truncate\n");
 		return 0;

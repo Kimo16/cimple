@@ -97,7 +97,10 @@ short handler_cmd_contrast(cmd *command){
 	frame *f=get_cursor_buffer();
 	if(f == NULL) return 0;
 	image *img=f->image;
-
+	if(strcmp(command->args[2], "") == 0){
+		fprintf(stderr, "Error command [%s] : please enter a percent rate\n", command->args[0]);
+		return 0;
+	}
 	int percent=string_to_int(command->args[2]);
 
 	SDL_Rect rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
@@ -131,9 +134,7 @@ short handler_cmd_light(cmd *command){
 
 	if(strcmp(command->args[1], "") == 0)
 		rect=get_select_array();
-	printf("here8\n");
 	if(light_filter(img, rect, percent) != 1) return 0;
-	printf("here10\n");
 	if(update_frame(f, NULL) != 1) return 0;
 	return 1;
 }
@@ -418,7 +419,14 @@ short handler_cmd_quit(cmd *command){
  */
 
 short handler_cmd_switch_buff(cmd *command){
-	return moveto_buffer(string_to_int(command->args[1]));
+	short s= moveto_buffer(string_to_int(command->args[1]));
+	if( s != 1 ){
+		if( s == -1 ) fprintf(stderr, "Error command[%s] : Invalid window id , index out of born ( [0;10] ) \n", command -> name);
+		if( s == 0 ) fprintf(stderr, "Error command[%s] : Invalid window id , window isn't initialised \n", );
+		return 0 ;
+	}
+	return s;
+
 }
 
 /**

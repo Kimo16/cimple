@@ -32,7 +32,7 @@ static void export_pixels_jpg(SDL_Surface *surface, unsigned char *row, j_compre
  * @param img an img with a surface to save
  */
 static short save_bmp(image *img){
-	return SDL_SaveBMP(
+	return !SDL_SaveBMP(
 		get_img_surface(img),
 		get_full_image_path(img)
 		);

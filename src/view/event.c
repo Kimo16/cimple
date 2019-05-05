@@ -260,7 +260,7 @@ void print_frame(){
 		else
 			printf("Window id : %d | not open window \n", i);
 	}
-  printf("Actual buffer : %d\n", cursor);
+	printf("Actual buffer : %d\n", cursor);
 }
 
 /**

@@ -26,7 +26,7 @@ static struct cmd_info info_tab[LEN_INFO]={
 	{.name="save", .len=LEN_SAVE, .args_type={0, 2, STRING}, .option={"", "-p", ""}},
 	{.name="switch_buffer", .len=LEN_SWITCH, .args_type={0, NUMBER}, .option={"", ""}},
 	{.name="symmetry", .len=LEN_SYM, .args_type={0, SYMTYPE}, .option={"", ""}},
-	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "", "", "", ""}}
+	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0,5,NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "-s", "", "", "",""}}
 };
 
 /**

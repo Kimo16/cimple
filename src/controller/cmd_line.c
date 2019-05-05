@@ -360,10 +360,11 @@ short handler_cmd_truncate(cmd *command){
 		rect=get_select_array();
 	}
 	else {
-		int x1=string_to_int(command->args[1]);
-		int y1=string_to_int(command->args[2]);
-		int x2=string_to_int(command->args[3]);
-		int y2=string_to_int(command->args[4]);
+	
+		int x1=string_to_int(command->args[2]);
+		int y1=string_to_int(command->args[3]);
+		int x2=string_to_int(command->args[4]);
+		int y2=string_to_int(command->args[5]);
 		rect.x = x1;
 		rect.y = y1;
 		rect.w = x2-x1;

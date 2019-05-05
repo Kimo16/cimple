@@ -422,7 +422,7 @@ short handler_cmd_switch_buff(cmd *command){
 	short s= moveto_buffer(string_to_int(command->args[1]));
 	if( s != 1 ){
 		if( s == -1 ) fprintf(stderr, "Error command[%s] : Invalid window id , index out of born ( [0;10] ) \n", command -> name);
-		if( s == 0 ) fprintf(stderr, "Error command[%s] : Invalid window id , window isn't initialised \n", );
+		if( s == 0 ) fprintf(stderr, "Error command[%s] : Invalid window id , window isn't initialised \n", command -> name);
 		return 0 ;
 	}
 	return s;

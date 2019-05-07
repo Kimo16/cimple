@@ -33,15 +33,15 @@ static char *rot_argstab[][5]={
 static short rot_err_tab[8]={0, 0, ENUMV, ENUMV, 0, ENUMV, ENUMV, 0};  // checked
 
 
-static char *truncate_tab[5]={"truncate", "truncate 123 0 123 0", "truncate aze 100 zez 10", "truncate 100 230", NULL};
+static char *truncate_tab[5]={"truncate", "truncate -s 123 0 123 0", "truncate -s aze 100 zez 10", "truncate -s 100 230", NULL};
 static char *trunc_argstab[][10]={
-	{NULL},
-	{"truncate", "123", "0", "123", "0", NULL},
+	{"truncate","","","","","",NULL},
+	{"truncate","-s", "123", "0", "123", "0", NULL},
 	{NULL},
 	{NULL},
 	{NULL}
 };
-static short trunc_err_tab[5]={EMSG, 0, ENUMV, EMSG, 0};
+static short trunc_err_tab[5]={0, 0, ENUMV, EMSG, 0};
 
 
 
@@ -80,15 +80,15 @@ static char *rep_argstab[][15]={
 };
 static short rep_err_tab[5]={0, EMSG, ENUMV, ENUMV, 0};
 
-static char *save_tab[5]={"save ../../", "save ./", "save -f hjg ./ ","save -f png ./", NULL};
+static char *save_tab[5]={"save", "save ./", "save -p hjg", "save -g pick", NULL};
 static char *save_argstab[][5]={
-	{"save", "", "", "../../", NULL},
-	{"save", "", "", "./", NULL},
+	{"save", "", "", NULL},
 	{NULL},
-	{"save", "-f", "png", "./", NULL},
+	{"save", "-p", "hjg", NULL},
+	{NULL},
 	{NULL}
 };
-static short save_err_tab[5]={0, 0, EFFORM, 0, 0};
+static short save_err_tab[5]={0, EINVA, 0, EOPT, 0};
 
 static char *load_tab[5]={"load ./noexist.png", "load -w 2 image.png", "load ", "load image.zzz", NULL};
 static char *load_argstab[][5]={

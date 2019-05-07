@@ -9,5 +9,5 @@ short grey_filter(image * img,SDL_Rect rect );
 short replace_color(image * img, SDL_Rect rect , SDL_Color origin_color,SDL_Color target_color,int margin);
 short color_zone(image * img ,SDL_Rect rect , SDL_Color color);
 short light_filter(image * img , SDL_Rect rect , int percent );
-short contrast(image*, SDL_Rect, int);
+short contrast(image*, SDL_Rect rect, int percent);
 #endif

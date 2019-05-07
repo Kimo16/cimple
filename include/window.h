@@ -14,6 +14,6 @@ typedef struct frame frame;
 
 frame * init_frame(char * path);
 void free_frame(frame * target);
-short update_frame(frame * target);
+short update_frame(frame * target, char * path );
 
 #endif

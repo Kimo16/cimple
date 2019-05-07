@@ -79,7 +79,7 @@ short rotate(image *target, int angle, short rev){
 		fprintf(stderr, "Null image in rotate");
 		return 0;
 	}
-	if(rev!=0 && rev!=1){
+	if(rev != 0 && rev != 1){
 		fprintf(stderr, "Invalid rev argument");
 		return 0;
 	}
@@ -93,7 +93,7 @@ short rotate(image *target, int angle, short rev){
 		return 1;
 	// create a surface to be filled
 	SDL_Surface *new_surface;
-	int mod = (angle / 90) % 4;
+	int          mod=(angle / 90) % 4;
 	if(mod % 2 == 1)
 		new_surface=SDL_CreateRGBSurfaceWithFormat(0, img->h, img->w, 32, img->format->format);
 	if(mod % 2 == 0)
@@ -193,7 +193,7 @@ short copy(image *img, SDL_Rect area){
 
 	for(int i=0; i < area.h; i++)
 		for(int j=0; j < area.w; j++)
-			buffer[i * area.w + j]=pixels[(area.y + i) * area.w + (area.x + j)];
+			buffer[i * area.w + j]=pixels[(area.x + j) + ((area.y + i) * current->w)];
 	SDL_UnlockSurface(current);
 	return 1;
 }
@@ -217,7 +217,6 @@ short cut(image *img, SDL_Rect area){
 		return 0;
 	}
 	free_buffer();
-
 	buffer_h=area.h;
 	buffer_w=area.w;
 	buffer=malloc(area.w * area.h * sizeof(Uint32));
@@ -230,8 +229,8 @@ short cut(image *img, SDL_Rect area){
 
 	for(int i=0; i < area.h; i++)
 		for(int j=0; j < area.w; j++){
-			buffer[i * area.w + j]=pixels[(area.y + i) * area.w + (area.x + j)];
-			pixels[(area.y + i) * area.w + (area.x + j)]=0; // Couleur noire
+			buffer[i * area.w + j]=pixels[(area.x + j) + ((area.y + i) * current->w)];
+			pixels[(area.x + j) + ((area.y + i) * current->w)]=0; // Couleur noire
 		}
 	SDL_UnlockSurface(current);
 	return 1;
@@ -259,7 +258,7 @@ short paste(image *img, int x, int y){
 	for(int i=0; i < buffer_h; i++)
 		for(int j=0; j < buffer_w; j++)
 			if(is_in_image(x + j, y + i, current->w, current->h))
-				pixels[(y + i) * buffer_w + (x + j)]=buffer[i * buffer_w + j];
+				pixels[(x + j) + ((y + i) * current->w)]=buffer[i * buffer_w + j];
 	SDL_UnlockSurface(current);
 	return 1;
 }

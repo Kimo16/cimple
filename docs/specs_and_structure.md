@@ -32,10 +32,10 @@ After launching Cimple, the user can open one or several images. He will be able
 The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
 
 * ```load [-w windowId] imagepath``` : Command to load image in a new window. For load image in a specific window , we need to add -w flag and the window id . If the id is 0, it opens in the current image.
-* ```save [-f format] imagepath``` : Command to save an image used in the current window. In order to change image format , we need to use -f and write a valid image format.
+* ```save [-p imagepath]``` : Command to save an image used in the current window. In order to change image format , we need to use -p and write a valid image path with the new extension.
 * ```symmetry <v | h> ``` : Command to apply a vertical or horizontal symmetry to current buffer image.
 * ```rotate [-r] n ``` : Command to rotate image by n degrees. If -r is present, rotate in counter-clockwise. In case n isn't a mulitple of 90, raise an error.
-* ```truncate [origin_x origin_y end_x end_y]``` : Command to specify a new square inside the current buffer image. Launch select mode and focus on image screen if command launches without any arguments.
+* ```truncate [-s origin_x origin_y end_x end_y]``` : Command to specify a new square inside the current buffer image. Launch select mode and focus on image screen if command launches without any arguments. If -s is present , user have to specify the square dimensions in command line.
 * ```resize <workspace | image> width height``` : Command to resize an image or the workspace (paint-like method).
 * ```fill [-a] red green blue alpha``` : Command to fill an area in image with a rgba color. If the flag -a is passed, fills all the image, otherwise launches select mode in buffer image screen.
 * ```replace [-a] [-m margin] red green blue alpha red green blue alpha``` : Command to replace a color with another one.
@@ -45,7 +45,7 @@ The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
 * ```greyscale [-a]``` Put the selected area in greyscale. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```bnw [-a]``` Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```copy [-a]``` Copy an area into the buffer. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
-* ```paste [-a] [x] [y]``` Paste the buffer onto the current image. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
+* ```paste [-a]``` Paste the buffer onto the current image. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```cut [-a]``` Copy an area into the buffer and fill the area with black. Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```contrast [-a] percent``` Increase or decrease the contrast of the current buffer. Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```light [-a] percent``` Increase or decrease the light of the current buffer. Copy an area into the buffer and fill the area with black. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.

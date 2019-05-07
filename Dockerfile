@@ -10,4 +10,5 @@ RUN apt update \
       libsdl2-image-dev \
       libcmocka-dev \
       libjpeg-dev \
-      libpng-dev
+      libpng-dev \
+      libreadline-dev

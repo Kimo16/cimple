@@ -1,3 +1,6 @@
+#include "stdio.h"
+#include "cmd_line.h"
+
 int main(){
-	return 0;
+	return cimple_handler();
 }

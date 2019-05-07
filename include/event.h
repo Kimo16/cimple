@@ -20,6 +20,8 @@ int moveto_buffer(int pos);
 
 int new_frame(char*);
 
+void print_frame(void);
+
 void free_frame_buffer(int);
 void free_frames(void);
 

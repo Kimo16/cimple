@@ -18,15 +18,15 @@ static struct cmd_info info_tab[LEN_INFO]={
 	{.name="list_buffer", .len=LEN_LIST_BUFFER, .args_type={0}, .option={""}},
 	{.name="load", .len=LEN_LOAD, .args_type={0, 2, NUMBER, STRING}, .option={"", "-w", "", ""}},
 	{.name="negative", .len=LEN_NEG, .args_type={0, 1}, .option={"", "-a"}},
-	{.name="paste", .len=LEN_PASTE, .args_type={0, 3, NUMBER, NUMBER}, .option={"", "-a", "", ""}},
-	{.name="quit", .len=LEN_QUIT, .args_type={0,2,NUMBER}, .option={"","-w",""}},
+	{.name="paste", .len=LEN_PASTE, .args_type={0, 1}, .option={"", "-a"}},
+	{.name="quit", .len=LEN_QUIT, .args_type={0, 2, NUMBER}, .option={"", "-w", ""}},
 	{.name="replace", .len=LEN_REPLACE, .args_type={0, 2, POURC, 1, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL, PIXEL}, .option={"", "-m", "", "-a", "", "", "", "", "", "", "", ""}},
 	{.name="resize", .len=LEN_RESIZE, .args_type={0, VIEW, RELATIV, RELATIV}, .option={"", "", "", ""}},
 	{.name="rotate", .len=LEN_ROTATE, .args_type={0, 1, ANGLE}, .option={"", "-r", ""}},
-	{.name="save", .len=LEN_SAVE, .args_type={0, 2, EXT, STRING}, .option={"", "-f", "", ""}},
+	{.name="save", .len=LEN_SAVE, .args_type={0, 2, STRING}, .option={"", "-p", ""}},
 	{.name="switch_buffer", .len=LEN_SWITCH, .args_type={0, NUMBER}, .option={"", ""}},
 	{.name="symmetry", .len=LEN_SYM, .args_type={0, SYMTYPE}, .option={"", ""}},
-	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0, NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "", "", "", ""}}
+	{.name="truncate", .len=LEN_TRUNCATE, .args_type={0,5,NUMBER, NUMBER, NUMBER, NUMBER}, .option={"", "-s", "", "", "",""}}
 };
 
 /**
@@ -242,11 +242,12 @@ short is_pourcent(char *str){
 	return (n == 1 && i <= 100 && i >= 0) ? 0 : ENUMV;
 }
 
-short is_pourcent_relative(char * str){
+short is_pourcent_relative(char *str){
 	int i;
 	int n=sscanf(str, "%d", &i);
 	return (n == 1 && i <= 100 && i >= -100) ? 0 : ENUMV;
 }
+
 /**
  * Check if an option is the one excepted or exist in the command specification
  *
@@ -368,7 +369,6 @@ short build_args(cmd *command, char *s, short index){
  */
 
 cmd *parse_line(char *line){
-
 	cmd * command=NULL;
 	short index, i=0;
 	command=alloc_cmd();
@@ -386,17 +386,17 @@ cmd *parse_line(char *line){
 	if((index=init_cmd(command, token)) < 0){                   /*command initialisation failed*/
 		if(index == -1 && token != NULL){
 			msg_error(0, EUNKN, token, NULL);
-			ERRPARSE = EUNKN ; 
+			ERRPARSE=EUNKN;
 		}
 		free_cmd(command);
 		multiple_free(3, s1, s, token);
 		return NULL;
 	}
 
-	if((i=build_args(command, s1, index)) >= 1){                /*command-> args construction failed*/
+	if((i=build_args(command, s1, index)) >= 1){    /*command-> args construction failed*/
 		if(i == EINVA){
 			check_arguments(NULL);                  /*case where command line containts to much arguments*/
-			ERRPARSE = EINVA ;
+			ERRPARSE=EINVA;
 		}
 		free_cmd(command);
 		multiple_free(3, s1, s, token);
@@ -404,12 +404,12 @@ cmd *parse_line(char *line){
 	}
 
 	if((i=check_arguments(command)) > 0){
-		ERRPARSE = i ; 
+		ERRPARSE=i;
 		free_cmd(command);
 		multiple_free(3, s1, s, token);
 		return NULL;
 	}
 	multiple_free(3, s1, s, token);
-	ERRPARSE = 0; 
+	ERRPARSE=0;
 	return command;
 }

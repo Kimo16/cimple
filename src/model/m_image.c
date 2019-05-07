@@ -7,6 +7,33 @@ struct image {
 	SDL_Surface *surface;
 };
 
+
+
+/**
+ * @brief Normalize a path with UNIX
+ * @param path the original path
+ * @return the new path
+ */
+static char *normalize_path(char *path){
+	int   size=strlen(path);
+	char *n_path;
+	if(size < 2 || path[0] == '/' || (path[0] == '.' && path[1] == '/')){
+		n_path=malloc(size + 1);
+		if(n_path == NULL)
+			return NULL;
+		memcpy(n_path, path, size + 1);
+	}
+	else {
+		n_path=malloc(size + 3);
+		if(n_path == NULL)
+			return NULL;
+		n_path[0]='.';
+		n_path[1]='/';
+		memcpy(n_path + 2, path, size + 1);
+	}
+	return n_path;
+}
+
 /**
  * Fills the struct image elements according to path
  *
@@ -20,18 +47,18 @@ struct image {
 static short break_full_path(char *init_path, char **path, char **name, char **ext){
 	char *slash_p=memrchr(init_path, '/', strlen(init_path));
 	if(slash_p == NULL){
-		fprintf(stderr, "Path error");
+		fprintf(stderr, "Path error\n");
 		return 0;
 	}
 	char *dot_p=memrchr(init_path, '.', strlen(init_path));
 	if(dot_p == NULL){
-		fprintf(stderr, "Path error, extension not found");
+		fprintf(stderr, "P)th error, extension not found\n");
 		return 0;
 	}
 	//path
 	char *new_path=malloc((slash_p - init_path) + 1);
 	if(new_path == NULL){
-		fprintf(stderr, "Path error");
+		fprintf(stderr, "Path error\n");
 		return 0;
 	}
 	memcpy(new_path, init_path, (slash_p - init_path) + 1);
@@ -40,7 +67,7 @@ static short break_full_path(char *init_path, char **path, char **name, char **e
 	//name
 	char *new_name=malloc(dot_p - slash_p);
 	if(new_name == NULL){
-		fprintf(stderr, "Path error");
+		fprintf(stderr, "Path error\n");
 		free(new_path);
 		return 0;
 	}
@@ -74,18 +101,27 @@ image *new_img(char *path){
 		fprintf(stderr, "Path not valid\n");
 		return NULL;
 	}
+	char *n_path=normalize_path(path);
+	if(n_path == NULL){
+		fprintf(stderr, "Can't normalize path\n");
+		return NULL;
+	}
 	// allocate memory
 	image *new=malloc(sizeof(struct image));
 	if(new == NULL){
 		fprintf(stderr, "Image not initialized\n");
+		free(n_path);
 		return NULL;
 	}
-	if(!break_full_path(path, &new->save_path, &new->name, &new->extension)){
+	if(!break_full_path(n_path, &new->save_path, &new->name, &new->extension)){
 		fprintf(stderr, "Image not initialized\n");
 		free(new);
+		free(n_path);
 		return NULL;
 	}
 	new->surface=NULL;
+	printf("New path <%s>\n", n_path);
+	free(n_path);
 	return new;
 }
 
@@ -161,13 +197,13 @@ char *get_full_image_path(image *image){
 		fprintf(stderr, "Get_path malloc failed\n");
 		return NULL;
 	}
-	int   size_fullpath=strlen(image->extension) + strlen(image->save_path) + strlen(image->name) + 2;
+	int   size_fullpath=strlen(image->extension) + strlen(image->save_path) + strlen(image->name) + 3;
 	char *fullpath=malloc(size_fullpath);
 	if(fullpath == NULL){
 		fprintf(stderr, "Get_path malloc failed\n");
 		return NULL;
 	}
-	snprintf(fullpath, size_fullpath, "%s%s.%s", image->save_path, image->name, image->extension);
+	snprintf(fullpath, size_fullpath, "%s/%s.%s", image->save_path, image->name, image->extension);
 	return fullpath;
 }
 

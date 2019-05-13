@@ -153,7 +153,7 @@ short handler_cmd_replace(cmd *command){
 	if(f == NULL) return 0;
 	image *img=f->image;
 
-	int percent=0;
+	int percent=1;
 	int orig_r=string_to_int(command->args[4]);
 	int orig_g=string_to_int(command->args[5]);
 	int orig_b=string_to_int(command->args[6]);
@@ -526,6 +526,7 @@ short cimple_handler(){
 			n=cmd_function_handler(command);
 			free(cmd_line);
 			free_cmd(command);
+      check_current_frame();
 		}
 	}
 	return n;

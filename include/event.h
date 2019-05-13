@@ -19,8 +19,9 @@ void moveto_first_buffer(void);
 int moveto_buffer(int pos);
 
 int new_frame(char*);
-
 void print_frame(void);
+void check_current_frame(void);
+
 
 void free_frame_buffer(int);
 void free_frames(void);

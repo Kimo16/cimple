@@ -263,6 +263,24 @@ void print_frame(){
 	printf("Actual buffer : %d\n", cursor);
 }
 
+
+/**
+ * @brief
+ * Check if the current is still stable 
+ */
+void check_current_frame() {
+  if (cursor != -1) {
+    frame *current = frame_buffer[cursor];
+    if(current == NULL || current->image == NULL ||
+        get_img_surface(current->image) == NULL) {
+        free_frame_buffer(cursor);
+        frame_buffer[cursor] = NULL;
+        moveto_first_buffer();
+    }
+  }
+}
+
+
 /**
  * Delete a buffer and move cursor
  * to next non_empty position
@@ -276,7 +294,7 @@ void free_frame_buffer(int i){
 }
 
 /**
- * Delete the content of the entiere buffer
+ * Delete the content of th] entiere buffer
  */
 void free_frames(){
 	for(int i=0; i < MAX_BUFFER; i++)

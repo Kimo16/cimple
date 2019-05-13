@@ -54,7 +54,7 @@ short truncate_image(image *target, SDL_Rect rect){
 	int x_min = get_int_min(rect.x, rect.x+rect.w);
 	int y_min = get_int_min(rect.y, rect.y+rect.h);
 	int x_max = get_int_max(rect.x, rect.x+rect.w);
-	int y_max = get_int_max(rect.y, rect.y+rect.w);
+	int y_max = get_int_max(rect.y, rect.y+rect.h);
 	if(x_min<0 || y_min <0 || x_max > surface->w || y_max > surface->h){
 		fprintf(stderr, "Invalid coord for truncate\n");
 		return 0;

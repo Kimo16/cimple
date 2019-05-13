@@ -172,7 +172,7 @@ static short margin_colors(SDL_Color current_color, SDL_Color origin_color, int 
 	double eucli_dist=sqrt(((2 + (r_canal / 256)) * delta_r * delta_r)
 						   + (4 * (delta_g * delta_g))
 						   + ((2 + ((255 - r_canal) / 256)) * delta_b * delta_b));
-	double margin_pourcent=(eucli_dist / (sqrt((255 * 255) * 3))) * 100;
+	double margin_pourcent=(eucli_dist / (sqrt((255 * 255) * 15))) * 100;
 	if(margin_pourcent <= (double)margin) return 1;
 	return 0;
 }

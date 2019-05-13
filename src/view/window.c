@@ -6,6 +6,7 @@ frame *init_frame(char *path){
 		fprintf(stderr, "Frame not initialized\n");
 		return NULL;
 	}
+	memset(new_frame, 0, sizeof(frame));
 	new_frame->image=load_image(path);
 	if(new_frame->image == NULL){
 		fprintf(stderr, "Image could not be set\n");
@@ -18,7 +19,8 @@ frame *init_frame(char *path){
 		free_frame(new_frame);
 		return NULL;
 	}
-	new_frame->window=SDL_CreateWindow(get_img_name(new_frame->image), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, surface->w, surface->h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	new_frame->window=SDL_CreateWindow(get_img_name(new_frame->image),
+	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, surface->w, surface->h, SDL_WINDOW_SHOWN);
 	if(new_frame->window == NULL){
 		fprintf(stderr, "Cannot create window\n");
 		free_frame(new_frame);
@@ -83,8 +85,9 @@ short update_frame(frame *target, char *path){
 	SDL_Texture *new_texture=SDL_CreateTextureFromSurface(target->renderer, surface);
 	if(new_texture == NULL){
 		fprintf(stderr, "Error updating texture\n");
-		free_frame(target);
-		return 0;
+		free_image(target->image);
+    target->image = NULL;
+    return 0;
 	}
 	int rc=SDL_RenderCopy(target->renderer, new_texture, NULL, NULL);
 	if(rc < 0){
@@ -95,12 +98,15 @@ short update_frame(frame *target, char *path){
 	}
 	SDL_DestroyTexture(new_texture);
 	SDL_RenderPresent(target->renderer);
+	SDL_RaiseWindow(target->window);
 	return 1;
 }
 
 void free_frame(frame *target){
+	if(target == NULL) return ; 
 	if(target->window != NULL) SDL_DestroyWindow(target->window);
 	if(target->renderer != NULL) SDL_DestroyRenderer(target->renderer);
 	if(target->image != NULL) free_image(target->image);
 	free(target);
+
 }

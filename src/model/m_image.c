@@ -113,6 +113,7 @@ image *new_img(char *path){
 		free(n_path);
 		return NULL;
 	}
+	memset(new , 0 , sizeof(image));
 	if(!break_full_path(n_path, &new->save_path, &new->name, &new->extension)){
 		fprintf(stderr, "Image not initialized\n");
 		free(new);

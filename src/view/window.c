@@ -6,6 +6,7 @@ frame *init_frame(char *path){
 		fprintf(stderr, "Frame not initialized\n");
 		return NULL;
 	}
+	memset(new_frame, 0, sizeof(frame));
 	new_frame->image=load_image(path);
 	if(new_frame->image == NULL){
 		fprintf(stderr, "Image could not be set\n");
@@ -102,8 +103,10 @@ short update_frame(frame *target, char *path){
 }
 
 void free_frame(frame *target){
+	if(target == NULL) return ; 
 	if(target->window != NULL) SDL_DestroyWindow(target->window);
 	if(target->renderer != NULL) SDL_DestroyRenderer(target->renderer);
 	if(target->image != NULL) free_image(target->image);
 	free(target);
+
 }

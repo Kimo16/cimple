@@ -51,25 +51,26 @@ short truncate_image(image *target, SDL_Rect rect){
 		fprintf(stderr, "Null surface in truncate\n");
 		return 0;
 	}
-	int x_min = get_int_min(rect.x, rect.x+rect.w);
-	int y_min = get_int_min(rect.y, rect.y+rect.h);
-	int x_max = get_int_max(rect.x, rect.x+rect.w);
-	int y_max = get_int_max(rect.y, rect.y+rect.h);
-	if(x_min<0 || y_min <0 || x_max > surface->w || y_max > surface->h){
+	int x_min=get_int_min(rect.x, rect.x + rect.w);
+	int y_min=get_int_min(rect.y, rect.y + rect.h);
+	int x_max=get_int_max(rect.x, rect.x + rect.w);
+	int y_max=get_int_max(rect.y, rect.y + rect.h);
+	if( y_max<=0 || x_max<=0 ||
+	x_min < 0 || y_min < 0 || x_max > surface->w || y_max > surface->h){
 		fprintf(stderr, "Invalid coord for truncate\n");
 		return 0;
 	}
-	SDL_Rect zone = {.x=x_min, .y=y_min, .w=x_max-x_min, .h=y_max-y_min};
+	SDL_Rect     zone={.x=x_min, .y=y_min, .w=x_max - x_min, .h=y_max - y_min};
 	SDL_Surface *new_surface;
 	new_surface=SDL_CreateRGBSurfaceWithFormat(0, zone.w, zone.h, 32, surface->format->format);
 	if(SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
 	if(SDL_MUSTLOCK(surface) == SDL_TRUE) SDL_LockSurface(surface);
 	Uint32 *pixels_ref=surface->pixels;
 	Uint32 *pixels_new=new_surface->pixels;
-	for(int i=0; i <zone.h; i++)
-		for(int j=0;j<zone.w; j++){
+	for(int i=0; i < zone.h; i++)
+		for(int j=0; j < zone.w; j++){
 			SDL_Color c_ref={0};
-			SDL_GetRGBA(pixels_ref[(i+zone.y) * surface->w + (j+zone.x)], new_surface->format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
+			SDL_GetRGBA(pixels_ref[(i + zone.y) * surface->w + (j + zone.x)], new_surface->format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
 			Uint32 new_color=SDL_MapRGBA(new_surface->format, c_ref.r, c_ref.g, c_ref.b, c_ref.a);
 			pixels_new[i * new_surface->w + j]=new_color;
 		}
@@ -102,8 +103,8 @@ short resize_workspace(image *target, int width_p, int height_p){
 		fprintf(stderr, "Null surface in truncate\n");
 		return 0;
 	}
-	int          width_new=surface->w + width_p;
-	int          height_new=surface->h + height_p;
+	int width_new=surface->w + width_p;
+	int height_new=surface->h + height_p;
 	if(width_new <= 0 || height_new <= 0){
 		fprintf(stderr, "Cant resize\n");
 		return 0;

@@ -16,6 +16,7 @@ include const.mk
 .PHONY: all 
 all : $(NAME)
 
+
 ##########
 # BUILDS #
 ##########
@@ -34,6 +35,7 @@ $(BUILD)%.o : $(SRC_FOLDER)%.c
 view : $(OBJ_VIEW) 
 model : $(OBJ_MOD)
 controller : $(OBJ_CONTR)
+
 
 ###############
 # TESTS_BUILD #
@@ -71,6 +73,7 @@ check_valgrind:
 .PHONY: checkall
 checkall: check check_valgrind
 
+
 ####################
 # DOCKER for tests #
 ####################
@@ -82,6 +85,12 @@ docker-run:
 	docker run --rm kolibs/travis_test sh -c "cd root ; make check"
 
 
+##############
+# UNCRUSTIFY #
+##############
+
+uncrustify:
+	scripts/uncrustify.sh
 
 ##########
 # CLEANS #

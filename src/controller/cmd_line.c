@@ -17,6 +17,7 @@ static int string_to_int(char *str){
 	sscanf(str, "%d", &i);
 	return i;
 }
+
 /**
  * Call black_and_white model function in m_color.c to modify and apply modifications by calling view function
  * Call select function in event.c when -a option isn't present
@@ -230,7 +231,6 @@ short handler_cmd_copy(cmd *command){
 	return 1;
 }
 
-
 /**
  * Call cut function in m_transform.c and apply the modification by calling view function
  * Call select function in event.c when -a option isn't present
@@ -298,7 +298,6 @@ short handler_cmd_symmetry(cmd *command){
 	return 1;
 }
 
-
 /**
  * Call resize function in m_frame.c and apply the modification by calling view function
  * Resize the workspace or the current image
@@ -354,29 +353,25 @@ short handler_cmd_truncate(cmd *command){
 	if(f == NULL) return 0;
 	image *img=f->image;
 
-	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
+	SDL_Rect rect={0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if(strcmp(command->args[1], "") == 0){
+	if(strcmp(command->args[1], "") == 0)
 		rect=get_select_array();
-	}
 	else {
-	
 		int x1=string_to_int(command->args[2]);
 		int y1=string_to_int(command->args[3]);
 		int x2=string_to_int(command->args[4]);
 		int y2=string_to_int(command->args[5]);
-		rect.x = x1;
-		rect.y = y1;
-		rect.w = x2-x1;
-		rect.h=y2-y1;
+		rect.x=x1;
+		rect.y=y1;
+		rect.w=x2 - x1;
+		rect.h=y2 - y1;
 	}
 
 	if(truncate_image(img, rect) != 1) return 0;
 	if(update_frame(f, NULL) != 1) return 0;
 	return 1;
 }
-
-
 
 /**
  * Print frame list by calling function in event.c
@@ -420,14 +415,13 @@ short handler_cmd_quit(cmd *command){
  */
 
 short handler_cmd_switch_buff(cmd *command){
-	short s= moveto_buffer(string_to_int(command->args[1]));
-	if( s != 1 ){
-		if( s == -1 ) fprintf(stderr, "Error command[%s] : Invalid window id , index out of born ( [0;10] ) \n", command -> name);
-		if( s == 0 ) fprintf(stderr, "Error command[%s] : Invalid window id , window isn't initialised \n", command -> name);
-		return 0 ;
+	short s=moveto_buffer(string_to_int(command->args[1]));
+	if(s != 1){
+		if(s == -1) fprintf(stderr, "Error command[%s] : Invalid window id , index out of born ( [0;10] ) \n", command->name);
+		if(s == 0) fprintf(stderr, "Error command[%s] : Invalid window id , window isn't initialised \n", command->name);
+		return 0;
 	}
 	return s;
-
 }
 
 /**
@@ -480,8 +474,6 @@ short handler_cmd_save(cmd *command){
 	return 1;
 }
 
-
-
 /**
  * Redirection to a specific handler function by the help of command name
  *
@@ -524,7 +516,9 @@ static short cmd_function_handler(cmd *command){
 
 short cimple_handler(){
 	int n=0;
+	SDL_Event event;
 	while(1){
+		SDL_PollEvent(&event);
 		char *cmd_line=getcmdline();
 		if(cmd_line == NULL) continue;
 		cmd *command=parse_line(string_cpy(cmd_line));

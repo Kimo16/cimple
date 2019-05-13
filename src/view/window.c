@@ -18,7 +18,8 @@ frame *init_frame(char *path){
 		free_frame(new_frame);
 		return NULL;
 	}
-	new_frame->window=SDL_CreateWindow(get_img_name(new_frame->image), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, surface->w, surface->h, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+	new_frame->window=SDL_CreateWindow(get_img_name(new_frame->image),
+	SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, surface->w, surface->h, SDL_WINDOW_SHOWN);
 	if(new_frame->window == NULL){
 		fprintf(stderr, "Cannot create window\n");
 		free_frame(new_frame);

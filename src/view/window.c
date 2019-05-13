@@ -96,6 +96,7 @@ short update_frame(frame *target, char *path){
 	}
 	SDL_DestroyTexture(new_texture);
 	SDL_RenderPresent(target->renderer);
+	SDL_RaiseWindow(target->window);
 	return 1;
 }
 

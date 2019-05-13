@@ -526,6 +526,7 @@ short cimple_handler(){
 			n=cmd_function_handler(command);
 			free(cmd_line);
 			free_cmd(command);
+      check_current_frame();
 		}
 	}
 	return n;

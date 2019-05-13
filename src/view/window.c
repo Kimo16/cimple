@@ -84,8 +84,9 @@ short update_frame(frame *target, char *path){
 	SDL_Texture *new_texture=SDL_CreateTextureFromSurface(target->renderer, surface);
 	if(new_texture == NULL){
 		fprintf(stderr, "Error updating texture\n");
-		free_frame(target);
-		return 0;
+		free_image(target->image);
+    target->image = NULL;
+    return 0;
 	}
 	int rc=SDL_RenderCopy(target->renderer, new_texture, NULL, NULL);
 	if(rc < 0){

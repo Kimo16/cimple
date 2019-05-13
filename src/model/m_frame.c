@@ -10,7 +10,7 @@
  */
 
 static int get_int_max(int a, int b){
-	if(a > b) return a;
+	if (a > b) return a;
 	return b;
 }
 
@@ -24,7 +24,7 @@ static int get_int_max(int a, int b){
  */
 
 static int get_int_min(int a, int b){
-	if(a < b) return a;
+	if (a < b) return a;
 	return b;
 }
 
@@ -41,42 +41,43 @@ static int get_int_min(int a, int b){
  */
 
 short truncate_image(image *target, SDL_Rect rect){
-	if(target == NULL){
+	if (target == NULL) {
 		fprintf(stderr, "Null image in truncate\n");
 		return 0;
 	}
-	SDL_Surface *surface=get_img_surface(target);
+	SDL_Surface *surface = get_img_surface(target);
 	// check if surface is null
-	if(surface == NULL){
+	if (surface == NULL) {
 		fprintf(stderr, "Null surface in truncate\n");
 		return 0;
 	}
-	int x_min=get_int_min(rect.x, rect.x + rect.w);
-	int y_min=get_int_min(rect.y, rect.y + rect.h);
-	int x_max=get_int_max(rect.x, rect.x + rect.w);
-	int y_max=get_int_max(rect.y, rect.y + rect.h);
-	if(rect.h == 0 || rect.w == 0 ||
-	   x_min < 0 || y_min < 0 || x_max > surface->w || y_max > surface->h){
+	int x_min = get_int_min(rect.x, rect.x + rect.w);
+	int y_min = get_int_min(rect.y, rect.y + rect.h);
+	int x_max = get_int_max(rect.x, rect.x + rect.w);
+	int y_max = get_int_max(rect.y, rect.y + rect.h);
+	if (rect.h == 0 || rect.w == 0 ||
+	    x_min < 0 || y_min < 0 || x_max > surface->w || y_max > surface->h) {
 		fprintf(stderr, "Invalid coord for truncate\n");
 		return 0;
 	}
-	SDL_Rect     zone={.x=x_min, .y=y_min, .w=x_max - x_min, .h=y_max - y_min};
+	SDL_Rect     zone = {.x = x_min, .y = y_min, .w = x_max - x_min, .h = y_max - y_min};
 	SDL_Surface *new_surface;
-	new_surface=SDL_CreateRGBSurfaceWithFormat(0, zone.w, zone.h, 32, surface->format->format);
-	if(SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
-	if(SDL_MUSTLOCK(surface) == SDL_TRUE) SDL_LockSurface(surface);
-	Uint32 *pixels_ref=surface->pixels;
-	Uint32 *pixels_new=new_surface->pixels;
-	for(int i=0; i < zone.h; i++)
-		for(int j=0; j < zone.w; j++){
-			SDL_Color c_ref={0};
+	new_surface = SDL_CreateRGBSurfaceWithFormat(0, zone.w, zone.h, 32, surface->format->format);
+	if (SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
+	if (SDL_MUSTLOCK(surface) == SDL_TRUE) SDL_LockSurface(surface);
+	Uint32 *pixels_ref = surface->pixels;
+	Uint32 *pixels_new = new_surface->pixels;
+	for (int i = 0; i < zone.h; i++) {
+		for (int j = 0; j < zone.w; j++) {
+			SDL_Color c_ref = {0};
 			SDL_GetRGBA(pixels_ref[(i + zone.y) * surface->w + (j + zone.x)], new_surface->format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-			Uint32 new_color=SDL_MapRGBA(new_surface->format, c_ref.r, c_ref.g, c_ref.b, c_ref.a);
-			pixels_new[i * new_surface->w + j]=new_color;
+			Uint32 new_color = SDL_MapRGBA(new_surface->format, c_ref.r, c_ref.g, c_ref.b, c_ref.a);
+			pixels_new[i * new_surface->w + j] = new_color;
 		}
+	}
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(surface);
-	if(set_img_surface(target, new_surface) == 0){
+	if (set_img_surface(target, new_surface) == 0) {
 		fprintf(stderr, "Surface not set\n");
 		return 0;
 	}
@@ -94,42 +95,43 @@ short truncate_image(image *target, SDL_Rect rect){
  */
 
 short resize_workspace(image *target, int width_p, int height_p){
-	if(target == NULL){
+	if (target == NULL) {
 		fprintf(stderr, "Null image in truncate\n");
 		return 0;
 	}
-	SDL_Surface *surface=get_img_surface(target);
-	if(surface == NULL){
+	SDL_Surface *surface = get_img_surface(target);
+	if (surface == NULL) {
 		fprintf(stderr, "Null surface in truncate\n");
 		return 0;
 	}
-	int width_new=surface->w + width_p;
-	int height_new=surface->h + height_p;
-	if(width_new <= 0 || height_new <= 0){
+	int width_new = surface->w + width_p;
+	int height_new = surface->h + height_p;
+	if (width_new <= 0 || height_new <= 0) {
 		fprintf(stderr, "Cant resize\n");
 		return 0;
 	}
 	SDL_Surface *new_surface;
-	new_surface=SDL_CreateRGBSurfaceWithFormat(0, width_new, height_new, 32, surface->format->format);
-	if(SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
-	if(SDL_MUSTLOCK(surface) == SDL_TRUE) SDL_LockSurface(surface);
-	Uint32 *pixels_ref=surface->pixels;
-	Uint32 *pixels_new=new_surface->pixels;
-	for(int i=0; i < height_new; i++)
-		for(int j=0; j < width_new; j++){
+	new_surface = SDL_CreateRGBSurfaceWithFormat(0, width_new, height_new, 32, surface->format->format);
+	if (SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
+	if (SDL_MUSTLOCK(surface) == SDL_TRUE) SDL_LockSurface(surface);
+	Uint32 *pixels_ref = surface->pixels;
+	Uint32 *pixels_new = new_surface->pixels;
+	for (int i = 0; i < height_new; i++) {
+		for (int j = 0; j < width_new; j++) {
 			Uint32 new_color;
-			if(i > surface->h || j > surface->w)
-				new_color=SDL_MapRGBA(surface->format, 0, 0, 0, 255);
+			if (i > surface->h || j > surface->w)
+				new_color = SDL_MapRGBA(surface->format, 0, 0, 0, 255);
 			else{
-				SDL_Color c_ref={0};
+				SDL_Color c_ref = {0};
 				SDL_GetRGBA(pixels_ref[i * surface->w + j], new_surface->format, &c_ref.r, &c_ref.g, &c_ref.b, &c_ref.a);
-				new_color=SDL_MapRGBA(surface->format, c_ref.r, c_ref.g, c_ref.b, c_ref.a);
+				new_color = SDL_MapRGBA(surface->format, c_ref.r, c_ref.g, c_ref.b, c_ref.a);
 			}
-			pixels_new[i * width_new + j]=new_color;
+			pixels_new[i * width_new + j] = new_color;
 		}
+	}
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(surface);
-	if(set_img_surface(target, new_surface) == 0){
+	if (set_img_surface(target, new_surface) == 0) {
 		fprintf(stderr, "Surface not set\n");
 		return 0;
 	}
@@ -148,32 +150,32 @@ short resize_workspace(image *target, int width_p, int height_p){
 
 
 short resize_image(image *target, int width, int height){
-	if(width <= 0 || height <= 0){
+	if (width <= 0 || height <= 0) {
 		fprintf(stderr, "Cannot resize to negative value\n");
 		return 0;
 	}
-	if(target == NULL){
+	if (target == NULL) {
 		fprintf(stderr, "Null image in truncate\n");
 		return 0;
 	}
-	SDL_Surface *surface=get_img_surface(target);
-	if(surface == NULL){
+	SDL_Surface *surface = get_img_surface(target);
+	if (surface == NULL) {
 		fprintf(stderr, "Null surface in truncate\n");
 		return 0;
 	}
 	SDL_Surface *new_surface;
-	new_surface=SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, surface->format->format);
-	if(new_surface == NULL){
+	new_surface = SDL_CreateRGBSurfaceWithFormat(0, width, height, 32, surface->format->format);
+	if (new_surface == NULL) {
 		fprintf(stderr, "New surface not created\n");
 		return 0;
 	}
 	SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_NONE);
-	if(SDL_BlitScaled(surface, NULL, new_surface, NULL) != 0){
+	if (SDL_BlitScaled(surface, NULL, new_surface, NULL) != 0) {
 		SDL_FreeSurface(new_surface);
 		fprintf(stderr, "BlitScale failed\n");
 		return 0;
 	}
-	if(set_img_surface(target, new_surface) == 0){
+	if (set_img_surface(target, new_surface) == 0) {
 		fprintf(stderr, "Surface not set\n");
 		return 0;
 	}

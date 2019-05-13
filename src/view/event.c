@@ -5,7 +5,7 @@
  */
 
 static frame *frame_buffer[MAX_BUFFER];
-static int    cursor=-1;
+static int    cursor = -1;
 
 
 
@@ -34,13 +34,13 @@ short has_click(SDL_Point point){
  * a standard rect
  */
 static void standard_rect(SDL_Rect *origin){
-	if(origin->w < 0){
-		origin->x+=origin->w;
-		origin->w=-origin->w;
+	if (origin->w < 0) {
+		origin->x += origin->w;
+		origin->w = -origin->w;
 	}
-	if(origin->h < 0){
-		origin->y+=origin->h;
-		origin->h=-origin->h;
+	if (origin->h < 0) {
+		origin->y += origin->h;
+		origin->h = -origin->h;
 	}
 }
 
@@ -52,23 +52,23 @@ static void standard_rect(SDL_Rect *origin){
  *  Draw selection
  */
 int draw_select(SDL_Rect selection){
-	frame *current=frame_buffer[cursor];
+	frame *current = frame_buffer[cursor];
 
-	SDL_Color    select={255, 0, 0, 255};
-	SDL_Surface *surface=get_img_surface(current->image);
-	SDL_Texture *texture=NULL;
+	SDL_Color    select = {255, 0, 0, 255};
+	SDL_Surface *surface = get_img_surface(current->image);
+	SDL_Texture *texture = NULL;
 
-	if(surface == NULL){
+	if (surface == NULL) {
 		fprintf(stderr, "Can't get current surface");
 		return 0;
 	}
 
-	if(SDL_RenderClear(current->renderer)){
+	if (SDL_RenderClear(current->renderer)) {
 		fprintf(stderr, "Can't clear renderer");
 		return 0;
 	}
 
-	if((texture=SDL_CreateTextureFromSurface(current->renderer, surface)) == NULL){
+	if ((texture = SDL_CreateTextureFromSurface(current->renderer, surface)) == NULL) {
 		fprintf(stderr, "Can't convert surface into texture");
 		return 0;
 	}
@@ -76,7 +76,7 @@ int draw_select(SDL_Rect selection){
 	SDL_SetRenderTarget(current->renderer, texture);
 	SDL_RenderCopy(current->renderer, texture, NULL, NULL);
 
-	if(non_empty(selection)){
+	if (non_empty(selection)) {
 		SDL_SetRenderDrawColor(current->renderer, select.r, select.g, select.b, select.a);
 		SDL_RenderDrawRect(current->renderer, &selection);
 	}
@@ -97,22 +97,22 @@ SDL_Point get_point(){
 	SDL_Event event;
 	SDL_Point point;
 	memset(&point, 0, sizeof(SDL_Point));
-	short run=1;
+	short run = 1;
 	SDL_RaiseWindow(frame_buffer[cursor]->window);
 	SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_TRUE);
 
-	while(run){
+	while (run) {
 		SDL_WaitEvent(&event);
 
 		// Key is pressed for leaving
-		if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q){
-			point.x=-1;
-			run=0;
+		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
+			point.x = -1;
+			run = 0;
 		}
-		else if(event.type == SDL_MOUSEBUTTONDOWN){
-			point.x=event.button.x;
-			point.y=event.button.y;
-			run=0;
+		else if (event.type == SDL_MOUSEBUTTONDOWN) {
+			point.x = event.button.x;
+			point.y = event.button.y;
+			run = 0;
 		}
 	}
 
@@ -129,49 +129,49 @@ SDL_Rect get_select_array(){
 	SDL_Event event;
 	SDL_Rect  rect;
 	memset(&rect, 0, sizeof(SDL_Rect));
-	short run=1;
+	short run = 1;
 	SDL_RaiseWindow(frame_buffer[cursor]->window);
 	SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_TRUE);
 
-	while(run){
+	while (run) {
 		SDL_WaitEvent(&event);
 
 		// Key is pressed
-		if(event.type == SDL_KEYDOWN){
-			if(event.key.keysym.sym == SDLK_q){
+		if (event.type == SDL_KEYDOWN) {
+			if (event.key.keysym.sym == SDLK_q) {
 				memset(&rect, 0, sizeof(SDL_Rect));
-				run=0;
+				run = 0;
 			}
-			else if(non_empty(rect) && event.key.keysym.sym == SDLK_v)
-				run=0;
-			else if(non_empty(rect) && event.key.keysym.sym == SDLK_c)
+			else if (non_empty(rect) && event.key.keysym.sym == SDLK_v)
+				run = 0;
+			else if (non_empty(rect) && event.key.keysym.sym == SDLK_c)
 				memset(&rect, 0, sizeof(SDL_Rect));
 		}
 
 		// Mouse is in motion
-		else if(event.type == SDL_MOUSEBUTTONDOWN){
-			rect.x=event.button.x;
-			rect.y=event.button.y;
-			rect.h=0;
-			rect.w=0;
+		else if (event.type == SDL_MOUSEBUTTONDOWN) {
+			rect.x = event.button.x;
+			rect.y = event.button.y;
+			rect.h = 0;
+			rect.w = 0;
 		}
-		else if(event.type == SDL_MOUSEMOTION &&
-				(event.motion.state & SDL_BUTTON_LEFT)){
-			rect.h+=event.motion.yrel;
-			rect.w+=event.motion.xrel;
+		else if (event.type == SDL_MOUSEMOTION &&
+		         (event.motion.state & SDL_BUTTON_LEFT)) {
+			rect.h += event.motion.yrel;
+			rect.w += event.motion.xrel;
 		}
 
 
 
 		// Draw the selection
-		if(!draw_select(rect)){
+		if (!draw_select(rect)) {
 			memset(&rect, 0, sizeof(SDL_Rect));
-			run=0;
+			run = 0;
 		}
 	}
 	SDL_SetWindowGrab(frame_buffer[cursor]->window, SDL_FALSE);
 	standard_rect(&rect);
-	SDL_Rect empty_rect={0};
+	SDL_Rect empty_rect = {0};
 	draw_select(empty_rect);
 	return rect;
 }
@@ -185,7 +185,7 @@ SDL_Rect get_select_array(){
  * @return NULL in case of empty buffer
  */
 frame *get_cursor_buffer(){
-	if(cursor == -1)
+	if (cursor == -1)
 		return NULL;
 	return frame_buffer[cursor];
 }
@@ -195,9 +195,10 @@ frame *get_cursor_buffer(){
  * @return the position of free buffer
  */
 int get_free_buffer(){
-	for(int i=0; i < MAX_BUFFER; i++)
-		if(frame_buffer[i] == NULL)
+	for (int i = 0; i < MAX_BUFFER; i++) {
+		if (frame_buffer[i] == NULL)
 			return i;
+	}
 	return -1;
 }
 
@@ -205,10 +206,11 @@ int get_free_buffer(){
  * Move to first non_empty buffer
  */
 void moveto_first_buffer(){
-	cursor=-1;
-	for(int i=0; i < MAX_BUFFER; i++)
-		if(frame_buffer[i] != NULL)
-			cursor=i;
+	cursor = -1;
+	for (int i = 0; i < MAX_BUFFER; i++) {
+		if (frame_buffer[i] != NULL)
+			cursor = i;
+	}
 }
 
 /**
@@ -220,11 +222,11 @@ void moveto_first_buffer(){
  * 1 else
  */
 int moveto_buffer(int pos){
-	if(pos < 0 || pos > MAX_BUFFER)
+	if (pos < 0 || pos > MAX_BUFFER)
 		return -1;
-	if(frame_buffer[pos] == NULL)
+	if (frame_buffer[pos] == NULL)
 		return 0;
-	cursor=pos;
+	cursor = pos;
 	SDL_RaiseWindow(frame_buffer[cursor]->window);
 	return 1;
 }
@@ -239,23 +241,23 @@ int moveto_buffer(int pos){
  * @return 0 in case of failure
  */
 int new_frame(char *path){
-	int pos=get_free_buffer();
-	if(pos == -1){
+	int pos = get_free_buffer();
+	if (pos == -1) {
 		fprintf(stderr, "Can't open more buffers. Max : %d\n", MAX_BUFFER);
 		return 0;
 	}
 
-	frame *current=init_frame(path);
-	if(current == NULL)
+	frame *current = init_frame(path);
+	if (current == NULL)
 		return 0;
-	frame_buffer[pos]=current;
-	cursor=pos;
+	frame_buffer[pos] = current;
+	cursor = pos;
 	return 1;
 }
 
 void print_frame(){
-	for(int i=0; i < MAX_BUFFER; i++){
-		if(frame_buffer[i] != NULL)
+	for (int i = 0; i < MAX_BUFFER; i++) {
+		if (frame_buffer[i] != NULL)
 			printf("Window id : %d | picture : %s\n", i, get_img_name(frame_buffer[i]->image));
 		else
 			printf("Window id : %d | not open window \n", i);
@@ -263,32 +265,30 @@ void print_frame(){
 	printf("Actual buffer : %d\n", cursor);
 }
 
-
 /**
  * @brief
- * Check if the current is still stable 
+ * Check if the current is still stable
  */
-void check_current_frame() {
-  if (cursor != -1) {
-    frame *current = frame_buffer[cursor];
-    if(current == NULL || current->image == NULL ||
-        get_img_surface(current->image) == NULL) {
-        free_frame_buffer(cursor);
-        frame_buffer[cursor] = NULL;
-        moveto_first_buffer();
-    }
-  }
+void check_current_frame(){
+	if (cursor != -1) {
+		frame *current = frame_buffer[cursor];
+		if (current == NULL || current->image == NULL ||
+		    get_img_surface(current->image) == NULL) {
+			free_frame_buffer(cursor);
+			frame_buffer[cursor] = NULL;
+			moveto_first_buffer();
+		}
+	}
 }
-
 
 /**
  * Delete a buffer and move cursor
  * to next non_empty position
  */
 void free_frame_buffer(int i){
-	if(i >= 0 && i < MAX_BUFFER && frame_buffer[i] != NULL){
+	if (i >= 0 && i < MAX_BUFFER && frame_buffer[i] != NULL) {
 		free_frame(frame_buffer[i]);
-		frame_buffer[i]=NULL;
+		frame_buffer[i] = NULL;
 	}
 	moveto_first_buffer();
 }
@@ -297,6 +297,7 @@ void free_frame_buffer(int i){
  * Delete the content of th] entiere buffer
  */
 void free_frames(){
-	for(int i=0; i < MAX_BUFFER; i++)
+	for (int i = 0; i < MAX_BUFFER; i++) {
 		free_frame_buffer(i);
+	}
 }

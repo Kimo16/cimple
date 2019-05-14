@@ -59,17 +59,17 @@ int draw_select(SDL_Rect selection){
 	SDL_Texture *texture = NULL;
 
 	if (surface == NULL) {
-		fprintf(stderr, "Can't get current surface");
+		fprintf(stderr, "Error : can't get current surface\n");
 		return 0;
 	}
 
 	if (SDL_RenderClear(current->renderer)) {
-		fprintf(stderr, "Can't clear renderer");
+		fprintf(stderr, "Error : can't clear renderer\n");
 		return 0;
 	}
 
 	if ((texture = SDL_CreateTextureFromSurface(current->renderer, surface)) == NULL) {
-		fprintf(stderr, "Can't convert surface into texture");
+		fprintf(stderr, "Error : can't convert surface into texture\n");
 		return 0;
 	}
 
@@ -108,10 +108,12 @@ SDL_Point get_point(){
 		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
 			point.x = -1;
 			run = 0;
+      printf("Cancel selection\n");
 		}
 		else if (event.type == SDL_MOUSEBUTTONDOWN) {
 			point.x = event.button.x;
 			point.y = event.button.y;
+      printf("Point x: %d, y: %d\n", point.x, point.y);
 			run = 0;
 		}
 	}
@@ -141,10 +143,11 @@ SDL_Rect get_select_array(){
 			if (event.key.keysym.sym == SDLK_q) {
 				memset(&rect, 0, sizeof(SDL_Rect));
 				run = 0;
+        printf("Cancel selection\n");
 			}
 			else if (non_empty(rect) && event.key.keysym.sym == SDLK_v)
 				run = 0;
-			else if (non_empty(rect) && event.key.keysym.sym == SDLK_c)
+			else if (non_empty(rect) && event.key.keysym.sym == SDLK_f)
 				memset(&rect, 0, sizeof(SDL_Rect));
 		}
 
@@ -161,9 +164,9 @@ SDL_Rect get_select_array(){
 			rect.w += event.motion.xrel;
 		}
 
+    printf("\rRect x:%d, y:%d, w:%d, h:%d      ", rect.x, rect.y, rect.w, rect.h);
 
-
-		// Draw the selection
+    // Draw the selection
 		if (!draw_select(rect)) {
 			memset(&rect, 0, sizeof(SDL_Rect));
 			run = 0;
@@ -173,6 +176,7 @@ SDL_Rect get_select_array(){
 	standard_rect(&rect);
 	SDL_Rect empty_rect = {0};
 	draw_select(empty_rect);
+  printf("\n");
 	return rect;
 }
 
@@ -243,7 +247,7 @@ int moveto_buffer(int pos){
 int new_frame(char *path){
 	int pos = get_free_buffer();
 	if (pos == -1) {
-		fprintf(stderr, "Can't open more buffers. Max : %d\n", MAX_BUFFER);
+		fprintf(stderr, "Errp : can't open more buffers. Max : %d\n", MAX_BUFFER);
 		return 0;
 	}
 

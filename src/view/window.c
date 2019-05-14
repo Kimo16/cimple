@@ -46,8 +46,8 @@ frame *init_frame(char *path){
 		fprintf(stderr, "Error : render failed\n");
 		SDL_DestroyTexture(texture);
 		free_frame(new_frame);
-		return NULL;Render error
-	}
+		return NULL;
+  }
 	SDL_SetRenderTarget(new_frame->renderer, NULL);
 	SDL_RenderPresent(new_frame->renderer);
 	SDL_DestroyTexture(texture);

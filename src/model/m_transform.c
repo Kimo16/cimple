@@ -14,23 +14,23 @@ static int     buffer_w = 0;
 
 short symmetry(image *target, short vertical){
 	if (target == NULL) {
-		fprintf(stderr, "Null argument in symmetry.");
+		fprintf(stderr, "Error : null argument in symmetry\n");
 		return 0;
 	}
 	SDL_Surface *img = get_img_surface(target);
 	if (img == NULL) {
-		fprintf(stderr, "Null surface in symmetry.");
+		fprintf(stderr, "Error : null surface in symmetry\n");
 		return 0;
 	}
 	if (vertical != 0 && vertical != 1) {
-		fprintf(stderr, "Wrong [vertical] argument in symmetry.");
+		fprintf(stderr, "Error : wrong option argument in symmetry\n");
 		return 0;
 	}
 	SDL_Surface *new_surface;
 	new_surface = SDL_CreateRGBSurfaceWithFormat(0, img->w, img->h, 32, img->format->format);
 	if (new_surface == NULL) {
-		SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
-		exit(1);
+	  fprintf(stderr, "Error : can't create texture from surface\n");
+		return 0;
 	}
 	if (SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
 	if (SDL_MUSTLOCK(img) == SDL_TRUE) SDL_LockSurface(img);
@@ -61,7 +61,7 @@ short symmetry(image *target, short vertical){
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(img);
 	if (set_img_surface(target, new_surface) == 0) {
-		fprintf(stderr, "Surface not set");
+		fprintf(stderr, "Error : surface not set\n");
 		return 0;
 	}
 	return 1;
@@ -78,16 +78,16 @@ short symmetry(image *target, short vertical){
 
 short rotate(image *target, int angle, short rev){
 	if (target == NULL) {
-		fprintf(stderr, "Null image in rotate");
+		fprintf(stderr, "Error : null image in rotate\n");
 		return 0;
 	}
 	if (rev != 0 && rev != 1) {
-		fprintf(stderr, "Invalid rev argument");
+		fprintf(stderr, "Error : invalid rev argument\n");
 		return 0;
 	}
 	SDL_Surface *img = get_img_surface(target);
 	if (target == NULL) {
-		fprintf(stderr, "Null surface in rotate");
+		fprintf(stderr, "Error : null surface in rotate\n");
 		return 0;
 	}
 	// if image is not changed (i.e. 360 degrees)
@@ -101,8 +101,8 @@ short rotate(image *target, int angle, short rev){
 	if (mod % 2 == 0)
 		new_surface = SDL_CreateRGBSurfaceWithFormat(0, img->w, img->h, 32, img->format->format);
 	if (new_surface == NULL) {
-		SDL_Log("SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
-		return -1;
+	  fprintf(stderr, "Error : can't create texture from surface\n");
+		return 0;
 	}
 	if (SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
 	if (SDL_MUSTLOCK(img) == SDL_TRUE) SDL_LockSurface(img);
@@ -141,7 +141,7 @@ short rotate(image *target, int angle, short rev){
 	SDL_UnlockSurface(new_surface);
 	SDL_UnlockSurface(img);
 	if (set_img_surface(target, new_surface) == 0) {
-		fprintf(stderr, "Surface not set");
+		fprintf(stderr, "Error : surface not set\n");
 		return 0;
 	}
 	return 1;
@@ -177,12 +177,12 @@ static short is_in_image(int x, int y, int w, int h){
  */
 short copy(image *img, SDL_Rect area){
 	if (img == NULL) {
-		fprintf(stderr, "Null image in copy\n");
+		fprintf(stderr, "Error : null image in copy\n");
 		return 0;
 	}
 	SDL_Surface *current = get_img_surface(img);
 	if (current == NULL) {
-		fprintf(stderr, "Null surface in copy\n");
+		fprintf(stderr, "Error : null surface in copy\n");
 		return 0;
 	}
 	free_buffer();
@@ -190,7 +190,7 @@ short copy(image *img, SDL_Rect area){
 	buffer_w = area.w;
 	buffer = malloc(area.w * area.h * sizeof(Uint32));
 	if (buffer == NULL) {
-		fprintf(stderr, "Buffer copy error\n");
+		fprintf(stderr, "Error : buffer copy error\n");
 		return 0;
 	}
 	if (SDL_MUSTLOCK(current) == SDL_TRUE) SDL_LockSurface(current);
@@ -215,12 +215,12 @@ short copy(image *img, SDL_Rect area){
  */
 short cut(image *img, SDL_Rect area){
 	if (img == NULL) {
-		fprintf(stderr, "Null image in cut\n");
+		fprintf(stderr, "Error : null image in cut\n");
 		return 0;
 	}
 	SDL_Surface *current = get_img_surface(img);
 	if (current == NULL) {
-		fprintf(stderr, "Null surface in cut\n");
+		fprintf(stderr, "Error : null surface in cut\n");
 		return 0;
 	}
 	free_buffer();
@@ -228,7 +228,7 @@ short cut(image *img, SDL_Rect area){
 	buffer_w = area.w;
 	buffer = malloc(area.w * area.h * sizeof(Uint32));
 	if (buffer == NULL) {
-		fprintf(stderr, "Buffer cut error\n");
+		fprintf(stderr, "Error : buffer cut error\n");
 		return 0;
 	}
 	if (SDL_MUSTLOCK(current) == SDL_TRUE) SDL_LockSurface(current);
@@ -253,12 +253,12 @@ short cut(image *img, SDL_Rect area){
 short paste(image *img, int x, int y){
 	if (buffer == NULL) return 1;
 	if (img == NULL) {
-		fprintf(stderr, "Null image in paste\n");
+		fprintf(stderr, "Error : null image in paste\n");
 		return 0;
 	}
 	SDL_Surface *current = get_img_surface(img);
 	if (current == NULL) {
-		fprintf(stderr, "Null surface in paste\n");
+		fprintf(stderr, "Error : null surface in paste\n");
 		return 0;
 	}
 	if (SDL_MUSTLOCK(current) == SDL_TRUE) SDL_LockSurface(current);

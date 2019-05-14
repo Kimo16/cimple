@@ -22,6 +22,9 @@ int new_frame(char*);
 void print_frame(void);
 void check_current_frame(void);
 
+short has_click(SDL_Point p );
+short non_empty(SDL_Rect rect);
+
 
 void free_frame_buffer(int);
 void free_frames(void);

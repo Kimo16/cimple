@@ -7,18 +7,18 @@
 image *load_image(char *path){
 	image *img = new_img(path);
 	if (img == NULL) {
-		fprintf(stderr, "DEBUG : wrong image path.\n");
+		fprintf(stderr, "Error: wrong image path.\n");
 		return NULL;
 	}
 	SDL_Surface *tmp = IMG_Load(path);
 	if (tmp == NULL) {
-		fprintf(stderr, "DEBUG : can't load image.\n");
+		fprintf(stderr, "Error : can't load image.\n");
 		free_image(img);
 		return NULL;
 	}
 	SDL_PixelFormat *format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
 	if (format == NULL) {
-		fprintf(stderr, "DEBUG : can't allocate format.\n");
+		fprintf(stderr, "Error : can't allocate format.\n");
 		SDL_FreeSurface(tmp);
 		free_image(img);
 		return NULL;
@@ -26,7 +26,7 @@ image *load_image(char *path){
 	SDL_Surface *copy = SDL_ConvertSurface(tmp, format, 0);
 	SDL_FreeSurface(tmp);
 	if (copy == NULL) {
-		fprintf(stderr, "DEBUG : can't convert image.\n");
+		fprintf(stderr, "Error : can't convert image.\n");
 		SDL_FreeFormat(format);
 		return NULL;
 	}
@@ -40,7 +40,7 @@ short check_tmp(){
 	DIR * dir = opendir(tmp_dir);
 	int   ret = 0;
 	if (dir == NULL) {
-		fprintf(stderr, "No file saved");
+		printf("No file saved\n");
 		return ret;
 	}
 	struct dirent *current;

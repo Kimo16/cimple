@@ -106,7 +106,7 @@ short handler_cmd_contrast(cmd *command){
 	if (f == NULL) return 0;
 	image *img = f->image;
 	if (strcmp(command->args[2], "") == 0) {
-		fprintf(stderr, "Error command [%s] : please enter a percent rate\n", command->args[0]);
+		fprintf(stderr, "Error : command [%s], please enter a percent rate\n", command->args[0]);
 		return 0;
 	}
 	int percent = string_to_int(command->args[2]);
@@ -136,7 +136,7 @@ short handler_cmd_light(cmd *command){
 	if (f == NULL) return 0;
 	image *img = f->image;
 	if (strcmp(command->args[2], "") == 0) {
-		fprintf(stderr, "Error command [%s] : please enter a percent rate\n", command->args[0]);
+		fprintf(stderr, "Error : command [%s], please enter a percent rate\n", command->args[0]);
 		return 0;
 	}
 	int      percent = string_to_int(command->args[2]);
@@ -422,7 +422,7 @@ short handler_cmd_quit(cmd *command){
 	}
 	int index = string_to_int(command->args[2]);
 	if (moveto_buffer(index) != 1) {
-		fprintf(stderr, "Error command [quit] : invalid window id \n");
+		fprintf(stderr, "Error  : command [quit], invalid window id \n");
 		return 0;
 	}
 	free_frame_buffer(index);
@@ -439,8 +439,8 @@ short handler_cmd_quit(cmd *command){
 short handler_cmd_switch_buff(cmd *command){
 	short s = moveto_buffer(string_to_int(command->args[1]));
 	if (s != 1) {
-		if (s == -1) fprintf(stderr, "Error command[%s] : Invalid window id , index out of born ( [0;10] ) \n", command->name);
-		if (s == 0) fprintf(stderr, "Error command[%s] : Invalid window id , window isn't initialised \n", command->name);
+		if (s == -1) fprintf(stderr, "Error : command[%s], invalid window id , index out of bound ( [0;10] ) \n", command->name);
+		if (s == 0) fprintf(stderr, "Error : command[%s], invalid window id , window isn't initialised \n", command->name);
 		return 0;
 	}
 	return s;
@@ -460,7 +460,7 @@ short handler_cmd_load(cmd *command){
 	else{
 		int index = string_to_int(command->args[2]);
 		if (moveto_buffer(index) != 1) {
-			fprintf(stderr, "Error command[load] : invalid window id \n");
+			fprintf(stderr, "Error : command[load], invalid window id \n");
 			return 0;
 		}
 		if (update_frame(get_cursor_buffer(), command->args[3]) != 1) return 0;
@@ -478,7 +478,7 @@ short handler_cmd_load(cmd *command){
 short handler_cmd_save(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) {
-		fprintf(stderr, "Error command [%s] : no window founded , please load an image\n", command->name);
+		fprintf(stderr, "Error : command [%s], no window founded , please load an image\n", command->name);
 		return 0;
 	}
 	image *img = f->image;
@@ -486,7 +486,7 @@ short handler_cmd_save(cmd *command){
 	if (strcmp(command->args[1], "-p") == 0) {
 		image *new_img = save_image_as(img, command->args[2]);
 		if (new_img == NULL) {
-			fprintf(stderr, "Error command [%s] : error while saving the image\n", command->args[0]);
+			fprintf(stderr, "Error : command [%s], error while saving the image\n", command->args[0]);
 			return 0;
 		}
 		f->image = new_img;

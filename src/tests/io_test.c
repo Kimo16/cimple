@@ -13,7 +13,7 @@ static void test_pixel(SDL_Surface *reference, SDL_Surface *subject, int margin)
 	SDL_PixelFormat *format = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
 	int i, j;
 	if (format == NULL) {
-		fprintf(stderr, "Can't init format!\n");
+		fprintf(stderr, "Error : can't init format!\n");
 		exit(1);
 	}
 	SDL_LockSurface(reference);

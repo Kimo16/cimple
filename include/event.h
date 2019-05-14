@@ -17,10 +17,14 @@ int get_free_buffer(void);
 
 void moveto_first_buffer(void);
 int moveto_buffer(int pos);
+short move_current_to(int target);
 
 int new_frame(char*);
 void print_frame(void);
 void check_current_frame(void);
+
+short has_click(SDL_Point p );
+short non_empty(SDL_Rect rect);
 
 
 void free_frame_buffer(int);

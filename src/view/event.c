@@ -255,6 +255,11 @@ int new_frame(char *path){
 	return 1;
 }
 
+
+/**
+ * @brief 
+ * Print current buffer
+ */
 void print_frame(){
 	for (int i = 0; i < MAX_BUFFER; i++) {
 		if (frame_buffer[i] != NULL)
@@ -264,6 +269,30 @@ void print_frame(){
 	}
 	printf("Actual buffer : %d\n", cursor);
 }
+
+
+/**
+ * @brief
+ * Move the current buffer to new pos
+ * @param target new position 
+ * @return 1 in case of error else 0
+ */
+short move_current_to(int target) {
+  if (cursor == -1 || (target < 0 && target > 9)){
+    fprintf(stderr, "Error : unauthorized buffer\n");
+    return 1;
+  }
+  if(frame_buffer[target] == NULL) {
+    frame_buffer[target] = frame_buffer[cursor];
+    frame_buffer[cursor] = NULL;
+  } else {
+    frame_buffer[target]->image = frame_buffer[cursor]->image;
+    free_frame_buffer(cursor);
+  }
+  cursor = target;
+  return 0;
+}
+
 
 /**
  * @brief

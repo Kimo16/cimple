@@ -32,8 +32,11 @@ short handler_cmd_bnw(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
+
 
 	if (black_and_white_filter(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -55,8 +58,10 @@ short handler_cmd_greyscale(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
 
 	if (grey_filter(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -78,8 +83,10 @@ short handler_cmd_negative(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
 
 	if (negative_filter(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -106,8 +113,10 @@ short handler_cmd_contrast(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
 
 	if (contrast(img, rect, percent) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -133,8 +142,10 @@ short handler_cmd_light(cmd *command){
 	int      percent = string_to_int(command->args[2]);
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
 	if (light_filter(img, rect, percent) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
 	return 1;
@@ -171,8 +182,10 @@ short handler_cmd_replace(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[3], "") == 0)
+	if (strcmp(command->args[3], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
 
 	if (replace_color(img, rect, origin_color, target_color, percent) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -200,8 +213,10 @@ short handler_cmd_fill(cmd *command){
 	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 	SDL_Color color = {col_r, col_g, col_b, col_a};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
 
 	if (color_zone(img, rect, color) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -223,8 +238,10 @@ short handler_cmd_copy(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
 
 	if (copy(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -246,8 +263,10 @@ short handler_cmd_cut(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
 
 	if (cut(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -270,6 +289,7 @@ short handler_cmd_paste(cmd *command){
 	int x = 0, y = 0;
 	if (strcmp(command->args[1], "") == 0) {
 		SDL_Point p = get_point();
+		if(has_click(p)!= 1) return 1;
 		x = p.x;
 		y = p.y;
 	}
@@ -355,8 +375,10 @@ short handler_cmd_truncate(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0){
 		rect = get_select_array();
+		if(non_empty(rect) != 1) return 1;
+	}
 	else {
 		int x1 = string_to_int(command->args[2]);
 		int y1 = string_to_int(command->args[3]);

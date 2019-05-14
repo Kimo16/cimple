@@ -524,7 +524,7 @@ static short cmd_function_handler(cmd *command){
 	if (strcmp(command->name, "switch_buffer") == 0) return handler_cmd_switch_buff(command);
 	if (strcmp(command->name, "symmetry") == 0) return handler_cmd_symmetry(command);
 	if (strcmp(command->name, "truncate") == 0) return handler_cmd_truncate(command);
-	fprintf(stderr, "Critical Program error : existing command unrecognized \n");
+	fprintf(stderr, "Error command [%s] : current command unrecognized\n", command -> name );
 	return 0;
 }
 

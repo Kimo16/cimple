@@ -47,18 +47,18 @@ static char *normalize_path(char *path){
 static short break_full_path(char *init_path, char **path, char **name, char **ext){
 	char *slash_p = memrchr(init_path, '/', strlen(init_path));
 	if (slash_p == NULL) {
-		fprintf(stderr, "Path error\n");
+		fprintf(stderr, "Error : invalid path\n");
 		return 0;
 	}
 	char *dot_p = memrchr(init_path, '.', strlen(init_path));
 	if (dot_p == NULL) {
-		fprintf(stderr, "P)th error, extension not found\n");
+		fprintf(stderr, "Error : path extension not found\n");
 		return 0;
 	}
 	//path
 	char *new_path = malloc((slash_p - init_path) + 1);
 	if (new_path == NULL) {
-		fprintf(stderr, "Path error\n");
+		fprintf(stderr, "Error : new path\n");
 		return 0;
 	}
 	memcpy(new_path, init_path, (slash_p - init_path) + 1);
@@ -67,7 +67,7 @@ static short break_full_path(char *init_path, char **path, char **name, char **e
 	//name
 	char *new_name = malloc(dot_p - slash_p);
 	if (new_name == NULL) {
-		fprintf(stderr, "Path error\n");
+		fprintf(stderr, "Error : new path name\n");
 		free(new_path);
 		return 0;
 	}
@@ -77,7 +77,7 @@ static short break_full_path(char *init_path, char **path, char **name, char **e
 	//extension
 	char *new_ext = malloc(strlen(dot_p));
 	if (new_ext == NULL) {
-		fprintf(stderr, "Path error");
+		fprintf(stderr, "Error : new path extension");
 		free(new_name);
 		free(new_path);
 		return 0;
@@ -98,30 +98,29 @@ static short break_full_path(char *init_path, char **path, char **name, char **e
 image *new_img(char *path){
 	// checking if it's a valid path
 	if (path == NULL) {
-		fprintf(stderr, "Path not valid\n");
+		fprintf(stderr, "Error : path not valid\n");
 		return NULL;
 	}
 	char *n_path = normalize_path(path);
 	if (n_path == NULL) {
-		fprintf(stderr, "Can't normalize path\n");
+		fprintf(stderr, "Error : cannot normalize path\n");
 		return NULL;
 	}
 	// allocate memory
 	image *new = malloc(sizeof(struct image));
 	if (new == NULL) {
-		fprintf(stderr, "Image not initialized\n");
+		fprintf(stderr, "Error : image not initialized\n");
 		free(n_path);
 		return NULL;
 	}
 	memset(new, 0, sizeof(image));
 	if (!break_full_path(n_path, &new->save_path, &new->name, &new->extension)) {
-		fprintf(stderr, "Image not initialized\n");
+		fprintf(stderr, "Error : image not initialized\n");
 		free(new);
 		free(n_path);
 		return NULL;
 	}
 	new->surface = NULL;
-	printf("New path <%s>\n", n_path);
 	free(n_path);
 	return new;
 }
@@ -135,7 +134,7 @@ image *new_img(char *path){
 
 char *get_img_name(image *img){
 	if (img == NULL || img->name == NULL) {
-		fprintf(stderr, "get_img_name failed\n");
+		fprintf(stderr, "Error : cannot find image name\n");
 		return NULL;
 	}
 	return img->name;
@@ -150,7 +149,7 @@ char *get_img_name(image *img){
 
 char *get_img_path(image *img){
 	if (img == NULL || img->save_path == NULL) {
-		fprintf(stderr, "get_img_path failed\n");
+		fprintf(stderr, "Error : cannot find image\n");
 		return NULL;
 	}
 	return img->save_path;
@@ -165,7 +164,7 @@ char *get_img_path(image *img){
 
 char *get_img_ext(image *img){
 	if (img == NULL || img->extension == NULL) {
-		fprintf(stderr, "get_img_ext failed\n");
+		fprintf(stderr, "Error : image extension failed\n");
 		return NULL;
 	}
 	return img->extension;
@@ -180,7 +179,7 @@ char *get_img_ext(image *img){
 
 SDL_Surface *get_img_surface(image *img){
 	if (img == NULL || img->surface == NULL) {
-		fprintf(stderr, "get_img_surface failed\n");
+		fprintf(stderr, "Error : cannot find image\n");
 		return NULL;
 	}
 	return img->surface;
@@ -195,13 +194,13 @@ SDL_Surface *get_img_surface(image *img){
 
 char *get_full_image_path(image *image){
 	if (image == NULL) {
-		fprintf(stderr, "Get_path malloc failed\n");
+		fprintf(stderr, "Error : image is not initialized");
 		return NULL;
 	}
 	int   size_fullpath = strlen(image->extension) + strlen(image->save_path) + strlen(image->name) + 3;
 	char *fullpath = malloc(size_fullpath);
 	if (fullpath == NULL) {
-		fprintf(stderr, "Get_path malloc failed\n");
+		fprintf(stderr, "Error : cannot allocate fullpath\n");
 		return NULL;
 	}
 	snprintf(fullpath, size_fullpath, "%s/%s.%s", image->save_path, image->name, image->extension);
@@ -218,7 +217,7 @@ char *get_full_image_path(image *image){
 
 short set_img_name(image *img, char *name){
 	if (img == NULL || name == NULL) {
-		fprintf(stderr, "Setter failed\n");
+		fprintf(stderr, "Error : image cannot be find or is not initialized correctly\n");
 		return 0;
 	}
 	char *tmp = img->name;
@@ -241,7 +240,7 @@ short set_img_name(image *img, char *name){
 
 short set_img_path(image *img, char *path){
 	if (img == NULL || path == NULL) {
-		fprintf(stderr, "Setter failed\n");
+		fprintf(stderr, "Error : image cannot be find or is not initialized correctly\n");
 		return 0;
 	}
 	char *tmp = img->save_path;
@@ -264,7 +263,7 @@ short set_img_path(image *img, char *path){
 
 short set_img_ext(image *img, char *ext){
 	if (img == NULL || ext == NULL) {
-		fprintf(stderr, "Setter failed\n");
+		fprintf(stderr, "Error : image cannot be find or extension is not initialized correctly\n");
 		return 0;
 	}
 	char *tmp = img->extension;
@@ -287,7 +286,7 @@ short set_img_ext(image *img, char *ext){
 
 short set_img_surface(image *img, SDL_Surface *surface){
 	if (img == NULL || surface == NULL) {
-		fprintf(stderr, "Setter failed\n");
+		fprintf(stderr, "Error : image cannot be find or surface is not initialized correctly\n");
 		return 0;
 	}
 	SDL_Surface *image_to_free = img->surface;
@@ -307,17 +306,17 @@ short set_img_surface(image *img, SDL_Surface *surface){
 image *copy_image(image *ref){
 	char *path = get_full_image_path(ref);
 	if (path == NULL) {
-		fprintf(stderr, "Copy failed\n");
+		fprintf(stderr, "Error : copy failed\n");
 		return NULL;
 	}
 	image *copy = new_img(path);
 	if (copy == NULL) {
-		fprintf(stderr, "Copy failed\n");
+		fprintf(stderr, "Error : copy failed\n");
 		return NULL;
 	}
 	SDL_Surface *copy_surface = SDL_ConvertSurface(ref->surface, ref->surface->format, 0);
 	if (copy_surface == NULL) {
-		fprintf(stderr, "Copy failed\n");
+		fprintf(stderr, "Error : copy failed\n");
 		free_image(copy);
 		return NULL;
 	}

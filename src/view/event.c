@@ -247,7 +247,7 @@ int moveto_buffer(int pos){
 int new_frame(char *path){
 	int pos = get_free_buffer();
 	if (pos == -1) {
-		fprintf(stderr, "Errp : can't open more buffers. Max : %d\n", MAX_BUFFER);
+		fprintf(stderr, "Error : can't open more buffers. Max : %d\n", MAX_BUFFER);
 		return 0;
 	}
 

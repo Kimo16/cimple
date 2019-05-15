@@ -13,6 +13,7 @@ static struct cmd_info info_tab[LEN_INFO] = {
 	{.name = "contrast",      .len = LEN_CONSTRAST,   .args_type = {0, 1, POURCR}, .option = {"", "-a", ""}},
 	{.name = "cut",           .len = LEN_CUT,         .args_type = {0, 1      }, .option = {"", "-a"}},
 	{.name = "greyscale",     .len = LEN_GREYS,       .args_type = {0, 1      }, .option = {"", "-a"}},
+	{.name = "help",          .len = LEN_HELP,        .args_type = {0},.option = {""}},
 	{.name = "fill",          .len = LEN_FILL,        .args_type = {0, 1, PIXEL, PIXEL, PIXEL, PIXEL}, .option = {"", "-a", "", "", "", ""}},
 	{.name = "light",         .len = LEN_LIGHT,       .args_type = {0, 1, POURCR}, .option = {"", "-a", ""}},
 	{.name = "list_buffer",   .len = LEN_LIST_BUFFER, .args_type = {0},.option = {""}},

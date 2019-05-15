@@ -13,13 +13,13 @@
 
 short negative_filter(image *img, SDL_Rect rect){
 	if (img == NULL) {
-		fprintf(stderr, "Error negative_filter(SDL_Surface * img) : Null argument \n");
+		fprintf(stderr, "Error : image is not initialised \n");
 		return 0;
 	}
 	SDL_Surface *surface = get_img_surface(img);
 	SDL_Surface *neg_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if (neg_surface == NULL) {
-		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
+		fprintf(stderr, "Error : surface can not be set \n");
 		return 0;
 	}
 
@@ -70,13 +70,13 @@ short negative_filter(image *img, SDL_Rect rect){
 
 short black_and_white_filter(image *img, SDL_Rect rect){
 	if (img == NULL) {
-		fprintf(stderr, "Error black_and_white_filter() : Null argument \n");
+		fprintf(stderr, "Error : image is not initialised \n");
 		return 0;
 	}
 	SDL_Surface *surface = get_img_surface(img);
 	SDL_Surface *bnw_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if (bnw_surface == NULL) {
-		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
+		fprintf(stderr, "Error : surface can not be set\n");
 		return 0;
 	}
 
@@ -121,14 +121,14 @@ short black_and_white_filter(image *img, SDL_Rect rect){
 
 short grey_filter(image *img, SDL_Rect rect){
 	if (img == NULL) {
-		fprintf(stderr, "Error grey_filter() : Null argument \n");
+		fprintf(stderr, "Error : image is not initialised \n");
 		return 0;
 	}
 
 	SDL_Surface *surface = get_img_surface(img);
 	SDL_Surface *gray_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if (gray_surface == NULL) {
-		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s", SDL_GetError());
+		fprintf(stderr, "Error : surface can not be set\n");
 		return 0;
 	}
 
@@ -194,13 +194,13 @@ static short margin_colors(SDL_Color current_color, SDL_Color origin_color, int 
 
 short replace_color(image *img, SDL_Rect rect, SDL_Color origin_color, SDL_Color target_color, int margin){
 	if (img == NULL) {
-		fprintf(stderr, "Error replace_color() : Null argument \n");
+		fprintf(stderr, "Error : image is not initialised \n");
 		return 0;
 	}
 	SDL_Surface *surface = get_img_surface(img);
 	SDL_Surface *repl_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if (repl_surface == NULL) {
-		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s\n", SDL_GetError());
+		fprintf(stderr, "Error : surface can not be set\n");
 		return 0;
 	}
 
@@ -243,17 +243,17 @@ short replace_color(image *img, SDL_Rect rect, SDL_Color origin_color, SDL_Color
  */
 short color_zone(image *img, SDL_Rect rect, SDL_Color color){
 	if (img == NULL) {
-		fprintf(stderr, "Error color_zone() : Null argument\n");
+		fprintf(stderr, "Error : image is not initialised \n");
 		return 0;
 	}
 	SDL_Surface *surface = get_img_surface(img);
 	SDL_Surface *zone_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if (zone_surface == NULL) {
-		fprintf(stderr, "SDL_CreateRGBSurfaceWithFormat() failed: %s\n", SDL_GetError());
+		fprintf(stderr, "Error : surface can not be set\n");
 		return 0;
 	}
 	if (SDL_BlitSurface(surface, NULL, zone_surface, NULL) != 0) {
-		fprintf(stderr, "SDL_BlitSurface() failed: %s\n", SDL_GetError());
+		fprintf(stderr, "Error : can not blit surface");
 		return 0;
 	}
 
@@ -270,10 +270,15 @@ short color_zone(image *img, SDL_Rect rect, SDL_Color color){
 	return 1;
 }
 
-static int light_func(int c, int n){
-	if (c + n > 255) return 255;
-	if (c + n < 0) return 0;
-	return c;
+/**
+ * Keep color between 0 and 255
+ */
+static Uint8 keep_format(int color){
+	if (color < 0)
+		return 0;
+	if (color > 255)
+		return 255;
+	return color;
 }
 
 /**
@@ -288,14 +293,14 @@ static int light_func(int c, int n){
 
 short light_filter(image *img, SDL_Rect rect, int percent){
 	if (img == NULL) {
-		fprintf(stderr, "Error light_filter() : Null argument\n");
+		fprintf(stderr, "Error : image is not initialised \n");
 		return 0;
 	}
 
 	SDL_Surface *surface = get_img_surface(img);
 	SDL_Surface *light_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if (light_surface == NULL) {
-		fprintf(stderr, "SDL_CreateSurfaceWithFormat(= failed: %s\n", SDL_GetError());
+		fprintf(stderr, "Error : surface can not be set\n");
 		return 0;
 	}
 
@@ -310,7 +315,7 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 			SDL_Color c = {0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], light_surface->format, &c.r, &c.g, &c.b, &c.a);
 			if (i >= rect.y && i < rect.y + rect.h && j < rect.x + rect.w && j >= rect.x) {
-				Uint32 light_c = SDL_MapRGBA(light_surface->format, light_func(c.r, percent), light_func(c.g, percent), light_func(c.b, percent), c.a);
+				Uint32 light_c = SDL_MapRGBA(light_surface->format, keep_format(c.r + percent), keep_format(c.g + percent), keep_format(c.b + percent), c.a);
 				dest_pixels[i * light_surface->w + j] = light_c;
 			}
 			else
@@ -323,17 +328,6 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 	if (!set_img_surface(img, light_surface))
 		return 0;
 	return 1;
-}
-
-/**
- * Keep color between 0 and 255
- */
-static Uint8 keep_format(int color){
-	if (color < 0)
-		return 0;
-	if (color > 255)
-		return 255;
-	return color;
 }
 
 /**
@@ -356,14 +350,14 @@ static Uint32 get_new_pixel(SDL_Color c, SDL_PixelFormat *format, double contras
  */
 short contrast(image *img, SDL_Rect rect, int percent){
 	if (img == NULL) {
-		fprintf(stderr, "contrast image error : Null argument\n");
+		fprintf(stderr, "Error : image is not initialised \n");
 		return 0;
 	}
 
 	SDL_Surface *surface = get_img_surface(img);
 	SDL_Surface *new_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if (new_surface == NULL) {
-		fprintf(stderr, "SDL_CreateSurfaceWithFormat = failed: %s\n", SDL_GetError());
+		fprintf(stderr, "Error : surface can not be set\n");
 		return 0;
 	}
 

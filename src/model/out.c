@@ -49,6 +49,7 @@ static short save_png(image *img){
 	char *       file = get_full_image_path(img);
 	if (!IMG_SavePNG(surface, file))
 		return 1;
+	printf("Save as %s\n", get_full_image_path(img));
 	return 0;
 }
 
@@ -65,7 +66,7 @@ static short save_jpeg(image *img){
 	unsigned char *row;
 
 	if ((output = fopen(file, "wb")) == NULL) {
-		fprintf(stderr, "Can't write image...");
+		fprintf(stderr, "Error : can't write image\n");
 		return 1;
 	}
 
@@ -155,6 +156,6 @@ short save_secure(image *img){
 	char *save_name = malloc(strlen(path) + strlen(get_img_name(img)) + 4);
 	sprintf("%s%s.bmp", path, get_img_name(img));
 	if (save_image_as(img, save_name) == NULL)
-		return 0;
-	return 1;
+		return 1;
+	return 0;
 }

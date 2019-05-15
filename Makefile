@@ -6,8 +6,8 @@
 NAME = cimple
 CC = gcc
 INCLUDES = -I include
-STD_CFLAGS = -Wall $(shell pkg-config sdl2 SDL2_image libjpeg libpng --cflags)
-STD_CLIBS = -lm -lreadline $(shell pkg-config sdl2 SDL2_image libjpeg libpng --libs)
+STD_CFLAGS = -Wall -fprofile-arcs -ftest-coverage $(shell pkg-config sdl2 SDL2_image libjpeg --cflags)
+STD_CLIBS = -lm -lreadline $(shell pkg-config sdl2 SDL2_image libjpeg --libs)
 TEST_CFLAGS = $(shell pkg-config cmocka --cflags) $(STD_CFLAGS)
 TEST_CLIBS = $(shell pkg-config cmocka --libs) $(STD_CLIBS)
 
@@ -78,12 +78,26 @@ checkall: check check_valgrind
 # DOCKER for tests #
 ####################
 
+.PHONY: docker-build
 docker-build:
 	docker build -t kolibs/travis_test .
 
+.PHONY: docker-run
 docker-run:
 	docker run --rm kolibs/travis_test sh -c "cd root ; make check"
 
+
+############
+# COVERAGE #
+############
+
+.PHONY: coverage
+coverage:
+	@printf "=== COVERAGE ===\n"
+	@rm -rf coverage coverage.info
+	@lcov -c --directory build --output-file coverage.info
+	@genhtml coverage.info --output-directory coverage
+	@printf "=== END COVERAGE ===\n"
 
 ##############
 # UNCRUSTIFY #
@@ -108,5 +122,12 @@ clean_build :
 	rm -rf $(BUILD) $(NAME)
 	@printf "=== END ===\n"
 
+.PHONY: clean_cov
+clean_cov:
+	@printf "\n=== CLEAN COVERAGE ===\n"
+	rm -rf coverage coverage.info
+	@printf "=== END COVERAGE ===\n"
+	
+
 .PHONY: cleanall
-cleanall: clean_build clean_test
+cleanall: clean_build clean_test clean_cov

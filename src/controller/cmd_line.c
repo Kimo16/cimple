@@ -32,8 +32,11 @@ short handler_cmd_bnw(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
+
 
 	if (black_and_white_filter(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -55,8 +58,10 @@ short handler_cmd_greyscale(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
 
 	if (grey_filter(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -78,8 +83,10 @@ short handler_cmd_negative(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
 
 	if (negative_filter(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -99,15 +106,17 @@ short handler_cmd_contrast(cmd *command){
 	if (f == NULL) return 0;
 	image *img = f->image;
 	if (strcmp(command->args[2], "") == 0) {
-		fprintf(stderr, "Error command [%s] : please enter a percent rate\n", command->args[0]);
+		fprintf(stderr, "Error : command [%s], please enter a percent rate\n", command->args[0]);
 		return 0;
 	}
 	int percent = string_to_int(command->args[2]);
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
 
 	if (contrast(img, rect, percent) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -127,14 +136,16 @@ short handler_cmd_light(cmd *command){
 	if (f == NULL) return 0;
 	image *img = f->image;
 	if (strcmp(command->args[2], "") == 0) {
-		fprintf(stderr, "Error command [%s] : please enter a percent rate\n", command->args[0]);
+		fprintf(stderr, "Error : command [%s], please enter a percent rate\n", command->args[0]);
 		return 0;
 	}
 	int      percent = string_to_int(command->args[2]);
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
 	if (light_filter(img, rect, percent) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
 	return 1;
@@ -171,8 +182,10 @@ short handler_cmd_replace(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[3], "") == 0)
+	if (strcmp(command->args[3], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
 
 	if (replace_color(img, rect, origin_color, target_color, percent) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -200,8 +213,10 @@ short handler_cmd_fill(cmd *command){
 	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 	SDL_Color color = {col_r, col_g, col_b, col_a};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
 
 	if (color_zone(img, rect, color) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -223,8 +238,10 @@ short handler_cmd_copy(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
 
 	if (copy(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -246,8 +263,10 @@ short handler_cmd_cut(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
 
 	if (cut(img, rect) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -270,6 +289,7 @@ short handler_cmd_paste(cmd *command){
 	int x = 0, y = 0;
 	if (strcmp(command->args[1], "") == 0) {
 		SDL_Point p = get_point();
+		if (has_click(p) != 1) return 1;
 		x = p.x;
 		y = p.y;
 	}
@@ -355,8 +375,10 @@ short handler_cmd_truncate(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0)
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
+		if (non_empty(rect) != 1) return 1;
+	}
 	else {
 		int x1 = string_to_int(command->args[2]);
 		int y1 = string_to_int(command->args[3]);
@@ -386,6 +408,39 @@ short handler_cmd_list_buff(cmd *command){
 }
 
 /**
+ * Print help , display command formats
+ *
+ * @param cmd * command , pointer to a command structure
+ * @return 1
+ */
+
+
+short handler_cmd_help(cmd *command){
+	printf("symmetry < v | h > \n");
+	printf("rotate [-r] angle \n");
+	printf("copy [-a]\n");
+	printf("cut [-a]\n");
+	printf("paste [-a]\n");
+	printf("truncate [-s origin_x origin_y end_x end_y]\n");
+	printf("resize < workspace | image > width height\n");
+	printf("negative [-a]\n");
+	printf("bnw [-a]\n");
+	printf("greyscale [-a]\n");
+	printf("fill [-a] red green blue alpha\n");
+	printf("replace [-m percent] [-a] red green blue alpha red green blue alpha\n");
+	printf("contrast [-a] percent\n");
+	printf("light [-a] percent\n");
+	printf("load [-w window_id] path\n");
+	printf("save [-p path]\n");
+	printf("list_buffer\n");
+	printf("switch_buffer window_id\n");
+	printf("move_buffer window_id\n");
+	printf("help\n");
+	printf("quit [-w window_id]\n");
+	return 1;
+}
+
+/**
  * Quit Cimple program , or close a specific frame by window id
  *
  * @param cmd * command , pointer to a command structure
@@ -400,7 +455,7 @@ short handler_cmd_quit(cmd *command){
 	}
 	int index = string_to_int(command->args[2]);
 	if (moveto_buffer(index) != 1) {
-		fprintf(stderr, "Error command [quit] : invalid window id \n");
+		fprintf(stderr, "Error  : command [quit], invalid window id \n");
 		return 0;
 	}
 	free_frame_buffer(index);
@@ -417,11 +472,27 @@ short handler_cmd_quit(cmd *command){
 short handler_cmd_switch_buff(cmd *command){
 	short s = moveto_buffer(string_to_int(command->args[1]));
 	if (s != 1) {
-		if (s == -1) fprintf(stderr, "Error command[%s] : Invalid window id , index out of born ( [0;10] ) \n", command->name);
-		if (s == 0) fprintf(stderr, "Error command[%s] : Invalid window id , window isn't initialised \n", command->name);
+		if (s == -1) fprintf(stderr, "Error : command[%s], invalid window id , index out of bound ( [0;10] ) \n", command->name);
+		if (s == 0) fprintf(stderr, "Error : command[%s], invalid window id , window isn't initialised \n", command->name);
 		return 0;
 	}
 	return s;
+}
+
+/**
+ * Move current buffer to another window
+ * full or not with an image.
+ *
+ * @param cmd * command, pointer to a command structure
+ * @return 0 if the change failed else 1
+ */
+short handler_cmd_move_buffer(cmd *command){
+	frame *f = get_cursor_buffer();
+	if (f == NULL) return 0;
+	short s = move_current_to(string_to_int(command->args[1]));
+	if (s != 0) return 0;
+	if (update_frame(get_cursor_buffer(), NULL) != 1) return 0;
+	return 1;
 }
 
 /**
@@ -438,7 +509,7 @@ short handler_cmd_load(cmd *command){
 	else{
 		int index = string_to_int(command->args[2]);
 		if (moveto_buffer(index) != 1) {
-			fprintf(stderr, "Error command[load] : invalid window id \n");
+			fprintf(stderr, "Error : command[load], invalid window id \n");
 			return 0;
 		}
 		if (update_frame(get_cursor_buffer(), command->args[3]) != 1) return 0;
@@ -456,7 +527,7 @@ short handler_cmd_load(cmd *command){
 short handler_cmd_save(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) {
-		fprintf(stderr, "Error command [%s] : no window founded , please load an image\n", command->name);
+		fprintf(stderr, "Error : command [%s], no window founded , please load an image\n", command->name);
 		return 0;
 	}
 	image *img = f->image;
@@ -464,7 +535,7 @@ short handler_cmd_save(cmd *command){
 	if (strcmp(command->args[1], "-p") == 0) {
 		image *new_img = save_image_as(img, command->args[2]);
 		if (new_img == NULL) {
-			fprintf(stderr, "Error command [%s] : error while saving the image\n", command->args[0]);
+			fprintf(stderr, "Error : command [%s], error while saving the image\n", command->args[0]);
 			return 0;
 		}
 		f->image = new_img;
@@ -489,9 +560,11 @@ static short cmd_function_handler(cmd *command){
 	if (strcmp(command->name, "contrast") == 0) return handler_cmd_contrast(command);
 	if (strcmp(command->name, "greyscale") == 0) return handler_cmd_greyscale(command);
 	if (strcmp(command->name, "fill") == 0) return handler_cmd_fill(command);
+	if (strcmp(command->name, "help") == 0) return handler_cmd_help(command);
 	if (strcmp(command->name, "light") == 0) return handler_cmd_light(command);
 	if (strcmp(command->name, "list_buffer") == 0) return handler_cmd_list_buff(command);
 	if (strcmp(command->name, "load") == 0) return handler_cmd_load(command);
+	if (strcmp(command->name, "move_buffer") == 0) return handler_cmd_move_buffer(command);
 	if (strcmp(command->name, "negative") == 0) return handler_cmd_negative(command);
 	if (strcmp(command->name, "paste") == 0) return handler_cmd_paste(command);
 	if (strcmp(command->name, "quit") == 0) return handler_cmd_quit(command);
@@ -502,7 +575,7 @@ static short cmd_function_handler(cmd *command){
 	if (strcmp(command->name, "switch_buffer") == 0) return handler_cmd_switch_buff(command);
 	if (strcmp(command->name, "symmetry") == 0) return handler_cmd_symmetry(command);
 	if (strcmp(command->name, "truncate") == 0) return handler_cmd_truncate(command);
-	fprintf(stderr, "Critical Program error : existing command unrecognized \n");
+	fprintf(stderr, "Error command [%s] : current command unrecognized\n", command->name);
 	return 0;
 }
 
@@ -518,11 +591,11 @@ short cimple_handler(){
 	int       n = 0;
 	SDL_Event event;
 	while (1) {
-		SDL_PollEvent(&event);
 		char *cmd_line = getcmdline();
 		if (cmd_line == NULL) continue;
 		cmd *command = parse_line(string_cpy(cmd_line));
 		if (command != NULL) {
+			while (SDL_PollEvent(&event));       // empty event queue
 			n = cmd_function_handler(command);
 			free(cmd_line);
 			free_cmd(command);

@@ -50,7 +50,7 @@ The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
   - ```greyscale [-a]``` Put the selected area in greyscale. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
   - ```bnw [-a]``` Put the selected area in black and white. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * I/O and window management
-  - ```load [-w windowId] imagepath``` : Command to load image in a new window. For load image in a specific window , we need to add -w flag and the window id . If the id is 0, it opens in the current image.
+  - ```load [-w windowId] imagepath``` : Command to load image in a window. To load image in a specific window, already opened, you need to add -w flag and the window id . If the id is unspecified, it opens in the new image.
   - ```save [-p imagepath]``` : Command to save an image used in the current window. In order to change image format , we need to use -p and write a valid image path with the new extension.
   - ```list_buffer``` : List all opened buffers.
   - ```switch_buffer dest``` : Switch to the destination buffer.

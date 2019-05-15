@@ -55,7 +55,8 @@ The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
   - ```list_buffer``` : List all opened buffers.
   - ```switch_buffer dest``` : Switch to the destination buffer.
   - ```quit [-w buffer]``` Quit a buffer specified by `buffer`. If none is specified, applies to all buffers opened.
-  - ```move_buffer dest_id``` move current image to another opened window. If the destination window is empty, it changes the current window id. Otherwise, it moves the current window content into the destination one.
+  - ```move_buffer dest_id``` Move current image to another opened window. If the destination window is empty, it changes the current window id. Otherwise, it moves the current window content into the destination one.
+  - ```help``` Display command format.
 
 ## Extended Version (v2.0)
 

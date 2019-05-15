@@ -32,9 +32,9 @@ short handler_cmd_bnw(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0){
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 
 
@@ -58,9 +58,9 @@ short handler_cmd_greyscale(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0){
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 
 	if (grey_filter(img, rect) != 1) return 0;
@@ -83,9 +83,9 @@ short handler_cmd_negative(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0){
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 
 	if (negative_filter(img, rect) != 1) return 0;
@@ -113,9 +113,9 @@ short handler_cmd_contrast(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0){
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 
 	if (contrast(img, rect, percent) != 1) return 0;
@@ -142,9 +142,9 @@ short handler_cmd_light(cmd *command){
 	int      percent = string_to_int(command->args[2]);
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0){
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 	if (light_filter(img, rect, percent) != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
@@ -182,9 +182,9 @@ short handler_cmd_replace(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[3], "") == 0){
+	if (strcmp(command->args[3], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 
 	if (replace_color(img, rect, origin_color, target_color, percent) != 1) return 0;
@@ -213,9 +213,9 @@ short handler_cmd_fill(cmd *command){
 	SDL_Rect  rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 	SDL_Color color = {col_r, col_g, col_b, col_a};
 
-	if (strcmp(command->args[1], "") == 0){
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 
 	if (color_zone(img, rect, color) != 1) return 0;
@@ -238,9 +238,9 @@ short handler_cmd_copy(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0){
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 
 	if (copy(img, rect) != 1) return 0;
@@ -263,9 +263,9 @@ short handler_cmd_cut(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0){
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 
 	if (cut(img, rect) != 1) return 0;
@@ -289,7 +289,7 @@ short handler_cmd_paste(cmd *command){
 	int x = 0, y = 0;
 	if (strcmp(command->args[1], "") == 0) {
 		SDL_Point p = get_point();
-		if(has_click(p)!= 1) return 1;
+		if (has_click(p) != 1) return 1;
 		x = p.x;
 		y = p.y;
 	}
@@ -375,9 +375,9 @@ short handler_cmd_truncate(cmd *command){
 
 	SDL_Rect rect = {0, 0, get_img_surface(img)->w, get_img_surface(img)->h};
 
-	if (strcmp(command->args[1], "") == 0){
+	if (strcmp(command->args[1], "") == 0) {
 		rect = get_select_array();
-		if(non_empty(rect) != 1) return 1;
+		if (non_empty(rect) != 1) return 1;
 	}
 	else {
 		int x1 = string_to_int(command->args[2]);
@@ -404,6 +404,39 @@ short handler_cmd_truncate(cmd *command){
 
 short handler_cmd_list_buff(cmd *command){
 	print_frame();
+	return 1;
+}
+
+/**
+ * Print help , display command formats
+ *
+ * @param cmd * command , pointer to a command structure
+ * @return 1
+ */
+
+
+short handler_cmd_help(cmd *command){
+	printf("symmetry < v | h > \n");
+	printf("rotate [-r] angle \n");
+	printf("copy [-a]\n");
+	printf("cut [-a]\n");
+	printf("paste [-a]\n");
+	printf("truncate [-s origin_x origin_y end_x end_y]\n");
+	printf("resize < workspace | image > width height\n");
+	printf("negative [-a]\n");
+	printf("bnw [-a]\n");
+	printf("greyscale [-a]\n");
+	printf("fill [-a] red green blue alpha\n");
+	printf("replace [-m percent] [-a] red green blue alpha red green blue alpha\n");
+	printf("contrast [-a] percent\n");
+	printf("light [-a] percent\n");
+	printf("load [-w window_id] path\n");
+	printf("save [-p path]\n");
+	printf("list_buffer\n");
+	printf("switch_buffer window_id\n");
+	printf("move_buffer window_id\n");
+	printf("help\n");
+	printf("quit [-w window_id]\n");
 	return 1;
 }
 
@@ -511,6 +544,7 @@ static short cmd_function_handler(cmd *command){
 	if (strcmp(command->name, "contrast") == 0) return handler_cmd_contrast(command);
 	if (strcmp(command->name, "greyscale") == 0) return handler_cmd_greyscale(command);
 	if (strcmp(command->name, "fill") == 0) return handler_cmd_fill(command);
+	if (strcmp(command->name, "help") == 0) return handler_cmd_help(command);
 	if (strcmp(command->name, "light") == 0) return handler_cmd_light(command);
 	if (strcmp(command->name, "list_buffer") == 0) return handler_cmd_list_buff(command);
 	if (strcmp(command->name, "load") == 0) return handler_cmd_load(command);
@@ -524,7 +558,7 @@ static short cmd_function_handler(cmd *command){
 	if (strcmp(command->name, "switch_buffer") == 0) return handler_cmd_switch_buff(command);
 	if (strcmp(command->name, "symmetry") == 0) return handler_cmd_symmetry(command);
 	if (strcmp(command->name, "truncate") == 0) return handler_cmd_truncate(command);
-	fprintf(stderr, "Error command [%s] : current command unrecognized\n", command -> name );
+	fprintf(stderr, "Error command [%s] : current command unrecognized\n", command->name);
 	return 0;
 }
 

@@ -200,7 +200,7 @@ short replace_color(image *img, SDL_Rect rect, SDL_Color origin_color, SDL_Color
 	SDL_Surface *surface = get_img_surface(img);
 	SDL_Surface *repl_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if (repl_surface == NULL) {
-		fprintf(stderr,"Error : surface can not be set\n");
+		fprintf(stderr, "Error : surface can not be set\n");
 		return 0;
 	}
 
@@ -288,7 +288,7 @@ static int light_func(int c, int n){
 
 short light_filter(image *img, SDL_Rect rect, int percent){
 	if (img == NULL) {
-		fprintf(stderr,  "Error : image is not initialised \n");
+		fprintf(stderr, "Error : image is not initialised \n");
 		return 0;
 	}
 
@@ -363,7 +363,7 @@ short contrast(image *img, SDL_Rect rect, int percent){
 	SDL_Surface *surface = get_img_surface(img);
 	SDL_Surface *new_surface = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 32, surface->format->format);
 	if (new_surface == NULL) {
-		fprintf(stderr,"Error : surface can not be set\n");
+		fprintf(stderr, "Error : surface can not be set\n");
 		return 0;
 	}
 

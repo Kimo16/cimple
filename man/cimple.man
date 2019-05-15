@@ -24,6 +24,11 @@ run cimple
 .SH Commands
 When using cimple, you can employ various commands. [option] means optional and <a|b> means a choice between a or b. Each action is applied on the current buffer.
 
+.SS HELP
+
+.TP
+\fBhelp\fR Display help.
+
 .SS TRANSFORMATIONS
 
 .TP

@@ -47,7 +47,7 @@ frame *init_frame(char *path){
 		SDL_DestroyTexture(texture);
 		free_frame(new_frame);
 		return NULL;
-  }
+	}
 	SDL_SetRenderTarget(new_frame->renderer, NULL);
 	SDL_RenderPresent(new_frame->renderer);
 	SDL_DestroyTexture(texture);

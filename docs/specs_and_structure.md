@@ -40,6 +40,7 @@ The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
 * ```fill [-a] red green blue alpha``` : Command to fill an area in image with a rgba color. If the flag -a is passed, fills all the image, otherwise launches select mode in buffer image screen.
 * ```replace [-a] [-m margin] red green blue alpha red green blue alpha``` : Command to replace a color with another one.
 * ```list_buffer``` : List all opened buffers.
+* ```move_buffer id``` : Move the current buffer image to a window which is speficied by a id.  
 * ```switch_buffer id``` : Switch to a buffer.
 * ```negative [-a]``` Put the selected area in negative. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 * ```greyscale [-a]``` Put the selected area in greyscale. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.

@@ -49,7 +49,7 @@ static short save_png(image *img){
 	char *       file = get_full_image_path(img);
 	if (!IMG_SavePNG(surface, file))
 		return 1;
-  printf("Save as %s\n", get_full_image_path(img));
+	printf("Save as %s\n", get_full_image_path(img));
 	return 0;
 }
 
@@ -66,7 +66,7 @@ static short save_jpeg(image *img){
 	unsigned char *row;
 
 	if ((output = fopen(file, "wb")) == NULL) {
-    fprintf(stderr, "Error : can't write image\n");
+		fprintf(stderr, "Error : can't write image\n");
 		return 1;
 	}
 

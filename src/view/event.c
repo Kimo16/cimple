@@ -108,12 +108,12 @@ SDL_Point get_point(){
 		if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
 			point.x = -1;
 			run = 0;
-      printf("Cancel selection\n");
+			printf("Cancel selection\n");
 		}
 		else if (event.type == SDL_MOUSEBUTTONDOWN) {
 			point.x = event.button.x;
 			point.y = event.button.y;
-      printf("Point x: %d, y: %d\n", point.x, point.y);
+			printf("Point x: %d, y: %d\n", point.x, point.y);
 			run = 0;
 		}
 	}
@@ -143,7 +143,7 @@ SDL_Rect get_select_array(){
 			if (event.key.keysym.sym == SDLK_q) {
 				memset(&rect, 0, sizeof(SDL_Rect));
 				run = 0;
-        printf("Cancel selection\n");
+				printf("Cancel selection\n");
 			}
 			else if (non_empty(rect) && event.key.keysym.sym == SDLK_v)
 				run = 0;
@@ -164,9 +164,9 @@ SDL_Rect get_select_array(){
 			rect.w += event.motion.xrel;
 		}
 
-    printf("\rRect x:%d, y:%d, w:%d, h:%d      ", rect.x, rect.y, rect.w, rect.h);
+		printf("\rRect x:%d, y:%d, w:%d, h:%d      ", rect.x, rect.y, rect.w, rect.h);
 
-    // Draw the selection
+		// Draw the selection
 		if (!draw_select(rect)) {
 			memset(&rect, 0, sizeof(SDL_Rect));
 			run = 0;
@@ -176,7 +176,7 @@ SDL_Rect get_select_array(){
 	standard_rect(&rect);
 	SDL_Rect empty_rect = {0};
 	draw_select(empty_rect);
-  printf("\n");
+	printf("\n");
 	return rect;
 }
 
@@ -259,9 +259,8 @@ int new_frame(char *path){
 	return 1;
 }
 
-
 /**
- * @brief 
+ * @brief
  * Print current buffer
  */
 void print_frame(){
@@ -274,29 +273,31 @@ void print_frame(){
 	printf("Actual buffer : %d\n", cursor);
 }
 
-
 /**
  * @brief
  * Move the current buffer to new pos
- * @param target new position 
+ * @param target new position
  * @return 1 in case of error else 0
  */
-short move_current_to(int target) {
-  if (cursor == -1 || (target < 0 && target > 9)){
-    fprintf(stderr, "Error : unauthorized buffer\n");
-    return 1;
-  }
-  if(frame_buffer[target] == NULL) {
-    frame_buffer[target] = frame_buffer[cursor];
-    frame_buffer[cursor] = NULL;
-  } else {
-    frame_buffer[target]->image = frame_buffer[cursor]->image;
-    free_frame_buffer(cursor);
-  }
-  cursor = target;
-  return 0;
+short move_current_to(int target){
+	if (cursor == -1 || (target < 0 || target > 9)) {
+		fprintf(stderr, "Error : unauthorized buffer\n");
+		return 1;
+	}
+	if (frame_buffer[target] == NULL) {
+		frame_buffer[target] = frame_buffer[cursor];
+		frame_buffer[cursor] = NULL;
+	}
+	else {
+		image *tmp = frame_buffer[target]->image;
+		frame_buffer[target]->image = frame_buffer[cursor]->image;
+		frame_buffer[cursor]->image = NULL;
+		free_image(tmp);
+		free_frame_buffer(cursor);
+	}
+	cursor = target;
+	return 0;
 }
-
 
 /**
  * @brief

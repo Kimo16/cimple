@@ -29,7 +29,7 @@ short symmetry(image *target, short vertical){
 	SDL_Surface *new_surface;
 	new_surface = SDL_CreateRGBSurfaceWithFormat(0, img->w, img->h, 32, img->format->format);
 	if (new_surface == NULL) {
-	  fprintf(stderr, "Error : can't create texture from surface\n");
+		fprintf(stderr, "Error : can't create texture from surface\n");
 		return 0;
 	}
 	if (SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);
@@ -101,7 +101,7 @@ short rotate(image *target, int angle, short rev){
 	if (mod % 2 == 0)
 		new_surface = SDL_CreateRGBSurfaceWithFormat(0, img->w, img->h, 32, img->format->format);
 	if (new_surface == NULL) {
-	  fprintf(stderr, "Error : can't create texture from surface\n");
+		fprintf(stderr, "Error : can't create texture from surface\n");
 		return 0;
 	}
 	if (SDL_MUSTLOCK(new_surface) == SDL_TRUE) SDL_LockSurface(new_surface);

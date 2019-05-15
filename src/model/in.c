@@ -7,7 +7,7 @@
 image *load_image(char *path){
 	image *img = new_img(path);
 	if (img == NULL) {
-		fprintf(stderr, "Error: wrong image path.\n");
+		fprintf(stderr, "Error : wrong image path.\n");
 		return NULL;
 	}
 	SDL_Surface *tmp = IMG_Load(path);

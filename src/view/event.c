@@ -94,7 +94,7 @@ int draw_select(SDL_Rect selection){
  * quit
  */
 SDL_Point get_point(){
-	SDL_Event event;
+	SDL_Event event = {0};
 	SDL_Point point;
 	memset(&point, 0, sizeof(SDL_Point));
 	short run = 1;
@@ -143,7 +143,7 @@ SDL_Rect get_select_array(){
 			if (event.key.keysym.sym == SDLK_q) {
 				memset(&rect, 0, sizeof(SDL_Rect));
 				run = 0;
-				printf("Cancel selection\n");
+				printf("\nCancel selection\n");
 			}
 			else if (non_empty(rect) && event.key.keysym.sym == SDLK_v)
 				run = 0;
@@ -212,8 +212,10 @@ int get_free_buffer(){
 void moveto_first_buffer(){
 	cursor = -1;
 	for (int i = 0; i < MAX_BUFFER; i++) {
-		if (frame_buffer[i] != NULL)
+		if (frame_buffer[i] != NULL) {
 			cursor = i;
+			return;
+		}
 	}
 }
 

@@ -550,11 +550,11 @@ short cimple_handler(){
 	int       n = 0;
 	SDL_Event event;
 	while (1) {
-		SDL_PollEvent(&event);
 		char *cmd_line = getcmdline();
 		if (cmd_line == NULL) continue;
 		cmd *command = parse_line(string_cpy(cmd_line));
 		if (command != NULL) {
+			while (SDL_PollEvent(&event));       // empty event queue
 			n = cmd_function_handler(command);
 			free(cmd_line);
 			free_cmd(command);

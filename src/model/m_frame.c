@@ -1,4 +1,4 @@
-#include "m_frame.h"
+	#include "m_frame.h"
 
 /**
  * @brief
@@ -119,7 +119,7 @@ short resize_workspace(image *target, int width_p, int height_p){
 	for (int i = 0; i < height_new; i++) {
 		for (int j = 0; j < width_new; j++) {
 			Uint32 new_color;
-			if (i > surface->h || j > surface->w)
+			if (i > surface->h - 1 || j > surface->w - 1)
 				new_color = SDL_MapRGBA(surface->format, 0, 0, 0, 255);
 			else{
 				SDL_Color c_ref = {0};

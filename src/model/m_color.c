@@ -270,10 +270,15 @@ short color_zone(image *img, SDL_Rect rect, SDL_Color color){
 	return 1;
 }
 
-static int light_func(int c, int n){
-	if (c + n > 255) return 255;
-	if (c + n < 0) return 0;
-	return c;
+/**
+ * Keep color between 0 and 255
+ */
+static Uint8 keep_format(int color){
+	if (color < 0)
+		return 0;
+	if (color > 255)
+		return 255;
+	return color;
 }
 
 /**
@@ -310,7 +315,7 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 			SDL_Color c = {0};
 			SDL_GetRGBA(src_pixels[i * surface->w + j], light_surface->format, &c.r, &c.g, &c.b, &c.a);
 			if (i >= rect.y && i < rect.y + rect.h && j < rect.x + rect.w && j >= rect.x) {
-				Uint32 light_c = SDL_MapRGBA(light_surface->format, light_func(c.r, percent), light_func(c.g, percent), light_func(c.b, percent), c.a);
+				Uint32 light_c = SDL_MapRGBA(light_surface->format, keep_format(c.r + percent), keep_format(c.g + percent), keep_format(c.b + percent), c.a);
 				dest_pixels[i * light_surface->w + j] = light_c;
 			}
 			else
@@ -323,17 +328,6 @@ short light_filter(image *img, SDL_Rect rect, int percent){
 	if (!set_img_surface(img, light_surface))
 		return 0;
 	return 1;
-}
-
-/**
- * Keep color between 0 and 255
- */
-static Uint8 keep_format(int color){
-	if (color < 0)
-		return 0;
-	if (color > 255)
-		return 255;
-	return color;
 }
 
 /**

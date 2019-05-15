@@ -67,6 +67,14 @@ For now, the extensions that we consider adding are :
 
 **Undo/redo.** The program will allow to revert the last applied change, and recursively the one before (etc...) or redo changes that were done (undo the undos).
 
+**Crash resistance.**
+  * On every launch the program checks for temporary files in /tmp/cimpletmp/ directory. In case it finds any files, it lists them and the user can choose which ones to load.
+  * In case the program exits normally, all the files at /tmp/cimpletmp/ are deleted.
+  * In case the program crashes, the program will load images from the /tmp/cimpletmp directory when it's opened again.
+
+
+**Group editing.** Apply an action to a set of images.
+
 ## Project structure
 
 The project main part consists of two separate parts, the model and the view, linked by a controller.
@@ -79,10 +87,10 @@ cimple
 ├── include
 ├── LICENSE
 ├── Makefile
+├── Dockerfile
 ├── README.md
 ├── scripts
 │   ├── config_uncrustify.cfg
-│   ├── uncrustify_setup.sh
 │   └── uncrustify.sh
 ├── src
 │   ├── controller
@@ -151,17 +159,13 @@ Here are some brief explanations on the source files and what they will do.
 * **main.c :**
     Main program.
 
-### Crash resistance  :
-  * On every launch the program checks for temporary files in /tmp/cimpletmp/ directory. In case it finds any files, it lists them and the user can choose which ones to load.
-  * In case the program exits normally, all the files at /tmp/cimpletmp/ are deleted.
-  * In case the program crashes, the program will load images from the /tmp/cimpletmp directory when it's opened again.
 
 ## Programs to use
 
 * Make
 * Git
 * Uncrustify
-
+* Lcov
 
 ## Technical specs
 

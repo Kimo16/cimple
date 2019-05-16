@@ -443,6 +443,7 @@ short handler_cmd_help(cmd *command){
 	printf("help\n");
 	printf("quit [-w window_id]\n");
 	printf("apply_script path\n");
+	printf("edit_script path\n");
 	return 1;
 }
 
@@ -578,9 +579,12 @@ static short handler_cmd_apply_script(cmd * command){
 		fprintf(stderr, "Error : could not open script file\n");
 		return -1;
 	}
-	while(getdelim(&line, &bufsize, '\n', script)!=-1){
+	int pos = 0;
+	while((pos = getdelim(&line, &bufsize, ';', script))!=-1){
 		char * comline = malloc(strlen(line)-1);
 		memcpy(comline, line, strlen(line)-1);
+		if(pos<=1) break;
+		if(comline[0]=='\n') comline++; 
 		cmd *c = parse_line(comline);
 		if (c != NULL) {
 			int rc = cmd_function_handler(c);

@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
 
 #include "cmd_view.h"
 #include "parse.h"
@@ -14,7 +17,6 @@
 #include "out.h"
 #include "window.h"
 #include "event.h"
-
 
 short cimple_handler();
 

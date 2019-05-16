@@ -113,19 +113,19 @@ image *save_image_as(image *img, char *path){
 
 	image *res = new_img(path);
 	if (res == NULL) return NULL;
-	
+
 	SDL_Surface *tmp = get_img_surface(img);
 	SDL_Surface *copy = SDL_CreateRGBSurfaceWithFormat(0, tmp->w, tmp->h, 32,
-	 tmp->format->format);
-	
-	if(copy == NULL) {
+	                                                   tmp->format->format);
+
+	if (copy == NULL) {
 		free_image(res);
 		return NULL;
 	}
 
-	if(SDL_BlitSurface(tmp, NULL, copy, NULL) != 0) {
+	if (SDL_BlitSurface(tmp, NULL, copy, NULL) != 0) {
 		free_image(res);
-		return NULL;	
+		return NULL;
 	}
 
 	if (!set_img_surface(res, copy)) {

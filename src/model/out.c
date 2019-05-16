@@ -186,6 +186,13 @@ short save_secure(image *img){
 	return 0;
 }
 
+/**
+ * @brief
+ * Make a remove a specified image from cimple_tmp directory
+ *
+ * @param img the image to remove from cimple_tmp directory
+ */
+
 short remove_secure(image *img){
 	DIR *d = opendir("/var/tmp/cimpletmp");
 	if (d == NULL) return 0;
@@ -199,6 +206,12 @@ short remove_secure(image *img){
 	return 1;
 }
 
+/**
+ * @brief
+ * Remove all image file present in cimple_tmp directory and remove it after ,
+ * this procedure will be done before a safe 'quit' program.
+ */
+
 void clean_secure(){
 	DIR *d = opendir("/var/tmp/cimpletmp");
 	if (d == NULL) return;
@@ -210,5 +223,5 @@ void clean_secure(){
 		remove(all_path);
 	}
 	if (rmdir("/var/tmp/cimpletmp") != 0)
-		fprintf(stderr, "Error : cannot clean tmp directory\n", );
+		fprintf(stderr, "Error : cannot clean tmp directory\n");
 }

@@ -672,6 +672,30 @@ static short cmd_function_handler(cmd *command){
 }
 
 /**
+ * Load all image file present in tmp_file if cimple_tmp directory isn't empty
+ * when user start running the program.
+ *
+ * @return n
+ */
+
+void load_tmp_file(){
+	DIR *d = opendir("/var/tmp/cimpletmp");
+	if (d == NULL) return;
+	struct dirent *dir_iter;
+	while ((dir_iter = readdir(d)) != NULL) {
+		if (memcmp(dir_iter->d_name, ".", 2) == 0 || memcmp(dir_iter->d_name, "..", 3) == 0)
+			continue;
+
+		char *dir_path = "/var/tmp/cimpletmp/";
+		char *path = malloc(strlen(dir_path) + strlen(dir_iter->d_name) + 4);
+		sprintf(path, "%s%s", dir_path, dir_iter->d_name);
+
+		if (new_frame(path) != 1)
+			fprintf(stderr, "Error : cannot load %s from load_tmp_file directory\n", dir_iter->d_name);
+	}
+}
+
+/**
  * Loop on user command input and call parse function to build command structure and give it
  * to the command handler function
  *
@@ -682,6 +706,7 @@ static short cmd_function_handler(cmd *command){
 short cimple_handler(){
 	int       n = 0;
 	SDL_Event event;
+	load_tmp_file();
 	while (1) {
 		char *cmd_line = getcmdline();
 		if (cmd_line == NULL) continue;

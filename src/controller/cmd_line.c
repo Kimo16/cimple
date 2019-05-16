@@ -451,7 +451,7 @@ short handler_cmd_quit(cmd *command){
 	if (strcmp(command->args[1], "-w") != 0) {
 		free_frames();
 		printf("CIMPLE PHOTO EDITOR ----> SHUT DOWN\n");
-		exit(0);
+		return 2;
 	}
 	int index = string_to_int(command->args[2]);
 	if (moveto_buffer(index) != 1) {
@@ -597,6 +597,8 @@ short cimple_handler(){
 		if (command != NULL) {
 			while (SDL_PollEvent(&event));       // empty event queue
 			n = cmd_function_handler(command);
+			if (n == 2)
+				return 0;
 			free(cmd_line);
 			free_cmd(command);
 			check_current_frame();

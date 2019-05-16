@@ -45,6 +45,15 @@ static void standard_rect(SDL_Rect *origin){
 }
 
 /**
+ * Test if windowID is the same as cursor window ID
+ *
+ * @param windowID to compare with
+ */
+static short same_window(int id){
+	return id == SDL_GetWindowID(frame_buffer[cursor]->window);
+}
+
+/**
  * --- Selection ---
  */
 
@@ -110,7 +119,8 @@ SDL_Point get_point(){
 			run = 0;
 			printf("Cancel selection\n");
 		}
-		else if (event.type == SDL_MOUSEBUTTONDOWN) {
+		else if (same_window(event.window.windowID) &&
+		         event.type == SDL_MOUSEBUTTONDOWN) {
 			point.x = event.button.x;
 			point.y = event.button.y;
 			printf("Point x: %d, y: %d\n", point.x, point.y);
@@ -152,13 +162,15 @@ SDL_Rect get_select_array(){
 		}
 
 		// Mouse is in motion
-		else if (event.type == SDL_MOUSEBUTTONDOWN) {
+		else if (same_window(event.window.windowID) &&
+		         event.type == SDL_MOUSEBUTTONDOWN) {
 			rect.x = event.button.x;
 			rect.y = event.button.y;
 			rect.h = 0;
 			rect.w = 0;
 		}
-		else if (event.type == SDL_MOUSEMOTION &&
+		else if (same_window(event.window.windowID) &&
+		         event.type == SDL_MOUSEMOTION &&
 		         (event.motion.state & SDL_BUTTON_LEFT)) {
 			rect.h += event.motion.yrel;
 			rect.w += event.motion.xrel;

@@ -1,6 +1,11 @@
 #include "cmd_line.h"
 
 
+static short handler_cmd_apply_script(cmd * command);
+static short handler_cmd_edit_script(cmd * command);
+static short cmd_function_handler(cmd *command);
+
+
 
 static char *string_cpy(char *s){
 	char *str = malloc(sizeof(char) * (strlen(s) + 1));
@@ -437,6 +442,7 @@ short handler_cmd_help(cmd *command){
 	printf("move_buffer window_id\n");
 	printf("help\n");
 	printf("quit [-w window_id]\n");
+	printf("apply_script path\n");
 	return 1;
 }
 
@@ -517,6 +523,19 @@ short handler_cmd_load(cmd *command){
 	return 1;
 }
 
+static short handler_cmd_edit_script(cmd * command){
+	char * editor = getenv("EDITOR");
+	printf("Entering [%s] editor\n", editor);
+	if(!fork()){
+		execlp(editor, editor, command->args[1], NULL);
+	}
+	wait(NULL);
+	printf("Exited editor\n");
+	printf("\e[1;1H\e[2J");
+	return 1;
+
+}
+
 /**
  * Call save function in out.c and apply the modification by calling view function if image format change
  *
@@ -543,6 +562,52 @@ short handler_cmd_save(cmd *command){
 	}
 	if (save_image(img) != 0) return 0;
 	return 1;
+}
+
+static short handler_cmd_apply_script(cmd * command){
+	frame *f = get_cursor_buffer();
+	if (f == NULL) {
+		fprintf(stderr, "Error : command [%s], no window founded , please load an image\n", command->name);
+		return 0;
+	}
+	char * script_path = command->args[1];
+	FILE * script = fopen(script_path, "r");
+	char * line;
+	size_t bufsize = 64;
+	if(script==NULL){
+		fprintf(stderr, "Error : could not open script file\n");
+		return -1;
+	}
+	while(getdelim(&line, &bufsize, '\n', script)!=-1){
+		char * comline = malloc(strlen(line)-1);
+		memcpy(comline, line, strlen(line)-1);
+		cmd *c = parse_line(comline);
+		if (c != NULL) {
+			int rc = cmd_function_handler(c);
+			if(rc==0){
+				fprintf(stderr, "Error : command [%s] could not be applied\n", c->name);
+				free_cmd(c);
+				fclose(script);
+				if(line) free(line);
+				return -1;
+			}
+			free_cmd(c);
+			check_current_frame();
+		}
+		else {
+			fprintf(stderr, "Error : could not parse line\n");
+			fclose(script);
+			if(line) free(line);
+			return -1;
+		}
+		
+	}
+	check_current_frame();
+	fclose(script);
+	if(line) free(line);
+
+	return update_frame(f, NULL);
+
 }
 
 /**
@@ -575,9 +640,12 @@ static short cmd_function_handler(cmd *command){
 	if (strcmp(command->name, "switch_buffer") == 0) return handler_cmd_switch_buff(command);
 	if (strcmp(command->name, "symmetry") == 0) return handler_cmd_symmetry(command);
 	if (strcmp(command->name, "truncate") == 0) return handler_cmd_truncate(command);
+	if (strcmp(command->name, "apply_script") == 0) return handler_cmd_apply_script(command);
+	if (strcmp(command->name, "edit_script") == 0) return handler_cmd_edit_script(command);
 	fprintf(stderr, "Error command [%s] : current command unrecognized\n", command->name);
 	return 0;
 }
+
 
 /**
  * Loop on user command input and call parse function to build command structure and give it

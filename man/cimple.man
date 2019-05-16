@@ -82,10 +82,10 @@ When using cimple, you can employ various commands. [option] means optional and 
 .SS SCRIPTS
 
 .TP
-\fBapply_script path\fR apply the script located in given pathto the current buffer
+\fBapply_script path\fR Apply the script located in given path to the current buffer.
 
 .TP
-\fBedit_script path\fR opens the script located at path if it exists, otherwise creates a new one
+\fBedit_script path\fR Open the script located at path if it exists, otherwise create a new one.
 
 .SS FILE AND WINDOW MANAGER
 

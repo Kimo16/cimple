@@ -544,6 +544,7 @@ short handler_cmd_save(cmd *command){
 			free(img);
 			return 1;
 		}
+		return 0;
 	}
 	if (save_image(img) != 0) return 0;
 	return 1;

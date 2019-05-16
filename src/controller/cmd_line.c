@@ -531,6 +531,10 @@ static short handler_cmd_load(cmd *command){
 
 static short handler_cmd_edit_script(cmd * command){
 	char * editor = getenv("EDITOR");
+	if(editor==NULL){
+		fprintf(stderr, "Error : NULL editor, check yout $EDITOR variable\n");
+		return 0;
+	}
 	printf("Entering [%s] editor\n", editor);
 	if(!fork()){
 		execlp(editor, editor, command->args[1], NULL);

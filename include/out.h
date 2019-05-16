@@ -18,4 +18,5 @@ image *save_image_as(image* img, char * path);
 short save_image(image* img);
 short save_secure(image* img);
 short remove_secure(image * img);
+void clean_secure();
 #endif

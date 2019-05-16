@@ -170,32 +170,45 @@ short save_image(image *img){
  * @param img the image to save
  */
 short save_secure(image *img){
-	short  s = mkdir("/tmp/cimpletmp",S_IRWXU | S_IRWXG);
-	if( s != 0 && errno != 17  ){
-		fprintf(stderr, "Error : cannot init cimple_temp directory\n" );
-		printf("%d\n",errno );
+	short s = mkdir("/var/tmp/cimpletmp", S_IRWXU | S_IRWXG);
+	if (s != 0 && errno != 17) {
+		fprintf(stderr, "Error : cannot init cimple_temp directory\n");
+		printf("%d\n", errno);
 		return 1;
 	}
-	char *path = "/tmp/cimpletmp/";
+	char *path = "/var/tmp/cimpletmp/";
 	char *save_name = malloc(strlen(path) + strlen(get_img_name(img)) + 4);
-	sprintf(save_name,"%s%s.bmp", path, get_img_name(img));
-	if (save_image_as(img, save_name) == NULL){
-		fprintf(stderr,"Error : cannot save the current image in cimple_temp directory\n");
+	sprintf(save_name, "%s%s.bmp", path, get_img_name(img));
+	if (save_image_as(img, save_name) == NULL) {
+		fprintf(stderr, "Error : cannot save the current image in cimple_temp directory\n");
 		return 1;
 	}
 	return 0;
 }
 
-
-short remove_secure(image * img){
-	DIR *d = opendir("/tmp/cimpletmp");
-	if(d == NULL) return 0;
-	char * path = "/tmp/cimpletmp/";
+short remove_secure(image *img){
+	DIR *d = opendir("/var/tmp/cimpletmp");
+	if (d == NULL) return 0;
+	char *path = "/var/tmp/cimpletmp/";
 	char *old_name = malloc(strlen(path) + strlen(get_img_name(img)) + 4);
-	sprintf(old_name,"%s%s.bmp", path , get_img_name(img));
-	if(remove(old_name) != 0 ){
-		fprintf(stderr, "Error : cannot remove old_version image from cimple_temp directory\n" );
+	sprintf(old_name, "%s%s.bmp", path, get_img_name(img));
+	if (remove(old_name) != 0) {
+		fprintf(stderr, "Error : cannot remove old_version image from cimple_temp directory\n");
 		return 0;
 	}
-	return 1 ;
+	return 1;
+}
+
+void clean_secure(){
+	DIR *d = opendir("/var/tmp/cimpletmp");
+	if (d == NULL) return;
+	struct dirent *dir_iter;
+	while ((dir_iter = readdir(d)) != NULL) {
+		char *path = "/var/tmp/cimpletmp/";
+		char *all_path = malloc(strlen(path) + strlen(dir_iter->d_name));
+		sprintf(all_path, "%s%s", path, dir_iter->d_name);
+		remove(all_path);
+	}
+	if (rmdir("/var/tmp/cimpletmp") != 0)
+		fprintf(stderr, "Error : cannot clean tmp directory\n", );
 }

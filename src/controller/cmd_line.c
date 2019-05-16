@@ -1,8 +1,6 @@
 #include "cmd_line.h"
 
 
-static short handler_cmd_apply_script(cmd * command);
-static short handler_cmd_edit_script(cmd * command);
 static short cmd_function_handler(cmd *command);
 
 
@@ -30,7 +28,7 @@ static int string_to_int(char *str){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_bnw(cmd *command){
+static short handler_cmd_bnw(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -56,7 +54,7 @@ short handler_cmd_bnw(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_greyscale(cmd *command){
+static short handler_cmd_greyscale(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -81,7 +79,7 @@ short handler_cmd_greyscale(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_negative(cmd *command){
+static short handler_cmd_negative(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -106,7 +104,7 @@ short handler_cmd_negative(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_contrast(cmd *command){
+static short handler_cmd_contrast(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -136,7 +134,7 @@ short handler_cmd_contrast(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_light(cmd *command){
+static short handler_cmd_light(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -164,7 +162,7 @@ short handler_cmd_light(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_replace(cmd *command){
+static short handler_cmd_replace(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -205,7 +203,7 @@ short handler_cmd_replace(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_fill(cmd *command){
+static short handler_cmd_fill(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -236,7 +234,7 @@ short handler_cmd_fill(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_copy(cmd *command){
+static short handler_cmd_copy(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -261,7 +259,7 @@ short handler_cmd_copy(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_cut(cmd *command){
+static short handler_cmd_cut(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -286,7 +284,7 @@ short handler_cmd_cut(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_paste(cmd *command){
+static short handler_cmd_paste(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -310,7 +308,7 @@ short handler_cmd_paste(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_symmetry(cmd *command){
+static short handler_cmd_symmetry(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -331,7 +329,7 @@ short handler_cmd_symmetry(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_resize(cmd *command){
+static short handler_cmd_resize(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -353,7 +351,7 @@ short handler_cmd_resize(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_rotate(cmd *command){
+static short handler_cmd_rotate(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -373,7 +371,7 @@ short handler_cmd_rotate(cmd *command){
  */
 
 
-short handler_cmd_truncate(cmd *command){
+static short handler_cmd_truncate(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	image *img = f->image;
@@ -407,7 +405,7 @@ short handler_cmd_truncate(cmd *command){
  * @return 1
  */
 
-short handler_cmd_list_buff(cmd *command){
+static short handler_cmd_list_buff(cmd *command){
 	print_frame();
 	return 1;
 }
@@ -420,7 +418,7 @@ short handler_cmd_list_buff(cmd *command){
  */
 
 
-short handler_cmd_help(cmd *command){
+static short handler_cmd_help(cmd *command){
 	printf("symmetry < v | h > \n");
 	printf("rotate [-r] angle \n");
 	printf("copy [-a]\n");
@@ -454,7 +452,7 @@ short handler_cmd_help(cmd *command){
  * @return 0 if changes failed , 1 if changes done.
  */
 
-short handler_cmd_quit(cmd *command){
+static short handler_cmd_quit(cmd *command){
 	if (strcmp(command->args[1], "-w") != 0) {
 		free_frames();
 		printf("CIMPLE PHOTO EDITOR ----> SHUT DOWN\n");
@@ -476,7 +474,7 @@ short handler_cmd_quit(cmd *command){
  * @return 0 if change failed , 1 if change done .
  */
 
-short handler_cmd_switch_buff(cmd *command){
+static short handler_cmd_switch_buff(cmd *command){
 	short s = moveto_buffer(string_to_int(command->args[1]));
 	if (s != 1) {
 		if (s == -1) fprintf(stderr, "Error : command[%s], invalid window id , index out of bound ( [0;10] ) \n", command->name);
@@ -493,7 +491,7 @@ short handler_cmd_switch_buff(cmd *command){
  * @param cmd * command, pointer to a command structure
  * @return 0 if the change failed else 1
  */
-short handler_cmd_move_buffer(cmd *command){
+static short handler_cmd_move_buffer(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) return 0;
 	short s = move_current_to(string_to_int(command->args[1]));
@@ -509,7 +507,7 @@ short handler_cmd_move_buffer(cmd *command){
  * @return 0 if load failed , 1 if load done.
  */
 
-short handler_cmd_load(cmd *command){
+static short handler_cmd_load(cmd *command){
 	if (strcmp(command->args[1], "-w") != 0) {
 		if (new_frame(command->args[3]) != 0) return 0;
 	}
@@ -551,7 +549,7 @@ static short handler_cmd_edit_script(cmd * command){
  * @return 0 if save failed , 1 if save done.
  */
 
-short handler_cmd_save(cmd *command){
+static short handler_cmd_save(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) {
 		fprintf(stderr, "Error : command [%s], no window founded , please load an image\n", command->name);

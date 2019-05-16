@@ -79,6 +79,14 @@ When using cimple, you can employ various commands. [option] means optional and 
 .TP
 \fBlight [-a] percent\fR Increase or decrease the light of the current buffer. Copy an area into the buffer and fill the area with black. If the flag -a is passed, applies to all the image, otherwise launches select mode in buffer image screen.
 
+.SS SCRIPTS
+
+.TP
+\fBapply_script path\fR apply the script located in given pathto the current buffer
+
+.TP
+\fBedit_script path\fR opens the script located at path if it exists, otherwise creates a new one
+
 .SS FILE AND WINDOW MANAGER
 
 .TP

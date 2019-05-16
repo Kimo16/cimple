@@ -539,7 +539,11 @@ short handler_cmd_save(cmd *command){
 			return 0;
 		}
 		f->image = new_img;
-		return update_frame(f, NULL);
+		if(update_frame(f, NULL)) {
+			// Remove
+			free(img);
+			return 1;
+		}
 	}
 	if (save_image(img) != 0) return 0;
 	return 1;

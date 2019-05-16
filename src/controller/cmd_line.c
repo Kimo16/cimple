@@ -597,7 +597,7 @@ short cimple_handler(){
 		if (command != NULL) {
 			while (SDL_PollEvent(&event));       // empty event queue
 			n = cmd_function_handler(command);
-			if(n == 2)
+			if (n == 2)
 				return 0;
 			free(cmd_line);
 			free_cmd(command);

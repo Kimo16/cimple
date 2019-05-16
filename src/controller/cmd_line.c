@@ -608,15 +608,18 @@ static short handler_cmd_apply_script(cmd * command){
 				fprintf(stderr, "Error : command [%s] could not be applied\n", c->name);
 				free_cmd(c);
 				fclose(script);
+				free(comline);
 				if(line) free(line);
 				return 1;
 			}
+			free(comline);
 			free_cmd(c);
 			check_current_frame();
 		}
 		else {
 			fprintf(stderr, "Error : could not parse line\n");
 			fclose(script);
+			free(comline);
 			if(line) free(line);
 			return 1;
 		}

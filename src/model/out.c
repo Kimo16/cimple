@@ -170,10 +170,32 @@ short save_image(image *img){
  * @param img the image to save
  */
 short save_secure(image *img){
+	short  s = mkdir("/tmp/cimpletmp",S_IRWXU | S_IRWXG);
+	if( s != 0 && errno != 17  ){
+		fprintf(stderr, "Error : cannot init cimple_temp directory\n" );
+		printf("%d\n",errno );
+		return 1;
+	}
 	char *path = "/tmp/cimpletmp/";
 	char *save_name = malloc(strlen(path) + strlen(get_img_name(img)) + 4);
-	sprintf("%s%s.bmp", path, get_img_name(img));
-	if (save_image_as(img, save_name) == NULL)
+	sprintf(save_name,"%s%s.bmp", path, get_img_name(img));
+	if (save_image_as(img, save_name) == NULL){
+		fprintf(stderr,"Error : cannot save the current image in cimple_temp directory\n");
 		return 1;
+	}
 	return 0;
+}
+
+
+short remove_secure(image * img){
+	DIR *d = opendir("/tmp/cimpletmp");
+	if(d == NULL) return 0;
+	char * path = "/tmp/cimpletmp/";
+	char *old_name = malloc(strlen(path) + strlen(get_img_name(img)) + 4);
+	sprintf(old_name,"%s%s.bmp", path , get_img_name(img));
+	if(remove(old_name) != 0 ){
+		fprintf(stderr, "Error : cannot remove old_version image from cimple_temp directory\n" );
+		return 0;
+	}
+	return 1 ;
 }

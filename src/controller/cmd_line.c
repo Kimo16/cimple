@@ -524,6 +524,13 @@ short handler_cmd_load(cmd *command){
 	return 1;
 }
 
+/**
+ * Create (or edit if it exists already) a script at given path
+ *
+ * @param cmd * command , pointer to a command structure
+ * @return 0 if save failed , 1 if save done.
+ */
+
 static short handler_cmd_edit_script(cmd * command){
 	char * editor = getenv("EDITOR");
 	printf("Entering [%s] editor\n", editor);
@@ -565,6 +572,13 @@ short handler_cmd_save(cmd *command){
 	return 1;
 }
 
+/**
+ * Apply a script located at given path to the current window
+ *
+ * @param cmd * command , pointer to a command structure
+ * @return 0 if save failed , 1 if save done.
+ */
+
 static short handler_cmd_apply_script(cmd * command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) {
@@ -577,7 +591,7 @@ static short handler_cmd_apply_script(cmd * command){
 	size_t bufsize = 64;
 	if(script==NULL){
 		fprintf(stderr, "Error : could not open script file\n");
-		return -1;
+		return 1;
 	}
 	int pos = 0;
 	while((pos = getdelim(&line, &bufsize, ';', script))!=-1){
@@ -593,7 +607,7 @@ static short handler_cmd_apply_script(cmd * command){
 				free_cmd(c);
 				fclose(script);
 				if(line) free(line);
-				return -1;
+				return 1;
 			}
 			free_cmd(c);
 			check_current_frame();
@@ -602,7 +616,7 @@ static short handler_cmd_apply_script(cmd * command){
 			fprintf(stderr, "Error : could not parse line\n");
 			fclose(script);
 			if(line) free(line);
-			return -1;
+			return 1;
 		}
 		
 	}

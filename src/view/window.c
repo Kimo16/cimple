@@ -96,6 +96,7 @@ short update_frame(frame *target, char *path){
 		free_frame(target);
 		return 0;
 	}
+	SDL_SetWindowTitle(target->window, get_img_name(target->image));
 	SDL_DestroyTexture(new_texture);
 	SDL_RenderPresent(target->renderer);
 	SDL_RaiseWindow(target->window);

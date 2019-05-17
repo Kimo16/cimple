@@ -62,10 +62,6 @@ short msg_error(short type, int flags, char *cmd_name, char *str){
 		if (type == POURCR) fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a numeric value between -100 and 100\n", cmd_name, str);
 		break;
 
-	case EFFORM:                                             /*INVALID FILE FORMAT*/
-		if (type == EXT) fprintf(stderr, "Error command [%s]: invalids argument '%s', please enter a valid image extension\n", cmd_name, str);
-		break;
-
 	case EOPT:                                               /*INVALID OPTION*/
 		fprintf(stderr, "Error command [%s]: invalid arguments '%s', please enter a valid command option\n", cmd_name, str);
 		break;
@@ -234,13 +230,6 @@ short is_symtype(char *str){
 	return (strcmp(str, "v") == 0 || strcmp(str, "h") == 0) ? 0 : EINVA;
 }
 
-short is_extension(char *str){
-	return (strcmp(str, "png") == 0 ||
-	        strcmp(str, "jpeg") == 0 ||
-	        strcmp(str, "gif") == 0 ||
-	        strcmp(str, "bmp") == 0) ? 0 : EFFORM;
-}
-
 short is_pourcent(char *str){
 	int i;
 	int n = sscanf(str, "%u", &i);
@@ -285,7 +274,6 @@ short check_token(short flags, char *cmd_name, char *arg){
 	if (flags == NUMBER && is_natural(arg)) return msg_error(NUMBER, ENUMV, cmd_name, arg);
 	if (flags == PIXEL && is_pixel(arg)) return msg_error(PIXEL, ENUMV, cmd_name, arg);
 	if (flags == POURC && is_pourcent(arg)) return msg_error(POURC, ENUMV, cmd_name, arg);
-	if (flags == EXT && is_extension(arg)) return msg_error(EXT, EFFORM, cmd_name, arg);
 	if (flags == VIEW && is_view(arg)) return msg_error(VIEW, EINVA, cmd_name, arg);
 	if (flags == SYMTYPE && is_symtype(arg)) return msg_error(SYMTYPE, EINVA, cmd_name, arg);
 	if (flags == ANGLE && is_angle(arg)) return msg_error(ANGLE, ENUMV, cmd_name, arg);

@@ -163,18 +163,3 @@ short save_image(image *img){
 		return save_bmp(img);
 	return 0;
 }
-
-/**
- * @brief
- * Make a save in a tmp directory
- *
- * @param img the image to save
- */
-short save_secure(image *img){
-	char *path = "/tmp/cimpletmp/";
-	char *save_name = malloc(strlen(path) + strlen(get_img_name(img)) + 4);
-	sprintf("%s%s.bmp", path, get_img_name(img));
-	if (save_image_as(img, save_name) == NULL)
-		return 1;
-	return 0;
-}

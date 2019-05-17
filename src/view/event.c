@@ -50,7 +50,7 @@ static void standard_rect(SDL_Rect *origin){
  * @param windowID to compare with
  */
 static short same_window(int id){
-	return id == SDL_GetWindowID(frame_buffer[cursor]->window);
+	return ((Uint32)id) == SDL_GetWindowID(frame_buffer[cursor]->window);
 }
 
 /**

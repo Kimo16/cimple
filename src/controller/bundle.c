@@ -26,7 +26,7 @@ static short is_good_exp(char *string, char *pattern){
 	if (regcomp(&regex, pattern, REG_NOSUB | REG_EXTENDED ) != 0)
 		return 0;
 	if (regexec(&regex, string, 0, NULL, 0) == 0) {
-		printf("%s\n", string);
+		printf("-> %s\n", string);
 		res = 1;
 	}
 	regfree(&regex);
@@ -74,5 +74,6 @@ cmd * get_real_cmd(char *command) {
 	if (strcmp(command, "greyscale") == 0) {
 		return parse_line("greyscale -a");
 	}
+	fprintf(stderr, "Error: command %s doesn't exist\n", command);
 	return NULL;
 }

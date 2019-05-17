@@ -442,6 +442,7 @@ static short handler_cmd_help(cmd *command){
 	printf("quit [-w window_id]\n");
 	printf("apply_script path\n");
 	printf("edit_script path\n");
+	printf("bundle regex command\n");
 	return 1;
 }
 

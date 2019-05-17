@@ -1,4 +1,4 @@
-.TH CIMPLE 1 "17 Mai 2019"
+.TH CIMPLE 1 "January, 17th May"
 
 .SH NAME
 cimple \- Console Image Manipulation Program, Logic and Easy
@@ -87,6 +87,11 @@ When using cimple, you can employ various commands. [option] means optional and 
 .TP
 \fBedit_script path\fR Open the script located at path if it exists, otherwise create a new one.
 
+.SS MULTIPLES ACTIONS
+
+.TP
+\fBbundle regex command\fR Apply a command (bnw, negative, greyscale) to a set of images, specified by a regex, in the current directory.
+
 .SS FILE AND WINDOW MANAGER
 
 .TP
@@ -123,7 +128,7 @@ Karim MEZHER;kimo16
 .TE
 
 .SH GOT
-In Game of Thrones, we think that Arya Stark will kill Daenerys because she killed John and Gendry will become the new king.
+In Game of Thrones, we think that Arya Stark will kill Daenerys because she killed John and Gendry will become the new king. (05/17/2019)
 
 .SH COPYRIGHT
 © MIT - BUDZKO MARAIS MEZHER

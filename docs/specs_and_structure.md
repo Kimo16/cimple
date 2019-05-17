@@ -59,7 +59,8 @@ The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
 * Scripts
   - ```apply_script path``` apply the script located in given pathto the current buffer
   - ```edit_script path``` opens the script located at path if it exists, otherwise creates a new one
-
+* Multiple file treatment
+ - ```bundle regex cmd``` Apply a command (bnw, negative, greyscale) to a set of images, specified by a regex, in the current directory.
   ## Extended Version (v2.0)
 
 For now, the extensions that we consider adding are :

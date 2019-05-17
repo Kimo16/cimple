@@ -668,7 +668,6 @@ static short handler_cmd_undo(cmd *command){
 	return update_frame(f, NULL);
 }
 
-
 /**
  * Re-applies the last command
  *
@@ -696,10 +695,8 @@ static short handler_cmd_redo(cmd *command){
 		}
 		if (current->next != NULL)
 			current = current->next;
-		else{
-			fprintf(stderr, "Error : cant redo null action\n");
+		else
 			return 1;
-		}
 		check_current_frame();
 	}
 	check_current_frame();
@@ -752,7 +749,8 @@ static short cmd_function_handler(cmd *command){
  */
 
 static short check_cmd_name(cmd *command){
-	if (strcmp(command->name, "load") == 0 || strcmp(command->name, "quit") == 0 || strcmp(command->name, "undo") == 0) return 1;
+	if (strcmp(command->name, "load") == 0 || strcmp(command->name, "quit") == 0 ||
+	    strcmp(command->name, "undo") == 0 || strcmp(command->name, "redo") == 0) return 1;
 	return 0;
 }
 

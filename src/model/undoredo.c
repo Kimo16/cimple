@@ -26,8 +26,22 @@ short action(int buffer, char *line){
 		fprintf(stderr, "Null list at %d\n", buffer);
 		return 1;
 	}
-	l->end = insert_tail(l, line);
-	if (l->end == NULL) return 1;
+	node * current = l->start;
+	if(current==NULL){
+		node * new = init_node(line);
+		l->start = new;
+		l->end = new;
+	l->current_index++;
+		return 0;
+	}
+	int i=0;
+	printf("%d\n", l->current_index);
+	while(current->next!=NULL && i<l->current_index){
+		printf("DANS WHILE\n");
+		current=current->next;
+		i++;
+	}
+	current->next=init_node(line);
 	l->current_index++;
 	return 0;
 }
@@ -59,4 +73,20 @@ node *insert_tail(list *list, char *value){
 	current->next = new;
 	list->end = new;
 	return new;
+}
+
+short free_from_current_index(int buffer){
+	list * l = action_list[buffer];
+	if(l==NULL){
+		fprintf(stderr, "Error : cant free null list\n");
+		return 1;
+	}
+	node * current = l->start;
+	int i=0;
+	while((current!=NULL && current->next !=NULL) || i<=l->current_index){
+		current=current->next;
+		i++;
+	}
+	free_all(current->next);
+	return 0;
 }

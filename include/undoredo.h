@@ -20,6 +20,7 @@ short action(int buffer, char * line);
 
 node * insert_tail(list * list, char * value);
 
+short free_from_current_index(int buffer);
 
 
 

@@ -97,12 +97,12 @@
     * Define next part
     * Add coverage
 
-## 10/05/2019 - BREAK EXAMS :
+## 10/05/2019 - BREAK EXAMS
 
 ## 13/05/2019 - View - Next par :
   * Done :
     * Define next part
-    * Begin noralize functions (uncrustify)
+    * Begin normalize functions (uncrustify)
     * Continue integration tests
   * TODO :
     * Fix window errors
@@ -116,9 +116,9 @@
     * Tests
   * TODO :
     * Finish normalize
-     * Add coverage
+    * Add coverage
 
-## 15/05/2019 - BREAK EXAMS :
+## 15/05/2019 - Final :
   * Done :
     * Add coverage
     * Tests with coverage
@@ -126,12 +126,12 @@
     * Add move_buffer / help
     * Add Man
   * TODO :
-    * Create extension
+    * Create extensions
     * Stable branch
 
-## 16/05/2019 - BREAK EXAMS :
+## 16/05/2019 - Extensions :
   * Done :
-    * Add script edition and use
+    * Add script edition and use scripts
     * Patch freeze gnome
     * Create Stable
     * List.c for bundle
@@ -141,13 +141,13 @@
     * Save secure
     * Tests final stable
 
-## 17/05/2019 - BREAK EXAMS :
+## 17/05/2019 - Final :
   * Done :
     * Bundle
     * Save secure
     * Tests final stable
-    * patch unstable
-    * patch bugs
-    * add final tag on
+    * Patch unstable
+    * Patch bugs
+    * Add final tag on
   * TODO :
     * FINISH VERSION

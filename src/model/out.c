@@ -137,7 +137,6 @@ image *save_image_as(image *img, char *path){
 	if (!save_image(res))
 		return NULL;
 
-	printf("Save as %s\n", get_full_image_path(res));
 	return res;
 }
 
@@ -214,6 +213,14 @@ short remove_secure(image *img){
 	return 1;
 }
 
+void remove_tmp_file(char *filename){
+	char *path = "/var/tmp/cimpletmp/";
+	char *all_path = malloc(strlen(path) + strlen(filename));
+	sprintf(all_path, "%s%s", path, filename);
+	remove(all_path);
+	free(all_path);
+}
+
 /**
  * @brief
  * Remove all image file present in cimple_tmp directory and remove it after ,
@@ -224,13 +231,9 @@ void clean_secure(){
 	DIR *d = opendir("/var/tmp/cimpletmp");
 	if (d == NULL) return;
 	struct dirent *dir_iter;
-	while ((dir_iter = readdir(d)) != NULL) {
-		char *path = "/var/tmp/cimpletmp/";
-		char *all_path = malloc(strlen(path) + strlen(dir_iter->d_name));
-		sprintf(all_path, "%s%s", path, dir_iter->d_name);
-		remove(all_path);
-		free(all_path);
-	}
+	while ((dir_iter = readdir(d)) != NULL)
+		remove_tmp_file(dir_iter->d_name);
+
 	if (rmdir("/var/tmp/cimpletmp") != 0)
 		fprintf(stderr, "Error : cannot clean tmp directory\n");
 }

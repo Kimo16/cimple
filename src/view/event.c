@@ -334,10 +334,11 @@ void check_current_frame(){
  * to next non_empty position
  */
 void free_frame_buffer(int i){
-	if(cursor != -1 && i == -1) {
+	if (cursor != -1 && i == -1) {
 		free_frame(frame_buffer[cursor]);
 		frame_buffer[cursor] = NULL;
-	} else if (i >= 0 && i < MAX_BUFFER && frame_buffer[i] != NULL) {
+	}
+	else if (i >= 0 && i < MAX_BUFFER && frame_buffer[i] != NULL) {
 		free_frame(frame_buffer[i]);
 		frame_buffer[i] = NULL;
 	}

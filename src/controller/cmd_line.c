@@ -467,6 +467,12 @@ static short handler_cmd_quit(cmd *command){
 		fprintf(stderr, "Error  : command [quit], invalid window id \n");
 		return 0;
 	}
+	char *s1 = get_img_name(get_cursor_buffer()->image);
+	char *s2 = get_img_ext(get_cursor_buffer()->image);
+	char *path = malloc(strlen(s1) + strlen(s2) + 1);
+	sprintf(path, "%s.%s", s1, s2);
+	remove_tmp_file(path);
+	free(path);
 	free_frame_buffer(index);
 	return 1;
 }
@@ -572,6 +578,7 @@ static short handler_cmd_save(cmd *command){
 		f->image = new_img;
 		if (update_frame(f, NULL)) {
 			remove_secure(img);
+			printf("Save as %s\n", get_full_image_path(f->image));
 			free(img);
 			return 1;
 		}
@@ -639,28 +646,28 @@ static short handler_cmd_apply_script(cmd *command){
 }
 
 /**
- * Apply action to a set of files 
+ * Apply action to a set of files
  *
  * @param cmd * command , pointer to a command structure
  * @return 0 if change failed , 1 if change done .
  */
-static short handler_cmd_bundle(cmd * command){
-	node * list = find_expr("./", command->args[1]);
+static short handler_cmd_bundle(cmd *command){
+	node *list = find_expr("./", command->args[1]);
 	node *current = list;
-	int rc = 0;
-	cmd *real_cmd = get_real_cmd(command->args[2]);	
-	if(real_cmd == NULL) {
+	int   rc = 0;
+	cmd * real_cmd = get_real_cmd(command->args[2]);
+	if (real_cmd == NULL) {
 		free_cmd(real_cmd);
 		free_all(list);
 		return 0;
 	}
-	while(current != NULL) {
-		if (new_frame(current->value) == 0) { 
+	while (current != NULL) {
+		if (new_frame(current->value) == 0) {
 			free_cmd(real_cmd);
 			free_all(list);
 			return 0;
 		}
-		rc = cmd_function_handler(real_cmd); 
+		rc = cmd_function_handler(real_cmd);
 		if (rc == 0) {
 			free_cmd(real_cmd);
 			free_all(list);
@@ -670,16 +677,14 @@ static short handler_cmd_bundle(cmd * command){
 		if (f == NULL || save_image(f->image) == 0) {
 			free_cmd(real_cmd);
 			free_all(list);
-			return 0; 
+			return 0;
 		}
-		free_frame_buffer(-1); 
+		free_frame_buffer(-1);
 		current = current->next;
-	} 
+	}
 	free_all(list);
 	return 1;
-} 
-
-
+}
 
 /**
  * Redirection to a specific handler function by the help of command name

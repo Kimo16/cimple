@@ -56,6 +56,9 @@ The arguments passed in <...> are mandatory and the ones in [...] are optionnal.
   - ```quit [-w buffer]``` Quit a buffer specified by `buffer`. If none is specified, applies to all buffers opened.
   - ```move_buffer dest_id``` Move current image to another opened window. If the destination window is empty, it changes the current window id. Otherwise, it moves the current window content into the destination one.
   - ```help``` Display command format.
+* Scripts
+  - ```apply_script path``` apply the script located in given pathto the current buffer
+  - ```edit_script path``` opens the script located at path if it exists, otherwise creates a new one
 
   ## Extended Version (v2.0)
 

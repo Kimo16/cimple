@@ -405,7 +405,8 @@ static short handler_cmd_truncate(cmd *command){
  * @return 1
  */
 
-static short handler_cmd_list_buff(cmd *command){
+short handler_cmd_list_buff(cmd *command){
+	(void)command;
 	print_frame();
 	return 1;
 }
@@ -418,7 +419,8 @@ static short handler_cmd_list_buff(cmd *command){
  */
 
 
-static short handler_cmd_help(cmd *command){
+short handler_cmd_help(cmd *command){
+	(void)command;
 	printf("symmetry < v | h > \n");
 	printf("rotate [-r] angle \n");
 	printf("copy [-a]\n");
@@ -442,6 +444,7 @@ static short handler_cmd_help(cmd *command){
 	printf("quit [-w window_id]\n");
 	printf("apply_script path\n");
 	printf("edit_script path\n");
+	printf("bundle regex command\n");
 	return 1;
 }
 
@@ -636,6 +639,49 @@ static short handler_cmd_apply_script(cmd *command){
 }
 
 /**
+ * Apply action to a set of files 
+ *
+ * @param cmd * command , pointer to a command structure
+ * @return 0 if change failed , 1 if change done .
+ */
+static short handler_cmd_bundle(cmd * command){
+	node * list = find_expr("./", command->args[1]);
+	node *current = list;
+	int rc = 0;
+	cmd *real_cmd = get_real_cmd(command->args[2]);	
+	if(real_cmd == NULL) {
+		free_cmd(real_cmd);
+		free_all(list);
+		return 0;
+	}
+	while(current != NULL) {
+		if (new_frame(current->value) == 0) { 
+			free_cmd(real_cmd);
+			free_all(list);
+			return 0;
+		}
+		rc = cmd_function_handler(real_cmd); 
+		if (rc == 0) {
+			free_cmd(real_cmd);
+			free_all(list);
+			return 0;
+		}
+		frame *f = get_cursor_buffer();
+		if (f == NULL || save_image(f->image) == 0) {
+			free_cmd(real_cmd);
+			free_all(list);
+			return 0; 
+		}
+		free_frame_buffer(-1); 
+		current = current->next;
+	} 
+	free_all(list);
+	return 1;
+} 
+
+
+
+/**
  * Redirection to a specific handler function by the help of command name
  *
  * @param cmd pointer contains all command informations
@@ -667,6 +713,7 @@ static short cmd_function_handler(cmd *command){
 	if (strcmp(command->name, "truncate") == 0) return handler_cmd_truncate(command);
 	if (strcmp(command->name, "apply_script") == 0) return handler_cmd_apply_script(command);
 	if (strcmp(command->name, "edit_script") == 0) return handler_cmd_edit_script(command);
+	if (strcmp(command->name, "bundle") == 0) return handler_cmd_bundle(command);
 	fprintf(stderr, "Error command [%s] : current command unrecognized\n", command->name);
 	return 0;
 }

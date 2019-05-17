@@ -6,7 +6,7 @@
 NAME = cimple
 CC = gcc
 INCLUDES = -I include
-STD_CFLAGS = -Wall -fprofile-arcs -ftest-coverage $(shell pkg-config sdl2 SDL2_image libjpeg --cflags)
+STD_CFLAGS = -Wall -Wextra -Werror -g -fprofile-arcs -ftest-coverage $(shell pkg-config sdl2 SDL2_image libjpeg --cflags)
 STD_CLIBS = -lm -lreadline $(shell pkg-config sdl2 SDL2_image libjpeg --libs)
 TEST_CFLAGS = $(shell pkg-config cmocka --cflags) $(STD_CFLAGS)
 TEST_CLIBS = $(shell pkg-config cmocka --libs) $(STD_CLIBS)

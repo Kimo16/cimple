@@ -22,7 +22,8 @@ SRC_MOD = in.c		  		\
 	  m_transform.c 		\
 		m_image.c \
 		parse.c    \
-		list.c
+		list.c \
+		undoredo.c
     
 SRC_CONTR = cmd_line.c
 SRC_TESTS = io_test.c			\

@@ -30,4 +30,7 @@ short non_empty(SDL_Rect rect);
 void free_frame_buffer(int);
 void free_frames(void);
 
+int get_current_buffer_cursor();
+
+
 #endif

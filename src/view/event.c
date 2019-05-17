@@ -1,4 +1,8 @@
 #include "event.h"
+#include "undoredo.h"
+
+list *action_list[10] = {NULL};
+
 
 /**
  * -- Local variables
@@ -19,6 +23,10 @@ static int    cursor = -1;
  */
 short non_empty(SDL_Rect rect){
 	return rect.x || rect.y || rect.h || rect.w;
+}
+
+int get_current_buffer_cursor(){
+	return cursor;
 }
 
 /**
@@ -50,7 +58,7 @@ static void standard_rect(SDL_Rect *origin){
  * @param windowID to compare with
  */
 static short same_window(int id){
-	return id == SDL_GetWindowID(frame_buffer[cursor]->window);
+	return (uint32_t)id == SDL_GetWindowID(frame_buffer[cursor]->window);
 }
 
 /**
@@ -264,12 +272,16 @@ int new_frame(char *path){
 		fprintf(stderr, "Error : can't open more buffers. Max : %d\n", MAX_BUFFER);
 		return 0;
 	}
-
 	frame *current = init_frame(path);
 	if (current == NULL)
 		return 0;
 	frame_buffer[pos] = current;
 	cursor = pos;
+	action_list[cursor] = init_list(cursor);
+	if (action_list[cursor] == NULL) {
+		fprintf(stderr, "Error : could not initialise action list for %d\n", cursor);
+		return 0;
+	}
 	return 1;
 }
 

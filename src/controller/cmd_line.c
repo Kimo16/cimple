@@ -1,4 +1,5 @@
 #include "cmd_line.h"
+#include "undoredo.h"
 
 
 static short cmd_function_handler(cmd *command);
@@ -406,6 +407,7 @@ static short handler_cmd_truncate(cmd *command){
  */
 
 static short handler_cmd_list_buff(cmd *command){
+	(void)command;
 	print_frame();
 	return 1;
 }
@@ -419,6 +421,7 @@ static short handler_cmd_list_buff(cmd *command){
 
 
 static short handler_cmd_help(cmd *command){
+	(void)command;
 	printf("symmetry < v | h > \n");
 	printf("rotate [-r] angle \n");
 	printf("copy [-a]\n");
@@ -442,6 +445,7 @@ static short handler_cmd_help(cmd *command){
 	printf("quit [-w window_id]\n");
 	printf("apply_script path\n");
 	printf("edit_script path\n");
+	printf("undo\n");
 	return 1;
 }
 
@@ -529,21 +533,19 @@ static short handler_cmd_load(cmd *command){
  * @return 0 if save failed , 1 if save done.
  */
 
-static short handler_cmd_edit_script(cmd * command){
-	char * editor = getenv("EDITOR");
-	if(editor==NULL){
+static short handler_cmd_edit_script(cmd *command){
+	char *editor = getenv("EDITOR");
+	if (editor == NULL) {
 		fprintf(stderr, "Error : NULL editor, check yout $EDITOR variable\n");
 		return 0;
 	}
 	printf("Entering [%s] editor\n", editor);
-	if(!fork()){
+	if (!fork())
 		execlp(editor, editor, command->args[1], NULL);
-	}
 	wait(NULL);
 	printf("Exited editor\n");
 	printf("\e[1;1H\e[2J");
 	return 1;
-
 }
 
 /**
@@ -581,7 +583,7 @@ static short handler_cmd_save(cmd *command){
  * @return 0 if save failed , 1 if save done.
  */
 
-static short handler_cmd_apply_script(cmd * command){
+static short handler_cmd_apply_script(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) {
 		fprintf(stderr, "Error : command [%s], no window founded , please load an image\n", command->name);
@@ -591,25 +593,25 @@ static short handler_cmd_apply_script(cmd * command){
 	FILE * script = fopen(script_path, "r");
 	char * line;
 	size_t bufsize = 64;
-	if(script==NULL){
+	if (script == NULL) {
 		fprintf(stderr, "Error : could not open script file\n");
 		return 1;
 	}
 	int pos = 0;
-	while((pos = getdelim(&line, &bufsize, ';', script))!=-1){
-		char * comline = malloc(strlen(line)-1);
-		memcpy(comline, line, strlen(line)-1);
-		if(pos<=1) break;
-		if(comline[0]=='\n') comline++; 
+	while ((pos = getdelim(&line, &bufsize, ';', script)) != -1) {
+		char *comline = malloc(strlen(line) - 1);
+		memcpy(comline, line, strlen(line) - 1);
+		if (pos <= 1) break;
+		if (comline[0] == '\n') comline++;
 		cmd *c = parse_line(comline);
 		if (c != NULL) {
 			int rc = cmd_function_handler(c);
-			if(rc==0){
+			if (rc == 0) {
 				fprintf(stderr, "Error : command [%s] could not be applied\n", c->name);
 				free_cmd(c);
 				fclose(script);
 				free(comline);
-				if(line) free(line);
+				if (line) free(line);
 				return 1;
 			}
 			free(comline);
@@ -620,17 +622,88 @@ static short handler_cmd_apply_script(cmd * command){
 			fprintf(stderr, "Error : could not parse line\n");
 			fclose(script);
 			free(comline);
-			if(line) free(line);
+			if (line) free(line);
 			return 1;
 		}
-		
 	}
 	check_current_frame();
 	fclose(script);
-	if(line) free(line);
+	if (line) free(line);
 
 	return update_frame(f, NULL);
+}
 
+/**
+ * Unapplies the last command
+ *
+ * @param cmd pointer contains all command informations
+ * @return 0 if the command will execute with sucess , 1 if an error has occured
+ */
+
+static short handler_cmd_undo(cmd *command){
+	int    n = 0;
+	frame *f = get_cursor_buffer();
+	if (f == NULL) {
+		fprintf(stderr, "Error : command [%s], no window founded , please load an image\n", command->name);
+		return 0;
+	}
+	int current_cursor = get_current_buffer_cursor();
+	if (update_frame(f, get_full_image_path(f->image)) != 1) return 0;
+	node *current = action_list[current_cursor]->start;
+	action_list[current_cursor]->current_index--;
+	for (int i = 0; i < action_list[current_cursor]->current_index; i++) {
+		cmd *command = parse_line(string_cpy(current->value));
+		printf("----> %s\n", current->value);
+		if (command != NULL) {
+			n = cmd_function_handler(command);
+			if (n == 2) return 1;
+		}
+		if (current->next != NULL)
+			current = current->next;
+		else
+			return 1;
+		check_current_frame();
+	}
+	check_current_frame();
+	return update_frame(f, NULL);
+}
+
+
+/**
+ * Re-applies the last command
+ *
+ * @param cmd pointer contains all command informations
+ * @return 0 if the command will execute with sucess , 1 if an error has occured
+ */
+
+static short handler_cmd_redo(cmd *command){
+	int    n = 0;
+	frame *f = get_cursor_buffer();
+	if (f == NULL) {
+		fprintf(stderr, "Error : command [%s], no window founded , please load an image\n", command->name);
+		return 0;
+	}
+	int current_cursor = get_current_buffer_cursor();
+	if (update_frame(f, get_full_image_path(f->image)) != 1) return 0;
+	node *current = action_list[current_cursor]->start;
+	action_list[current_cursor]->current_index++;
+	for (int i = 0; i < action_list[current_cursor]->current_index; i++) {
+		cmd *command = parse_line(string_cpy(current->value));
+		printf("----> %s\n", current->value);
+		if (command != NULL) {
+			n = cmd_function_handler(command);
+			if (n == 2) return 1;
+		}
+		if (current->next != NULL)
+			current = current->next;
+		else{
+			fprintf(stderr, "Error : cant redo null action\n");
+			return 1;
+		}
+		check_current_frame();
+	}
+	check_current_frame();
+	return update_frame(f, NULL);
 }
 
 /**
@@ -665,10 +738,11 @@ static short cmd_function_handler(cmd *command){
 	if (strcmp(command->name, "truncate") == 0) return handler_cmd_truncate(command);
 	if (strcmp(command->name, "apply_script") == 0) return handler_cmd_apply_script(command);
 	if (strcmp(command->name, "edit_script") == 0) return handler_cmd_edit_script(command);
+	if (strcmp(command->name, "undo") == 0) return handler_cmd_undo(command);
+	if (strcmp(command->name, "redo") == 0) return handler_cmd_redo(command);
 	fprintf(stderr, "Error command [%s] : current command unrecognized\n", command->name);
 	return 0;
 }
-
 
 /**
  * Loop on user command input and call parse function to build command structure and give it
@@ -677,6 +751,10 @@ static short cmd_function_handler(cmd *command){
  * @return n
  */
 
+static short check_cmd_name(cmd *command){
+	if (strcmp(command->name, "load") == 0 || strcmp(command->name, "quit") == 0 || strcmp(command->name, "undo") == 0) return 1;
+	return 0;
+}
 
 short cimple_handler(){
 	int       n = 0;
@@ -688,6 +766,12 @@ short cimple_handler(){
 		if (command != NULL) {
 			while (SDL_PollEvent(&event));       // empty event queue
 			n = cmd_function_handler(command);
+			if (check_cmd_name(command) == 0) {
+				short rc = action(get_current_buffer_cursor(), string_cpy(cmd_line));
+				if (rc != 0)
+					fprintf(stderr, "Error : action not saved\n");
+			}
+
 			if (n == 2)
 				return 0;
 			free(cmd_line);

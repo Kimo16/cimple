@@ -136,7 +136,7 @@ image *save_image_as(image *img, char *path){
 
 	if (!save_image(res))
 		return NULL;
-	printf("Save as %s\n", get_full_image_path(res));
+
 	return res;
 }
 
@@ -171,10 +171,69 @@ short save_image(image *img){
  * @param img the image to save
  */
 short save_secure(image *img){
-	char *path = "/tmp/cimpletmp/";
-	char *save_name = malloc(strlen(path) + strlen(get_img_name(img)) + 4);
-	sprintf("%s%s.bmp", path, get_img_name(img));
-	if (save_image_as(img, save_name) == NULL)
+	short s = mkdir("/var/tmp/cimpletmp", S_IRWXU | S_IRWXG);
+	if (s != 0 && errno != EEXIST) {
+		fprintf(stderr, "Error : cannot init cimple_temp directory\n");
+		printf("%d\n", errno);
 		return 1;
+	}
+
+	char * path = "/var/tmp/cimpletmp/";
+	image *cpy = copy_image(img);
+	char * save_name = malloc(strlen(path) + strlen(get_img_name(img)) + strlen(get_img_ext(cpy)) + 1);
+	sprintf(save_name, "%s%s.%s", path, get_img_name(cpy), get_img_ext(cpy));
+	if (save_image_as(cpy, save_name) == NULL) {
+		free_image(cpy);
+		fprintf(stderr, "Error : cannot save the current image in cimple_temp directory\n");
+		return 1;
+	}
+	free_image(cpy);
 	return 0;
+}
+
+/**
+ * @brief
+ * Make a remove a specified image from cimple_tmp directory
+ *
+ * @param img the image to remove from cimple_tmp directory
+ */
+
+short remove_secure(image *img){
+	DIR *d = opendir("/var/tmp/cimpletmp");
+	if (d == NULL) return 0;
+	char *path = "/var/tmp/cimpletmp/";
+	char *old_name = malloc(strlen(path) + strlen(get_img_name(img)) + strlen(get_img_ext(img)) + 1);
+	sprintf(old_name, "%s%s.%s", path, get_img_name(img), get_img_ext(img));
+	if (remove(old_name) != 0) {
+		fprintf(stderr, "Error : cannot remove old_version image from cimple_temp directory\n");
+		free(old_name);
+		return 0;
+	}
+	free(old_name);
+	return 1;
+}
+
+void remove_tmp_file(char *filename){
+	char *path = "/var/tmp/cimpletmp/";
+	char *all_path = malloc(strlen(path) + strlen(filename));
+	sprintf(all_path, "%s%s", path, filename);
+	remove(all_path);
+	free(all_path);
+}
+
+/**
+ * @brief
+ * Remove all image file present in cimple_tmp directory and remove it after ,
+ * this procedure will be done before a safe 'quit' program.
+ */
+
+void clean_secure(){
+	DIR *d = opendir("/var/tmp/cimpletmp");
+	if (d == NULL) return;
+	struct dirent *dir_iter;
+	while ((dir_iter = readdir(d)) != NULL)
+		remove_tmp_file(dir_iter->d_name);
+
+	if (rmdir("/var/tmp/cimpletmp") != 0)
+		fprintf(stderr, "Error : cannot clean tmp directory\n");
 }

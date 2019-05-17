@@ -457,6 +457,7 @@ short handler_cmd_help(cmd *command){
 
 static short handler_cmd_quit(cmd *command){
 	if (strcmp(command->args[1], "-w") != 0) {
+		clean_secure();
 		free_frames();
 		printf("CIMPLE PHOTO EDITOR ----> SHUT DOWN\n");
 		return 2;
@@ -466,6 +467,12 @@ static short handler_cmd_quit(cmd *command){
 		fprintf(stderr, "Error  : command [quit], invalid window id \n");
 		return 0;
 	}
+	char *s1 = get_img_name(get_cursor_buffer()->image);
+	char *s2 = get_img_ext(get_cursor_buffer()->image);
+	char *path = malloc(strlen(s1) + strlen(s2) + 1);
+	sprintf(path, "%s.%s", s1, s2);
+	remove_tmp_file(path);
+	free(path);
 	free_frame_buffer(index);
 	return 1;
 }
@@ -532,21 +539,19 @@ static short handler_cmd_load(cmd *command){
  * @return 0 if save failed , 1 if save done.
  */
 
-static short handler_cmd_edit_script(cmd * command){
-	char * editor = getenv("EDITOR");
-	if(editor==NULL){
+static short handler_cmd_edit_script(cmd *command){
+	char *editor = getenv("EDITOR");
+	if (editor == NULL) {
 		fprintf(stderr, "Error : NULL editor, check yout $EDITOR variable\n");
 		return 0;
 	}
 	printf("Entering [%s] editor\n", editor);
-	if(!fork()){
+	if (!fork())
 		execlp(editor, editor, command->args[1], NULL);
-	}
 	wait(NULL);
 	printf("Exited editor\n");
 	printf("\e[1;1H\e[2J");
 	return 1;
-
 }
 
 /**
@@ -572,7 +577,8 @@ static short handler_cmd_save(cmd *command){
 		}
 		f->image = new_img;
 		if (update_frame(f, NULL)) {
-			// Remove
+			remove_secure(img);
+			printf("Save as %s\n", get_full_image_path(f->image));
 			free(img);
 			return 1;
 		}
@@ -589,7 +595,7 @@ static short handler_cmd_save(cmd *command){
  * @return 0 if save failed , 1 if save done.
  */
 
-static short handler_cmd_apply_script(cmd * command){
+static short handler_cmd_apply_script(cmd *command){
 	frame *f = get_cursor_buffer();
 	if (f == NULL) {
 		fprintf(stderr, "Error : command [%s], no window founded , please load an image\n", command->name);
@@ -599,25 +605,25 @@ static short handler_cmd_apply_script(cmd * command){
 	FILE * script = fopen(script_path, "r");
 	char * line;
 	size_t bufsize = 64;
-	if(script==NULL){
+	if (script == NULL) {
 		fprintf(stderr, "Error : could not open script file\n");
 		return 1;
 	}
 	int pos = 0;
-	while((pos = getdelim(&line, &bufsize, ';', script))!=-1){
-		char * comline = malloc(strlen(line)-1);
-		memcpy(comline, line, strlen(line)-1);
-		if(pos<=1) break;
-		if(comline[0]=='\n') comline++; 
+	while ((pos = getdelim(&line, &bufsize, ';', script)) != -1) {
+		char *comline = malloc(strlen(line) - 1);
+		memcpy(comline, line, strlen(line) - 1);
+		if (pos <= 1) break;
+		if (comline[0] == '\n') comline++;
 		cmd *c = parse_line(comline);
 		if (c != NULL) {
 			int rc = cmd_function_handler(c);
-			if(rc==0){
+			if (rc == 0) {
 				fprintf(stderr, "Error : command [%s] could not be applied\n", c->name);
 				free_cmd(c);
 				fclose(script);
 				free(comline);
-				if(line) free(line);
+				if (line) free(line);
 				return 1;
 			}
 			free(comline);
@@ -628,42 +634,40 @@ static short handler_cmd_apply_script(cmd * command){
 			fprintf(stderr, "Error : could not parse line\n");
 			fclose(script);
 			free(comline);
-			if(line) free(line);
+			if (line) free(line);
 			return 1;
 		}
-		
 	}
 	check_current_frame();
 	fclose(script);
-	if(line) free(line);
+	if (line) free(line);
 
 	return update_frame(f, NULL);
-
 }
 
 /**
- * Apply action to a set of files 
+ * Apply action to a set of files
  *
  * @param cmd * command , pointer to a command structure
  * @return 0 if change failed , 1 if change done .
  */
-static short handler_cmd_bundle(cmd * command){
-	node * list = find_expr("./", command->args[1]);
+static short handler_cmd_bundle(cmd *command){
+	node *list = find_expr("./", command->args[1]);
 	node *current = list;
-	int rc = 0;
-	cmd *real_cmd = get_real_cmd(command->args[2]);	
-	if(real_cmd == NULL) {
+	int   rc = 0;
+	cmd * real_cmd = get_real_cmd(command->args[2]);
+	if (real_cmd == NULL) {
 		free_cmd(real_cmd);
 		free_all(list);
 		return 0;
 	}
-	while(current != NULL) {
-		if (new_frame(current->value) == 0) { 
+	while (current != NULL) {
+		if (new_frame(current->value) == 0) {
 			free_cmd(real_cmd);
 			free_all(list);
 			return 0;
 		}
-		rc = cmd_function_handler(real_cmd); 
+		rc = cmd_function_handler(real_cmd);
 		if (rc == 0) {
 			free_cmd(real_cmd);
 			free_all(list);
@@ -673,16 +677,14 @@ static short handler_cmd_bundle(cmd * command){
 		if (f == NULL || save_image(f->image) == 0) {
 			free_cmd(real_cmd);
 			free_all(list);
-			return 0; 
+			return 0;
 		}
-		free_frame_buffer(-1); 
+		free_frame_buffer(-1);
 		current = current->next;
-	} 
+	}
 	free_all(list);
 	return 1;
-} 
-
-
+}
 
 /**
  * Redirection to a specific handler function by the help of command name
@@ -721,6 +723,33 @@ static short cmd_function_handler(cmd *command){
 	return 0;
 }
 
+/**
+ * Load all image file present in tmp_file if cimple_tmp directory isn't empty
+ * when user start running the program.
+ *
+ * @return n
+ */
+
+static void load_tmp_file(){
+	DIR *d = opendir("/var/tmp/cimpletmp");
+	if (d == NULL) return;
+	struct dirent *dir_iter;
+	while ((dir_iter = readdir(d)) != NULL) {
+		if (memcmp(dir_iter->d_name, ".", 2) == 0 || memcmp(dir_iter->d_name, "..", 3) == 0)
+			continue;
+
+		char *dir_path = "/var/tmp/cimpletmp/";
+		char *path = malloc(strlen(dir_path) + strlen(dir_iter->d_name) + 4);
+		sprintf(path, "%s%s", dir_path, dir_iter->d_name);
+
+		if (new_frame(path) != 1) {
+			fprintf(stderr, "Error : cannot load %s from load_tmp_file directory\n", dir_iter->d_name);
+			remove(path);
+			free(path);
+		}
+		free(path);
+	}
+}
 
 /**
  * Loop on user command input and call parse function to build command structure and give it
@@ -733,6 +762,7 @@ static short cmd_function_handler(cmd *command){
 short cimple_handler(){
 	int       n = 0;
 	SDL_Event event;
+	load_tmp_file();
 	while (1) {
 		char *cmd_line = getcmdline();
 		if (cmd_line == NULL) continue;
@@ -744,7 +774,9 @@ short cimple_handler(){
 				return 0;
 			free(cmd_line);
 			free_cmd(command);
-			check_current_frame();
+			frame *f;
+			if ((f = get_cursor_buffer()) != NULL)
+				save_secure(f->image);
 		}
 	}
 	return n;

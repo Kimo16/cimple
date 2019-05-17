@@ -85,3 +85,69 @@
     * Correct bugs
     * Define next part
     * Add coverage
+
+## 03/05/2019 - View / Controller :
+  * Done :
+    * Correct cmd_line
+    * Tests view
+    * Correct bugs
+  * TODO :
+    * Fix window errors
+    * Add uncrustify
+    * Define next part
+    * Add coverage
+
+## 10/05/2019 - BREAK EXAMS
+
+## 13/05/2019 - View - Next par :
+  * Done :
+    * Define next part
+    * Begin normalize functions (uncrustify)
+    * Continue integration tests
+  * TODO :
+    * Fix window errors
+    * Define next part
+ 
+## 14/05/2019 - Normalize :
+  * Done :
+    * Format error messages
+    * Correct selection
+    * Define next part
+    * Tests
+  * TODO :
+    * Finish normalize
+    * Add coverage
+
+## 15/05/2019 - Final :
+  * Done :
+    * Add coverage
+    * Tests with coverage
+    * Update specs
+    * Add move_buffer / help
+    * Add Man
+  * TODO :
+    * Create extensions
+    * Stable branch
+
+## 16/05/2019 - Extensions :
+  * Done :
+    * Add script edition and use scripts
+    * Patch freeze gnome
+    * Create Stable
+    * List.c for bundle
+  * TODO :
+    * Undo / Redo
+    * Bundle
+    * Save secure
+    * Tests final stable
+
+## 17/05/2019 - Final :
+  * Done :
+    * Bundle
+    * Save secure
+    * Tests final stable
+    * Patch unstable
+    * Patch bugs
+    * Add final tag on
+  * TODO :
+    * FINISH VERSION

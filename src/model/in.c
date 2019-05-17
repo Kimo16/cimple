@@ -34,23 +34,3 @@ image *load_image(char *path){
 	SDL_FreeFormat(format);
 	return img;
 }
-
-short check_tmp(){
-	char *tmp_dir = "/tmp/cimpletmp/";
-	DIR * dir = opendir(tmp_dir);
-	int   ret = 0;
-	if (dir == NULL) {
-		printf("No file saved\n");
-		return ret;
-	}
-	struct dirent *current;
-	while ((current = readdir(dir)) != NULL) {
-		if (memcmp(current->d_name, "./", 2) == 0 ||
-		    memcmp(current->d_name, "../", 3) == 0)
-			continue;
-		ret += 1;
-		printf("%s%s", tmp_dir, current->d_name);
-	}
-	closedir(dir);
-	return ret;
-}

@@ -90,6 +90,9 @@ short rotate(image *target, int angle, short rev){
 		fprintf(stderr, "Error : null surface in rotate\n");
 		return 0;
 	}
+	if(rev==1){
+		angle=angle+180;
+	}
 	// if image is not changed (i.e. 360 degrees)
 	if ((angle / 90) % 4 == 0)
 		return 1;
@@ -109,7 +112,7 @@ short rotate(image *target, int angle, short rev){
 	Uint32 *pixels_ref = img->pixels;
 	Uint32 *pixels_test = new_surface->pixels;
 	// when image is turned once clockwise
-	if ((rev == 0 && mod == 1) || (rev == 1 && mod == 3))
+	if (mod==1)
 		for (int i = 0; i < img->h; i++) {
 			for (int j = 0; j < img->w; j++) {
 				SDL_Color c_ref = {0};
@@ -129,7 +132,7 @@ short rotate(image *target, int angle, short rev){
 			}
 		}
 	// when image is turned three times clockwise
-	if ((rev == 0 && mod == 3) || (rev == 1 && mod == 1))
+	if (mod==3)
 		for (int i = 0; i < img->h; i++) {
 			for (int j = 0; j < img->w; j++) {
 				SDL_Color c_ref = {0};

@@ -47,10 +47,9 @@ static short save_bmp(image *img){
 static short save_png(image *img){
 	SDL_Surface *surface = get_img_surface(img);
 	char *       file = get_full_image_path(img);
-	if (!IMG_SavePNG(surface, file))
-		return 1;
-	printf("Save as %s\n", get_full_image_path(img));
-	return 0;
+	if (IMG_SavePNG(surface, file))
+		return 0;
+	return 1;
 }
 
 /**
@@ -67,7 +66,7 @@ static short save_jpeg(image *img){
 
 	if ((output = fopen(file, "wb")) == NULL) {
 		fprintf(stderr, "Error : can't write image\n");
-		return 1;
+		return 0;
 	}
 
 	jpg.err = jpeg_std_error(&jpgerror);
@@ -136,6 +135,7 @@ image *save_image_as(image *img, char *path){
 
 	if (!save_image(res))
 		return NULL;
+	printf("Save as %s\n", get_full_image_path(res));
 	return res;
 }
 

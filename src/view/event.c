@@ -90,6 +90,7 @@ int draw_select(SDL_Rect selection){
 		SDL_RenderDrawRect(current->renderer, &selection);
 	}
 
+	SDL_SetRenderDrawColor(current->renderer, 0,0,0,255);
 	SDL_SetRenderTarget(current->renderer, NULL);
 	SDL_RenderPresent(current->renderer);
 

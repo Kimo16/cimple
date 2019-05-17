@@ -17,6 +17,8 @@
 #include "out.h"
 #include "window.h"
 #include "event.h"
+#include "list.h"
+#include "bundle.h"
 
 short cimple_handler();
 

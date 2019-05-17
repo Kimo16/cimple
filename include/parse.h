@@ -12,7 +12,7 @@
 #include "err_flags.h"
 
 #define LEN_MAX         13
-#define LEN_INFO        23
+#define LEN_INFO        24
 #define LEN_BNW         3
 #define LEN_COPY        3
 #define LEN_CONSTRAST   4
@@ -35,6 +35,7 @@
 #define LEN_REPLACE     13
 #define LEN_SYM         3
 #define LEN_SCRIPT		3
+#define LEN_BUNDLE		4
 
 typedef struct cmd{
 	char * name;

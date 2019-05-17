@@ -678,7 +678,7 @@ static short cmd_function_handler(cmd *command){
  * @return n
  */
 
-void load_tmp_file(){
+static void load_tmp_file(){
 	DIR *d = opendir("/var/tmp/cimpletmp");
 	if (d == NULL) return;
 	struct dirent *dir_iter;
@@ -690,8 +690,12 @@ void load_tmp_file(){
 		char *path = malloc(strlen(dir_path) + strlen(dir_iter->d_name) + 4);
 		sprintf(path, "%s%s", dir_path, dir_iter->d_name);
 
-		if (new_frame(path) != 1)
+		if (new_frame(path) != 1) {
 			fprintf(stderr, "Error : cannot load %s from load_tmp_file directory\n", dir_iter->d_name);
+			remove(path);
+			free(path);
+		}
+		free(path);
 	}
 }
 

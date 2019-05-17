@@ -23,6 +23,7 @@ static void export_pixels_jpg(SDL_Surface *surface, unsigned char *row, j_compre
 		}
 		jpeg_write_scanlines(jpg, &row, 1);
 	}
+	SDL_UnlockSurface(surface);
 }
 
 /**

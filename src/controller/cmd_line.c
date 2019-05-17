@@ -405,7 +405,8 @@ static short handler_cmd_truncate(cmd *command){
  * @return 1
  */
 
-static short handler_cmd_list_buff(cmd *command){
+short handler_cmd_list_buff(cmd *command){
+	(void)command;
 	print_frame();
 	return 1;
 }
@@ -418,7 +419,8 @@ static short handler_cmd_list_buff(cmd *command){
  */
 
 
-static short handler_cmd_help(cmd *command){
+short handler_cmd_help(cmd *command){
+	(void)command;
 	printf("symmetry < v | h > \n");
 	printf("rotate [-r] angle \n");
 	printf("copy [-a]\n");

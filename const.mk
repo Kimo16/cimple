@@ -24,7 +24,8 @@ SRC_MOD = in.c		  		\
 		parse.c    \
 		list.c
     
-SRC_CONTR = cmd_line.c
+SRC_CONTR = cmd_line.c \
+						bundle.c
 SRC_TESTS = io_test.c			\
 			parser_test.c \
 			m_tests.c 	\

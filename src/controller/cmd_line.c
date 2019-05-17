@@ -358,7 +358,7 @@ static short handler_cmd_rotate(cmd *command){
 	int    n;
 	int    angle = string_to_int(command->args[2]);
 	if (strcmp(command->args[1], "-r") == 0) n = rotate(img, angle, 1);
-	n = rotate(img, angle, 0);
+	else n = rotate(img, angle, 0);
 	update_frame(f, NULL);
 	return n;
 }

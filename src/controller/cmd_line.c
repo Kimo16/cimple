@@ -334,7 +334,15 @@ short handler_cmd_resize(cmd *command){
 	int    width = string_to_int(command->args[2]);
 	int    height = string_to_int(command->args[3]);
 
-	if (strcmp(command->args[1], "workspace") == 0) n = resize_workspace(img, width, height);
+	if (strcmp(command->args[1], "workspace") == 0) {
+		if (get_img_surface(f->image)->w + width >= MAX_W ||
+		    get_img_surface(f->image)->h + height >= MAX_H ||
+		    width > MAX_R || height > MAX_R) {
+			fprintf(stderr, "Error : command [%s] , dimensions out of bounds\n", command->name);
+			return 0;
+		}
+		n = resize_workspace(img, width, height);
+	}
 	else n = resize_image(img, width, height);
 	if (n != 1) return 0;
 	if (update_frame(f, NULL) != 1) return 0;
